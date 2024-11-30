@@ -29,6 +29,10 @@
 #include "SDL_error.h"
 #include "SDL_log.h"
 
+#ifdef _XBOX
+#include <xtl.h>
+#endif
+
 #if HAVE_STDIO_H
 #include <stdio.h>
 #endif
@@ -289,6 +293,10 @@ SDL_LogMessageV(int category, SDL_LogPriority priority, const char *fmt, va_list
     }
 
     SDL_vsnprintf(message, SDL_MAX_LOG_MESSAGE, fmt, ap);
+
+#if defined(_XBOX) && defined(XBOX_DEBUG_LOGGING) && defined(_DEBUG)
+	OutputDebugString(message);
+#endif
 
     /* Chop off final endline. */
     len = SDL_strlen(message);

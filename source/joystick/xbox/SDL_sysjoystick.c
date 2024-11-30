@@ -36,7 +36,7 @@
 #define XBINPUT_DEADZONE 0.24f
 #define AXIS_MIN	-32768  /* minimum value for axis coordinate */
 #define AXIS_MAX	32767   /* maximum value for axis coordinate */
-#define MAX_AXES	4		/* each joystick can have up to 6 axes */
+#define MAX_AXES	4		/* each joystick can have up to 4 axes */
 #define MAX_BUTTONS	12		/* and 12 buttons                      */
 #define	MAX_HATS	2
 
@@ -226,6 +226,7 @@ XBOX_JoystickOpen(SDL_Joystick * joystick, int device_index)
 	joystick->nbuttons = MAX_BUTTONS;
 	joystick->naxes = MAX_AXES;
 	joystick->nhats = MAX_HATS;
+	joystick->is_game_controller = SDL_TRUE;
 	joystick->name = "Xbox SDL Gamepad V0.02";
 
 	// Set the idex (can we ditch the hwdata index and just use instance_id???)
@@ -238,22 +239,24 @@ XBOX_JoystickOpen(SDL_Joystick * joystick, int device_index)
         // Get a handle to the device
         joystick->hwdata->pGamepad.hDevice = XInputOpen( XDEVICE_TYPE_GAMEPAD, joystick->hwdata->index, 
                                                           XDEVICE_NO_SLOT, &g_PollingParameters );
-		 
+		
+		if (joystick->hwdata->pGamepad.hDevice)
+		{
+			// Store capabilities of the device
+			XInputGetCapabilities( joystick->hwdata->pGamepad.hDevice, &joystick->hwdata->pGamepad.caps );
 
-        // Store capabilities of the device
-        XInputGetCapabilities( joystick->hwdata->pGamepad.hDevice, &joystick->hwdata->pGamepad.caps );
+			// Initialize last pressed buttons
+			XInputGetState( joystick->hwdata->pGamepad.hDevice, &g_InputStates[joystick->hwdata->index] );
 
-        // Initialize last pressed buttons
-        XInputGetState( joystick->hwdata->pGamepad.hDevice, &g_InputStates[joystick->hwdata->index] );
+			joystick->hwdata->pGamepad.wLastButtons = g_InputStates[joystick->hwdata->index].Gamepad.wButtons;
 
-        joystick->hwdata->pGamepad.wLastButtons = g_InputStates[joystick->hwdata->index].Gamepad.wButtons;
-
-        for( b=0; b<8; b++ )
-        {
-            joystick->hwdata->pGamepad.bLastAnalogButtons[b] =
-                // Turn the 8-bit polled value into a boolean value
-                ( g_InputStates[joystick->hwdata->index].Gamepad.bAnalogButtons[b] > XINPUT_GAMEPAD_MAX_CROSSTALK );
-        }
+			for( b=0; b<8; b++ )
+			{
+				joystick->hwdata->pGamepad.bLastAnalogButtons[b] =
+					// Turn the 8-bit polled value into a boolean value
+					( g_InputStates[joystick->hwdata->index].Gamepad.bAnalogButtons[b] > XINPUT_GAMEPAD_MAX_CROSSTALK );
+			}
+		}
     }
 
 	return 0;

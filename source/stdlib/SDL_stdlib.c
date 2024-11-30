@@ -674,6 +674,7 @@ L8:
     /* *INDENT-ON* */
 }
 
+#if !defined(_XBOX)
 void
 __declspec(naked)
 _aulldiv()
@@ -731,6 +732,7 @@ L2:
     }
     /* *INDENT-ON* */
 }
+#endif
 
 void
 __declspec(naked)
@@ -819,6 +821,7 @@ L8:
     /* *INDENT-ON* */
 }
 
+#if !defined(_XBOX)
 void
 __declspec(naked)
 _aullrem()
@@ -877,6 +880,7 @@ L2:
     }
     /* *INDENT-ON* */
 }
+#endif
 
 void
 __declspec(naked)
