@@ -1,30 +1,47 @@
-Microsoft Visual Studio Solution File, Format Version 8.00
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "libSDL2x", "libSDL2x.vcproj", "{7C481C7D-ECA7-4F9E-879C-105784F3543D}"
-	ProjectSection(ProjectDependencies) = postProject
-	EndProjectSection
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.10.35013.160
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "libSDL2x", "libSDL2x.vcxproj", "{7C481C7D-ECA7-4F9E-879C-105784F3543D}"
 EndProject
 Global
-	GlobalSection(SolutionConfiguration) = preSolution
-		Debug = Debug
-		Profile = Profile
-		Profile_FastCap = Profile_FastCap
-		Release = Release
-		Release_LTCG = Release_LTCG
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|x64 = Debug|x64
+		Debug|x86 = Debug|x86
+		Profile_FastCap|x64 = Profile_FastCap|x64
+		Profile_FastCap|x86 = Profile_FastCap|x86
+		Profile|x64 = Profile|x64
+		Profile|x86 = Profile|x86
+		Release_LTCG|x64 = Release_LTCG|x64
+		Release_LTCG|x86 = Release_LTCG|x86
+		Release|x64 = Release|x64
+		Release|x86 = Release|x86
 	EndGlobalSection
-	GlobalSection(ProjectConfiguration) = postSolution
-		{7C481C7D-ECA7-4F9E-879C-105784F3543D}.Debug.ActiveCfg = Debug|Xbox
-		{7C481C7D-ECA7-4F9E-879C-105784F3543D}.Debug.Build.0 = Debug|Xbox
-		{7C481C7D-ECA7-4F9E-879C-105784F3543D}.Profile.ActiveCfg = Profile|Xbox
-		{7C481C7D-ECA7-4F9E-879C-105784F3543D}.Profile.Build.0 = Profile|Xbox
-		{7C481C7D-ECA7-4F9E-879C-105784F3543D}.Profile_FastCap.ActiveCfg = Profile_FastCap|Xbox
-		{7C481C7D-ECA7-4F9E-879C-105784F3543D}.Profile_FastCap.Build.0 = Profile_FastCap|Xbox
-		{7C481C7D-ECA7-4F9E-879C-105784F3543D}.Release.ActiveCfg = Release|Xbox
-		{7C481C7D-ECA7-4F9E-879C-105784F3543D}.Release.Build.0 = Release|Xbox
-		{7C481C7D-ECA7-4F9E-879C-105784F3543D}.Release_LTCG.ActiveCfg = Release_LTCG|Xbox
-		{7C481C7D-ECA7-4F9E-879C-105784F3543D}.Release_LTCG.Build.0 = Release_LTCG|Xbox
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{7C481C7D-ECA7-4F9E-879C-105784F3543D}.Debug|x64.ActiveCfg = Debug|x64
+		{7C481C7D-ECA7-4F9E-879C-105784F3543D}.Debug|x64.Build.0 = Debug|x64
+		{7C481C7D-ECA7-4F9E-879C-105784F3543D}.Debug|x86.ActiveCfg = Debug|Xbox
+		{7C481C7D-ECA7-4F9E-879C-105784F3543D}.Profile_FastCap|x64.ActiveCfg = Profile_FastCap|Xbox
+		{7C481C7D-ECA7-4F9E-879C-105784F3543D}.Profile_FastCap|x64.Build.0 = Profile_FastCap|Xbox
+		{7C481C7D-ECA7-4F9E-879C-105784F3543D}.Profile_FastCap|x86.ActiveCfg = Profile_FastCap|Xbox
+		{7C481C7D-ECA7-4F9E-879C-105784F3543D}.Profile_FastCap|x86.Build.0 = Profile_FastCap|Xbox
+		{7C481C7D-ECA7-4F9E-879C-105784F3543D}.Profile|x64.ActiveCfg = Profile|Xbox
+		{7C481C7D-ECA7-4F9E-879C-105784F3543D}.Profile|x64.Build.0 = Profile|Xbox
+		{7C481C7D-ECA7-4F9E-879C-105784F3543D}.Profile|x86.ActiveCfg = Profile|Xbox
+		{7C481C7D-ECA7-4F9E-879C-105784F3543D}.Profile|x86.Build.0 = Profile|Xbox
+		{7C481C7D-ECA7-4F9E-879C-105784F3543D}.Release_LTCG|x64.ActiveCfg = Release_LTCG|Xbox
+		{7C481C7D-ECA7-4F9E-879C-105784F3543D}.Release_LTCG|x64.Build.0 = Release_LTCG|Xbox
+		{7C481C7D-ECA7-4F9E-879C-105784F3543D}.Release_LTCG|x86.ActiveCfg = Release_LTCG|Xbox
+		{7C481C7D-ECA7-4F9E-879C-105784F3543D}.Release_LTCG|x86.Build.0 = Release_LTCG|Xbox
+		{7C481C7D-ECA7-4F9E-879C-105784F3543D}.Release|x64.ActiveCfg = Release|x64
+		{7C481C7D-ECA7-4F9E-879C-105784F3543D}.Release|x64.Build.0 = Release|x64
+		{7C481C7D-ECA7-4F9E-879C-105784F3543D}.Release|x86.ActiveCfg = Release|Win32
+		{7C481C7D-ECA7-4F9E-879C-105784F3543D}.Release|x86.Build.0 = Release|Win32
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
-	EndGlobalSection
-	GlobalSection(ExtensibilityAddIns) = postSolution
+		SolutionGuid = {470C584C-27B3-483D-BBCF-5FCD47431948}
 	EndGlobalSection
 EndGlobal
