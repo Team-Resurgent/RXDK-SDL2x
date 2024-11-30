@@ -1,0 +1,195 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="source\effects_internal.c" />
+    <ClCompile Include="source\effect_position.c" />
+    <ClCompile Include="source\effect_stereoreverse.c" />
+    <ClCompile Include="source\load_aiff.c" />
+    <ClCompile Include="source\load_voc.c" />
+    <ClCompile Include="source\mixer.c" />
+    <ClCompile Include="source\music.c" />
+    <ClCompile Include="source\music_cmd.c" />
+    <ClCompile Include="source\music_flac.c" />
+    <ClCompile Include="source\music_fluidsynth.c" />
+    <ClCompile Include="source\music_mad.c" />
+    <ClCompile Include="source\music_mikmod.c" />
+    <ClCompile Include="source\music_modplug.c" />
+    <ClCompile Include="source\music_mpg123.c" />
+    <ClCompile Include="source\music_nativemidi.c" />
+    <ClCompile Include="source\music_ogg.c" />
+    <ClCompile Include="source\music_opus.c" />
+    <ClCompile Include="source\music_timidity.c" />
+    <ClCompile Include="source\music_wav.c" />
+    <ClCompile Include="source\playmus.c" />
+    <ClCompile Include="source\playwave.c" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="include\effects_internal.h" />
+    <ClInclude Include="include\load_aiff.h" />
+    <ClInclude Include="include\load_voc.h" />
+    <ClInclude Include="include\mixer.h" />
+    <ClInclude Include="include\music.h" />
+    <ClInclude Include="include\music_cmd.h" />
+    <ClInclude Include="include\music_flac.h" />
+    <ClInclude Include="include\music_fluidsynth.h" />
+    <ClInclude Include="include\music_mad.h" />
+    <ClInclude Include="include\music_mikmod.h" />
+    <ClInclude Include="include\music_modplug.h" />
+    <ClInclude Include="include\music_mpg123.h" />
+    <ClInclude Include="include\music_nativemidi.h" />
+    <ClInclude Include="include\music_ogg.h" />
+    <ClInclude Include="include\music_opus.h" />
+    <ClInclude Include="include\music_timidity.h" />
+    <ClInclude Include="include\music_wav.h" />
+    <ClInclude Include="include\SDL_mixer.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="ReadMe.txt" />
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <VCProjectVersion>16.0</VCProjectVersion>
+    <Keyword>Win32Proj</Keyword>
+    <ProjectGuid>{7C481C7D-ECA7-4F9E-879C-105784F3543D}</ProjectGuid>
+    <RootNamespace>libSDL2x_mixer</RootNamespace>
+    <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
+    <ProjectName>libSDL2x_mixer</ProjectName>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v142</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v142</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="Shared">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <IncludePath>$(OGXDK_LIBS)include</IncludePath>
+    <ExternalIncludePath>$(OGXDK_LIBS)include</ExternalIncludePath>
+    <LibraryWPath />
+    <SourcePath />
+    <ExcludePath>$(CommonExcludePath);$(VC_ExecutablePath_x86);$(OGXDK_LIBS)lib</ExcludePath>
+    <ReferencePath>$(OGXDK_LIBS)lib</ReferencePath>
+    <LibraryPath>$(OGXDK_LIBS)lib</LibraryPath>
+    <OutDir>$(ProjectDir)$(Configuration)\</OutDir>
+    <TargetExt>.lib</TargetExt>
+    <LinkIncremental>false</LinkIncremental>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <IncludePath>$(OGXDK_LIBS)include</IncludePath>
+    <ExternalIncludePath>$(OGXDK_LIBS)include</ExternalIncludePath>
+    <LibraryWPath />
+    <SourcePath />
+    <ExcludePath>$(CommonExcludePath);$(VC_ExecutablePath_x86);$(OGXDK_LIBS)lib</ExcludePath>
+    <ReferencePath>$(OGXDK_LIBS)lib</ReferencePath>
+    <LibraryPath>$(OGXDK_LIBS)lib</LibraryPath>
+    <OutDir>$(ProjectDir)$(Configuration)\</OutDir>
+    <TargetExt>.lib</TargetExt>
+    <LinkIncremental>false</LinkIncremental>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <SDLCheck>false</SDLCheck>
+      <PreprocessorDefinitions>XBOX;_XBOX;__XBOX__;_LIB;_DEBUG;MUSIC_WAV;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>false</ConformanceMode>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <AdditionalIncludeDirectories>.\include;..\include;.\</AdditionalIncludeDirectories>
+      <BufferSecurityCheck>false</BufferSecurityCheck>
+      <ExceptionHandling>Sync</ExceptionHandling>
+      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+      <AdditionalOptions>/arch:SSE %(AdditionalOptions)</AdditionalOptions>
+      <SupportJustMyCode>false</SupportJustMyCode>
+      <ControlFlowGuard>false</ControlFlowGuard>
+      <LanguageStandard>stdcpp17</LanguageStandard>
+      <EnableEnhancedInstructionSet>StreamingSIMDExtensions</EnableEnhancedInstructionSet>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalDependencies>xboxkrnl.lib;libcmtd.lib;xapilibd.lib;d3d8d.lib;d3dx8d.lib;xbdm.lib</AdditionalDependencies>
+      <IgnoreAllDefaultLibraries>true</IgnoreAllDefaultLibraries>
+      <BaseAddress>
+      </BaseAddress>
+      <IgnoreSpecificDefaultLibraries>
+      </IgnoreSpecificDefaultLibraries>
+      <GenerateMapFile>true</GenerateMapFile>
+      <FixedBaseAddress>false</FixedBaseAddress>
+      <ImageHasSafeExceptionHandlers>false</ImageHasSafeExceptionHandlers>
+      <SectionAlignment>32</SectionAlignment>
+      <MergeSections>.rdata=.text</MergeSections>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <SDLCheck>false</SDLCheck>
+      <PreprocessorDefinitions>XBOX;_XBOX;__XBOX__;_LIB;NDEBUG;MUSIC_WAV;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>false</ConformanceMode>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <AdditionalIncludeDirectories>.\include;..\include;.\</AdditionalIncludeDirectories>
+      <BufferSecurityCheck>false</BufferSecurityCheck>
+      <ExceptionHandling>Sync</ExceptionHandling>
+      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+      <AdditionalOptions>/arch:SSE %(AdditionalOptions)</AdditionalOptions>
+      <ControlFlowGuard>false</ControlFlowGuard>
+      <LanguageStandard>stdcpp17</LanguageStandard>
+      <EnableEnhancedInstructionSet>StreamingSIMDExtensions</EnableEnhancedInstructionSet>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalDependencies>xboxkrnl.lib;libcmt.lib;xapilib.lib;d3d8.lib;d3dx8.lib;xbdm.lib</AdditionalDependencies>
+      <IgnoreAllDefaultLibraries>true</IgnoreAllDefaultLibraries>
+      <BaseAddress>
+      </BaseAddress>
+      <IgnoreSpecificDefaultLibraries>
+      </IgnoreSpecificDefaultLibraries>
+      <GenerateMapFile>true</GenerateMapFile>
+      <FixedBaseAddress>false</FixedBaseAddress>
+      <ImageHasSafeExceptionHandlers>false</ImageHasSafeExceptionHandlers>
+      <SectionAlignment>32</SectionAlignment>
+      <MergeSections>.rdata=.text</MergeSections>
+    </Link>
+  </ItemDefinitionGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
+    <PropertyGroup>
+      <ErrorText>This project requires Team Resurgent's XDK Libs installed on this computer. Search for them on http://www.theusualplaces.co.uk.</ErrorText>
+    </PropertyGroup>
+    <Error Condition="!Exists($(OGXDK_LIBS))" Text="$([System.String]::Format('$(ErrorText)'))" />
+  </Target>
+</Project>

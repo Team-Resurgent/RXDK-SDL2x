@@ -1,30 +1,25 @@
-Microsoft Visual Studio Solution File, Format Version 8.00
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "libSDL2x_mixer", "libSDL2x_mixer.vcproj", "{A1A9103C-3AF1-4446-AED9-A65AAE6ED047}"
-	ProjectSection(ProjectDependencies) = postProject
-	EndProjectSection
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.10.35013.160
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "libSDL2x_mixer", "libSDL2x_mixer.vcxproj", "{7C481C7D-ECA7-4F9E-879C-105784F3543D}"
 EndProject
 Global
-	GlobalSection(SolutionConfiguration) = preSolution
-		Debug = Debug
-		Profile = Profile
-		Profile_FastCap = Profile_FastCap
-		Release = Release
-		Release_LTCG = Release_LTCG
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|x86 = Debug|x86
+		Release|x86 = Release|x86
 	EndGlobalSection
-	GlobalSection(ProjectConfiguration) = postSolution
-		{A1A9103C-3AF1-4446-AED9-A65AAE6ED047}.Debug.ActiveCfg = Debug|Xbox
-		{A1A9103C-3AF1-4446-AED9-A65AAE6ED047}.Debug.Build.0 = Debug|Xbox
-		{A1A9103C-3AF1-4446-AED9-A65AAE6ED047}.Profile.ActiveCfg = Profile|Xbox
-		{A1A9103C-3AF1-4446-AED9-A65AAE6ED047}.Profile.Build.0 = Profile|Xbox
-		{A1A9103C-3AF1-4446-AED9-A65AAE6ED047}.Profile_FastCap.ActiveCfg = Profile_FastCap|Xbox
-		{A1A9103C-3AF1-4446-AED9-A65AAE6ED047}.Profile_FastCap.Build.0 = Profile_FastCap|Xbox
-		{A1A9103C-3AF1-4446-AED9-A65AAE6ED047}.Release.ActiveCfg = Release|Xbox
-		{A1A9103C-3AF1-4446-AED9-A65AAE6ED047}.Release.Build.0 = Release|Xbox
-		{A1A9103C-3AF1-4446-AED9-A65AAE6ED047}.Release_LTCG.ActiveCfg = Release_LTCG|Xbox
-		{A1A9103C-3AF1-4446-AED9-A65AAE6ED047}.Release_LTCG.Build.0 = Release_LTCG|Xbox
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{7C481C7D-ECA7-4F9E-879C-105784F3543D}.Debug|x86.ActiveCfg = Debug|Win32
+		{7C481C7D-ECA7-4F9E-879C-105784F3543D}.Debug|x86.Build.0 = Debug|Win32
+		{7C481C7D-ECA7-4F9E-879C-105784F3543D}.Release|x86.ActiveCfg = Release|Win32
+		{7C481C7D-ECA7-4F9E-879C-105784F3543D}.Release|x86.Build.0 = Release|Win32
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
-	EndGlobalSection
-	GlobalSection(ExtensibilityAddIns) = postSolution
+		SolutionGuid = {37118C76-F284-4513-8E82-20650079FFD3}
 	EndGlobalSection
 EndGlobal
