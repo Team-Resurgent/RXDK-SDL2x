@@ -52,6 +52,7 @@ Mkfile.old
 dkms.conf
 
 # Visual Studio
+.vs/
 Release/
 Debug/
 *.ncb
