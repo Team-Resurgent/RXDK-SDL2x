@@ -11,6 +11,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "libSDL2x_mixer", "libSDL2x_
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "CheckKeys", "Samples\checkkeys\CheckKeys.vcxproj", "{77283EFC-26FB-4798-A5DC-B2F8F32657A4}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "LoopWave", "Samples\loopwave\LoopWave.vcxproj", "{84BB37AD-D526-4C5D-89D8-70E53137CD47}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x86 = Debug|x86
@@ -33,6 +35,10 @@ Global
 		{77283EFC-26FB-4798-A5DC-B2F8F32657A4}.Debug|x86.Build.0 = Debug|Win32
 		{77283EFC-26FB-4798-A5DC-B2F8F32657A4}.Release|x86.ActiveCfg = Release|Win32
 		{77283EFC-26FB-4798-A5DC-B2F8F32657A4}.Release|x86.Build.0 = Release|Win32
+		{84BB37AD-D526-4C5D-89D8-70E53137CD47}.Debug|x86.ActiveCfg = Debug|Win32
+		{84BB37AD-D526-4C5D-89D8-70E53137CD47}.Debug|x86.Build.0 = Debug|Win32
+		{84BB37AD-D526-4C5D-89D8-70E53137CD47}.Release|x86.ActiveCfg = Release|Win32
+		{84BB37AD-D526-4C5D-89D8-70E53137CD47}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
