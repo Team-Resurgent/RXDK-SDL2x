@@ -59,7 +59,7 @@
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
     <Keyword>Win32Proj</Keyword>
-    <ProjectGuid>{7C481C7D-ECA7-4F9E-879C-105784F3543D}</ProjectGuid>
+    <ProjectGuid>{08806D45-83D0-45C3-AAEA-3B076B3D8CDA}</ProjectGuid>
     <RootNamespace>libSDL2x_mixer</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
     <ProjectName>libSDL2x_mixer</ProjectName>
