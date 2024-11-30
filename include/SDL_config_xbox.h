@@ -163,14 +163,14 @@ typedef unsigned int uintptr_t;
 #if defined(_MSC_VER)
 /* These functions were added with the VC++ 2013 C runtime library */
 #if _MSC_VER >= 1800
-#define HAVE_STRTOLL 1
-#define HAVE_VSSCANF 1
-#define HAVE_SCALBN 1
-#define HAVE_SCALBNF    1
+//#define HAVE_STRTOLL 1
+//#define HAVE_VSSCANF 1
+//#define HAVE_SCALBN 1
+//#define HAVE_SCALBNF    1
 #endif
 /* This function is available with at least the VC++ 2008 C runtime library */
 #if _MSC_VER >= 1400
-#define HAVE__FSEEKI64 1
+//#define HAVE__FSEEKI64 1
 #endif
 #endif
 #if !defined(_MSC_VER) || defined(_USE_MATH_DEFINES)
