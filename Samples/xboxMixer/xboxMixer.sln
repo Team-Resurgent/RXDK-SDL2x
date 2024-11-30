@@ -1,0 +1,30 @@
+Microsoft Visual Studio Solution File, Format Version 8.00
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "xboxMixer", "xboxMixer.vcproj", "{61F2E6AE-EC36-4118-8F81-2612BBAC358B}"
+	ProjectSection(ProjectDependencies) = postProject
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionConfiguration) = preSolution
+		Debug = Debug
+		Profile = Profile
+		Profile_FastCap = Profile_FastCap
+		Release = Release
+		Release_LTCG = Release_LTCG
+	EndGlobalSection
+	GlobalSection(ProjectConfiguration) = postSolution
+		{61F2E6AE-EC36-4118-8F81-2612BBAC358B}.Debug.ActiveCfg = Debug|Xbox
+		{61F2E6AE-EC36-4118-8F81-2612BBAC358B}.Debug.Build.0 = Debug|Xbox
+		{61F2E6AE-EC36-4118-8F81-2612BBAC358B}.Profile.ActiveCfg = Profile|Xbox
+		{61F2E6AE-EC36-4118-8F81-2612BBAC358B}.Profile.Build.0 = Profile|Xbox
+		{61F2E6AE-EC36-4118-8F81-2612BBAC358B}.Profile_FastCap.ActiveCfg = Profile_FastCap|Xbox
+		{61F2E6AE-EC36-4118-8F81-2612BBAC358B}.Profile_FastCap.Build.0 = Profile_FastCap|Xbox
+		{61F2E6AE-EC36-4118-8F81-2612BBAC358B}.Release.ActiveCfg = Release|Xbox
+		{61F2E6AE-EC36-4118-8F81-2612BBAC358B}.Release.Build.0 = Release|Xbox
+		{61F2E6AE-EC36-4118-8F81-2612BBAC358B}.Release_LTCG.ActiveCfg = Release_LTCG|Xbox
+		{61F2E6AE-EC36-4118-8F81-2612BBAC358B}.Release_LTCG.Build.0 = Release_LTCG|Xbox
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+	EndGlobalSection
+	GlobalSection(ExtensibilityAddIns) = postSolution
+	EndGlobalSection
+EndGlobal

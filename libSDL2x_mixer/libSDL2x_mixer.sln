@@ -1,0 +1,30 @@
+Microsoft Visual Studio Solution File, Format Version 8.00
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "libSDL2x_mixer", "libSDL2x_mixer.vcproj", "{A1A9103C-3AF1-4446-AED9-A65AAE6ED047}"
+	ProjectSection(ProjectDependencies) = postProject
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionConfiguration) = preSolution
+		Debug = Debug
+		Profile = Profile
+		Profile_FastCap = Profile_FastCap
+		Release = Release
+		Release_LTCG = Release_LTCG
+	EndGlobalSection
+	GlobalSection(ProjectConfiguration) = postSolution
+		{A1A9103C-3AF1-4446-AED9-A65AAE6ED047}.Debug.ActiveCfg = Debug|Xbox
+		{A1A9103C-3AF1-4446-AED9-A65AAE6ED047}.Debug.Build.0 = Debug|Xbox
+		{A1A9103C-3AF1-4446-AED9-A65AAE6ED047}.Profile.ActiveCfg = Profile|Xbox
+		{A1A9103C-3AF1-4446-AED9-A65AAE6ED047}.Profile.Build.0 = Profile|Xbox
+		{A1A9103C-3AF1-4446-AED9-A65AAE6ED047}.Profile_FastCap.ActiveCfg = Profile_FastCap|Xbox
+		{A1A9103C-3AF1-4446-AED9-A65AAE6ED047}.Profile_FastCap.Build.0 = Profile_FastCap|Xbox
+		{A1A9103C-3AF1-4446-AED9-A65AAE6ED047}.Release.ActiveCfg = Release|Xbox
+		{A1A9103C-3AF1-4446-AED9-A65AAE6ED047}.Release.Build.0 = Release|Xbox
+		{A1A9103C-3AF1-4446-AED9-A65AAE6ED047}.Release_LTCG.ActiveCfg = Release_LTCG|Xbox
+		{A1A9103C-3AF1-4446-AED9-A65AAE6ED047}.Release_LTCG.Build.0 = Release_LTCG|Xbox
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+	EndGlobalSection
+	GlobalSection(ExtensibilityAddIns) = postSolution
+	EndGlobalSection
+EndGlobal
