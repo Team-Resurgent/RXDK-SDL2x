@@ -350,7 +350,6 @@
       <GenerateMapFile>true</GenerateMapFile>
       <FixedBaseAddress>false</FixedBaseAddress>
       <ImageHasSafeExceptionHandlers>false</ImageHasSafeExceptionHandlers>
-      <EntryPointSymbol>DxtEntry</EntryPointSymbol>
       <SectionAlignment>32</SectionAlignment>
       <MergeSections>.rdata=.text</MergeSections>
     </Link>
@@ -387,7 +386,6 @@
       <GenerateMapFile>true</GenerateMapFile>
       <FixedBaseAddress>false</FixedBaseAddress>
       <ImageHasSafeExceptionHandlers>false</ImageHasSafeExceptionHandlers>
-      <EntryPointSymbol>DxtEntry</EntryPointSymbol>
       <SectionAlignment>32</SectionAlignment>
       <MergeSections>.rdata=.text</MergeSections>
     </Link>
