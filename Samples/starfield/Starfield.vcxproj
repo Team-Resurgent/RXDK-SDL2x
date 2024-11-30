@@ -13,10 +13,10 @@
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
     <Keyword>Win32Proj</Keyword>
-    <ProjectGuid>{84BB37AD-D526-4C5D-89D8-70E53137CD47}</ProjectGuid>
-    <RootNamespace>LoopWave</RootNamespace>
+    <ProjectGuid>{0171AF6A-7532-4E5E-B37F-EB25BDD7667A}</ProjectGuid>
+    <RootNamespace>Starfield</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
-    <ProjectName>LoopWave</ProjectName>
+    <ProjectName>Starfield</ProjectName>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
@@ -141,7 +141,7 @@
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup Label="ProjectConfigurations">
-    <ClCompile Include="loopwave.cpp" />
+    <ClCompile Include="Starfield.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
