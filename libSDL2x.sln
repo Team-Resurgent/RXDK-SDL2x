@@ -4,6 +4,8 @@ VisualStudioVersion = 17.10.35013.160
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "libSDL2x", "libSDL2x.vcxproj", "{7C481C7D-ECA7-4F9E-879C-105784F3543D}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Waves", "Samples\waves\Waves.vcxproj", "{1DE3DA07-A999-48CB-BC3A-F7111A23A9B7}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -37,6 +39,26 @@ Global
 		{7C481C7D-ECA7-4F9E-879C-105784F3543D}.Release|x64.Build.0 = Release|x64
 		{7C481C7D-ECA7-4F9E-879C-105784F3543D}.Release|x86.ActiveCfg = Release|Win32
 		{7C481C7D-ECA7-4F9E-879C-105784F3543D}.Release|x86.Build.0 = Release|Win32
+		{1DE3DA07-A999-48CB-BC3A-F7111A23A9B7}.Debug|x64.ActiveCfg = Debug|Win32
+		{1DE3DA07-A999-48CB-BC3A-F7111A23A9B7}.Debug|x64.Build.0 = Debug|Win32
+		{1DE3DA07-A999-48CB-BC3A-F7111A23A9B7}.Debug|x86.ActiveCfg = Debug|Win32
+		{1DE3DA07-A999-48CB-BC3A-F7111A23A9B7}.Debug|x86.Build.0 = Debug|Win32
+		{1DE3DA07-A999-48CB-BC3A-F7111A23A9B7}.Profile_FastCap|x64.ActiveCfg = Debug|Win32
+		{1DE3DA07-A999-48CB-BC3A-F7111A23A9B7}.Profile_FastCap|x64.Build.0 = Debug|Win32
+		{1DE3DA07-A999-48CB-BC3A-F7111A23A9B7}.Profile_FastCap|x86.ActiveCfg = Debug|Win32
+		{1DE3DA07-A999-48CB-BC3A-F7111A23A9B7}.Profile_FastCap|x86.Build.0 = Debug|Win32
+		{1DE3DA07-A999-48CB-BC3A-F7111A23A9B7}.Profile|x64.ActiveCfg = Debug|Win32
+		{1DE3DA07-A999-48CB-BC3A-F7111A23A9B7}.Profile|x64.Build.0 = Debug|Win32
+		{1DE3DA07-A999-48CB-BC3A-F7111A23A9B7}.Profile|x86.ActiveCfg = Debug|Win32
+		{1DE3DA07-A999-48CB-BC3A-F7111A23A9B7}.Profile|x86.Build.0 = Debug|Win32
+		{1DE3DA07-A999-48CB-BC3A-F7111A23A9B7}.Release_LTCG|x64.ActiveCfg = Release|Win32
+		{1DE3DA07-A999-48CB-BC3A-F7111A23A9B7}.Release_LTCG|x64.Build.0 = Release|Win32
+		{1DE3DA07-A999-48CB-BC3A-F7111A23A9B7}.Release_LTCG|x86.ActiveCfg = Release|Win32
+		{1DE3DA07-A999-48CB-BC3A-F7111A23A9B7}.Release_LTCG|x86.Build.0 = Release|Win32
+		{1DE3DA07-A999-48CB-BC3A-F7111A23A9B7}.Release|x64.ActiveCfg = Release|Win32
+		{1DE3DA07-A999-48CB-BC3A-F7111A23A9B7}.Release|x64.Build.0 = Release|Win32
+		{1DE3DA07-A999-48CB-BC3A-F7111A23A9B7}.Release|x86.ActiveCfg = Release|Win32
+		{1DE3DA07-A999-48CB-BC3A-F7111A23A9B7}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
