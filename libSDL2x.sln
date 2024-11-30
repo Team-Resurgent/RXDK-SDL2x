@@ -9,6 +9,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Waves", "Samples\waves\Wave
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "libSDL2x_mixer", "libSDL2x_mixer\libSDL2x_mixer.vcxproj", "{08806D45-83D0-45C3-AAEA-3B076B3D8CDA}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "CheckKeys", "Samples\checkkeys\CheckKeys.vcxproj", "{77283EFC-26FB-4798-A5DC-B2F8F32657A4}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x86 = Debug|x86
@@ -27,6 +29,10 @@ Global
 		{08806D45-83D0-45C3-AAEA-3B076B3D8CDA}.Debug|x86.Build.0 = Debug|Win32
 		{08806D45-83D0-45C3-AAEA-3B076B3D8CDA}.Release|x86.ActiveCfg = Release|Win32
 		{08806D45-83D0-45C3-AAEA-3B076B3D8CDA}.Release|x86.Build.0 = Release|Win32
+		{77283EFC-26FB-4798-A5DC-B2F8F32657A4}.Debug|x86.ActiveCfg = Debug|Win32
+		{77283EFC-26FB-4798-A5DC-B2F8F32657A4}.Debug|x86.Build.0 = Debug|Win32
+		{77283EFC-26FB-4798-A5DC-B2F8F32657A4}.Release|x86.ActiveCfg = Release|Win32
+		{77283EFC-26FB-4798-A5DC-B2F8F32657A4}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
