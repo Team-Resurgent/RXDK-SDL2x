@@ -1,0 +1,175 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="src\IMG.c" />
+    <ClCompile Include="src\IMG_avif.c" />
+    <ClCompile Include="src\IMG_bmp.c" />
+    <ClCompile Include="src\IMG_gif.c" />
+    <ClCompile Include="src\IMG_jpg.c" />
+    <ClCompile Include="src\IMG_jxl.c" />
+    <ClCompile Include="src\IMG_lbm.c" />
+    <ClCompile Include="src\IMG_pcx.c" />
+    <ClCompile Include="src\IMG_png.c" />
+    <ClCompile Include="src\IMG_pnm.c" />
+    <ClCompile Include="src\IMG_qoi.c" />
+    <ClCompile Include="src\IMG_stb.c" />
+    <ClCompile Include="src\IMG_svg.c" />
+    <ClCompile Include="src\IMG_tga.c" />
+    <ClCompile Include="src\IMG_tif.c" />
+    <ClCompile Include="src\IMG_webp.c" />
+    <ClCompile Include="src\IMG_WIC.c" />
+    <ClCompile Include="src\IMG_xcf.c" />
+    <ClCompile Include="src\IMG_xpm.c" />
+    <ClCompile Include="src\IMG_xv.c" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="include\SDL_image.h" />
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <VCProjectVersion>16.0</VCProjectVersion>
+    <Keyword>Win32Proj</Keyword>
+    <ProjectGuid>{A9BE8326-536F-42C4-8022-32F42D472DE4}</ProjectGuid>
+    <RootNamespace>libSDL2x_image</RootNamespace>
+    <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
+    <ProjectName>libSDL2x_image</ProjectName>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v142</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v142</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="Shared">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <IncludePath>$(RXDK_LIBS)include</IncludePath>
+    <ExternalIncludePath>$(RXDK_LIBS)include</ExternalIncludePath>
+    <LibraryWPath />
+    <SourcePath />
+    <ExcludePath>$(CommonExcludePath);$(VC_ExecutablePath_x86);$(RXDK_LIBS)lib</ExcludePath>
+    <ReferencePath>$(RXDK_LIBS)lib</ReferencePath>
+    <LibraryPath>$(RXDK_LIBS)lib</LibraryPath>
+    <OutDir>$(ProjectDir)$(Configuration)\</OutDir>
+    <TargetExt>.lib</TargetExt>
+    <LinkIncremental>false</LinkIncremental>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <IncludePath>$(RXDK_LIBS)include</IncludePath>
+    <ExternalIncludePath>$(RXDK_LIBS)include</ExternalIncludePath>
+    <LibraryWPath />
+    <SourcePath />
+    <ExcludePath>$(CommonExcludePath);$(VC_ExecutablePath_x86);$(RXDK_LIBS)lib</ExcludePath>
+    <ReferencePath>$(RXDK_LIBS)lib</ReferencePath>
+    <LibraryPath>$(RXDK_LIBS)lib</LibraryPath>
+    <OutDir>$(ProjectDir)$(Configuration)\</OutDir>
+    <TargetExt>.lib</TargetExt>
+    <LinkIncremental>false</LinkIncremental>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <SDLCheck>false</SDLCheck>
+      <PreprocessorDefinitions>XBOX;_XBOX;__XBOX__;_LIB;_DEBUG;USE_STBIMAGE;LOAD_BMP;LOAD_GIF;LOAD_JPG;LOAD_LBM;LOAD_PCX;LOAD_PNG;LOAD_PNM;LOAD_QOI;LOAD_SVG;LOAD_TGA;LOAD_XCF;LOAD_XPM;LOAD_XV;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>false</ConformanceMode>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <AdditionalIncludeDirectories>include;external\include;..\include</AdditionalIncludeDirectories>
+      <BufferSecurityCheck>false</BufferSecurityCheck>
+      <ExceptionHandling>Sync</ExceptionHandling>
+      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+      <AdditionalOptions>/arch:SSE %(AdditionalOptions)</AdditionalOptions>
+      <SupportJustMyCode>false</SupportJustMyCode>
+      <ControlFlowGuard>false</ControlFlowGuard>
+      <LanguageStandard>stdcpp17</LanguageStandard>
+      <EnableEnhancedInstructionSet>StreamingSIMDExtensions</EnableEnhancedInstructionSet>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalDependencies>xboxkrnl.lib;libcmtd.lib;libcpmtd.lib;xapilibd.lib;d3d8d.lib;d3dx8d.lib;xbdm.lib</AdditionalDependencies>
+      <IgnoreAllDefaultLibraries>true</IgnoreAllDefaultLibraries>
+      <BaseAddress>
+      </BaseAddress>
+      <IgnoreSpecificDefaultLibraries>
+      </IgnoreSpecificDefaultLibraries>
+      <GenerateMapFile>true</GenerateMapFile>
+      <FixedBaseAddress>false</FixedBaseAddress>
+      <ImageHasSafeExceptionHandlers>false</ImageHasSafeExceptionHandlers>
+      <SectionAlignment>32</SectionAlignment>
+      <MergeSections>.rdata=.text</MergeSections>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <SDLCheck>false</SDLCheck>
+      <PreprocessorDefinitions>XBOX;_XBOX;__XBOX__;_LIB;NDEBUG;USE_STBIMAGE;LOAD_BMP;LOAD_GIF;LOAD_JPG;LOAD_LBM;LOAD_PCX;LOAD_PNG;LOAD_PNM;LOAD_QOI;LOAD_SVG;LOAD_TGA;LOAD_XCF;LOAD_XPM;LOAD_XV;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>false</ConformanceMode>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <AdditionalIncludeDirectories>include;external\include;..\include</AdditionalIncludeDirectories>
+      <BufferSecurityCheck>false</BufferSecurityCheck>
+      <ExceptionHandling>Sync</ExceptionHandling>
+      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+      <AdditionalOptions>/arch:SSE %(AdditionalOptions)</AdditionalOptions>
+      <ControlFlowGuard>false</ControlFlowGuard>
+      <LanguageStandard>stdcpp17</LanguageStandard>
+      <EnableEnhancedInstructionSet>StreamingSIMDExtensions</EnableEnhancedInstructionSet>
+      <WholeProgramOptimization>false</WholeProgramOptimization>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalDependencies>xboxkrnl.lib;libcmt.lib;xapilib.lib;d3d8.lib;d3dx8.lib;xbdm.lib</AdditionalDependencies>
+      <IgnoreAllDefaultLibraries>true</IgnoreAllDefaultLibraries>
+      <BaseAddress>
+      </BaseAddress>
+      <IgnoreSpecificDefaultLibraries>
+      </IgnoreSpecificDefaultLibraries>
+      <GenerateMapFile>true</GenerateMapFile>
+      <FixedBaseAddress>false</FixedBaseAddress>
+      <ImageHasSafeExceptionHandlers>false</ImageHasSafeExceptionHandlers>
+      <SectionAlignment>32</SectionAlignment>
+      <MergeSections>.rdata=.text</MergeSections>
+    </Link>
+  </ItemDefinitionGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
+    <PropertyGroup>
+      <ErrorText>This project requires Team Resurgent's XDK Libs installed on this computer. Search for them on http://www.theusualplaces.co.uk.</ErrorText>
+    </PropertyGroup>
+    <Error Condition="!Exists($(RXDK_LIBS))" Text="$([System.String]::Format('$(ErrorText)'))" />
+  </Target>
+</Project>

@@ -65,6 +65,11 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "XboxMixer", "Samples\xboxMi
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{08C06746-811D-40D7-8A41-0FFBBE0049A5}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "libSDL2x_image", "libSDL2x_image\libSDL2x_image.vcxproj", "{A9BE8326-536F-42C4-8022-32F42D472DE4}"
+	ProjectSection(ProjectDependencies) = postProject
+		{7C481C7D-ECA7-4F9E-879C-105784F3543D} = {7C481C7D-ECA7-4F9E-879C-105784F3543D}
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x86 = Debug|x86
@@ -123,6 +128,10 @@ Global
 		{AC5891F2-795B-4D53-AFAA-AF4893E00CDC}.Debug|x86.Build.0 = Debug|Win32
 		{AC5891F2-795B-4D53-AFAA-AF4893E00CDC}.Release|x86.ActiveCfg = Release|Win32
 		{AC5891F2-795B-4D53-AFAA-AF4893E00CDC}.Release|x86.Build.0 = Release|Win32
+		{A9BE8326-536F-42C4-8022-32F42D472DE4}.Debug|x86.ActiveCfg = Debug|Win32
+		{A9BE8326-536F-42C4-8022-32F42D472DE4}.Debug|x86.Build.0 = Debug|Win32
+		{A9BE8326-536F-42C4-8022-32F42D472DE4}.Release|x86.ActiveCfg = Release|Win32
+		{A9BE8326-536F-42C4-8022-32F42D472DE4}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

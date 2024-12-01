@@ -45,24 +45,24 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <IncludePath>$(OGXDK_LIBS)include</IncludePath>
-    <ExternalIncludePath>$(OGXDK_LIBS)include</ExternalIncludePath>
+    <IncludePath>$(RXDK_LIBS)include</IncludePath>
+    <ExternalIncludePath>$(RXDK_LIBS)include</ExternalIncludePath>
     <LibraryWPath />
     <SourcePath />
-    <ExcludePath>$(CommonExcludePath);$(VC_ExecutablePath_x86);$(OGXDK_LIBS)lib</ExcludePath>
-    <ReferencePath>$(OGXDK_LIBS)lib</ReferencePath>
-    <LibraryPath>$(OGXDK_LIBS)lib;..\..\Debug</LibraryPath>
+    <ExcludePath>$(CommonExcludePath);$(VC_ExecutablePath_x86);$(RXDK_LIBS)lib</ExcludePath>
+    <ReferencePath>$(RXDK_LIBS)lib</ReferencePath>
+    <LibraryPath>$(RXDK_LIBS)lib;..\..\Debug</LibraryPath>
     <OutDir>$(ProjectDir)$(Configuration)\</OutDir>
     <LinkIncremental>false</LinkIncremental>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
-    <IncludePath>$(OGXDK_LIBS)include</IncludePath>
-    <ExternalIncludePath>$(OGXDK_LIBS)include</ExternalIncludePath>
+    <IncludePath>$(RXDK_LIBS)include</IncludePath>
+    <ExternalIncludePath>$(RXDK_LIBS)include</ExternalIncludePath>
     <LibraryWPath />
     <SourcePath />
-    <ExcludePath>$(CommonExcludePath);$(VC_ExecutablePath_x86);$(OGXDK_LIBS)lib</ExcludePath>
-    <ReferencePath>$(OGXDK_LIBS)lib</ReferencePath>
-    <LibraryPath>$(OGXDK_LIBS)lib;..\..\Release</LibraryPath>
+    <ExcludePath>$(CommonExcludePath);$(VC_ExecutablePath_x86);$(RXDK_LIBS)lib</ExcludePath>
+    <ReferencePath>$(RXDK_LIBS)lib</ReferencePath>
+    <LibraryPath>$(RXDK_LIBS)lib;..\..\Release</LibraryPath>
     <OutDir>$(ProjectDir)$(Configuration)\</OutDir>
     <LinkIncremental>false</LinkIncremental>
   </PropertyGroup>
@@ -97,8 +97,8 @@
     </Link>
     <PostBuildEvent>
       <Message>Creating Xbox Image...</Message>
-      <Command>"$(OGXDK_LIBS)bin\patchSubsystem.exe" -i="$(OutDir)$(TargetFileName)" -s=0x000E
-"$(OGXDK_LIBS)bin\imagebld.exe" /in:"$(OutDir)$(TargetFileName)" /out:"$(OutDir)$(TargetName).xbe" /nologo /stack:65536 /debug /nolibwarn
+      <Command>"$(RXDK_LIBS)bin\patchSubsystem.exe" -i="$(OutDir)$(TargetFileName)" -s=0x000E
+"$(RXDK_LIBS)bin\imagebld.exe" /in:"$(OutDir)$(TargetFileName)" /out:"$(OutDir)$(TargetName).xbe" /nologo /stack:65536 /debug /nolibwarn
 MKDIR "$(OutDir)XISO"
 COPY /Y "$(OutDir)$(TargetName).xbe" "$(OutDir)XISO\default.xbe"
 COPY /Y "$(OutDir)..\sample.wav" "$(OutDir)XISO\sample.wav"
@@ -140,8 +140,8 @@ RD /S /Q "$(OutDir)XISO"</Command>
     </Link>
     <PostBuildEvent>
       <Message>Creating Xbox Image...</Message>
-      <Command>"$(OGXDK_LIBS)bin\patchSubsystem.exe" -i="$(OutDir)$(TargetFileName)" -s=0x000E
-"$(OGXDK_LIBS)bin\imagebld.exe" /in:"$(OutDir)$(TargetFileName)" /out:"$(OutDir)$(TargetName).xbe" /nologo /stack:65536 /debug /nolibwarn
+      <Command>"$(RXDK_LIBS)bin\patchSubsystem.exe" -i="$(OutDir)$(TargetFileName)" -s=0x000E
+"$(RXDK_LIBS)bin\imagebld.exe" /in:"$(OutDir)$(TargetFileName)" /out:"$(OutDir)$(TargetName).xbe" /nologo /stack:65536 /debug /nolibwarn
 MKDIR "$(OutDir)XISO"
 COPY /Y "$(OutDir)$(TargetName).xbe" "$(OutDir)XISO\default.xbe"
 COPY /Y "$(OutDir)..\sample.wav" "$(OutDir)XISO\sample.wav"
@@ -159,6 +159,6 @@ RD /S /Q "$(OutDir)XISO"</Command>
     <PropertyGroup>
       <ErrorText>This project requires Team Resurgent's XDK Libs installed on this computer. Search for them on http://www.theusualplaces.co.uk.</ErrorText>
     </PropertyGroup>
-    <Error Condition="!Exists($(OGXDK_LIBS))" Text="$([System.String]::Format('$(ErrorText)'))" />
+    <Error Condition="!Exists($(RXDK_LIBS))" Text="$([System.String]::Format('$(ErrorText)'))" />
   </Target>
 </Project>
