@@ -31,6 +31,7 @@ This project has been updated to work with **RXDK**, which provides a modern dev
 
 Special thanks to the following contributors for their invaluable work and support:
 
+- **BDC**: For their  original port of SDL2 to XDK (https://github.com/brentdc-nz)
 - **CrunchBite** and **Horneydvl**: For their amazing samples and contributions.
 - **AsayuGit**: For porting and fixing the **SDL2 Mixer** addon.
 - **Lantus/MVG** and **Hyper_Eye**: For their foundational work on the SDL 1.2 port.
