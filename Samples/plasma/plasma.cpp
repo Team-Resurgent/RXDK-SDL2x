@@ -4,12 +4,16 @@
 #include <math.h>
 #include <time.h>
 #include "SDL_test_common.h"
+#include <string>
+#include <iostream>
 
 #define LOW_RES_WIDTH 160
 #define LOW_RES_HEIGHT 120
 #define WINDOW_WIDTH 640
 #define WINDOW_HEIGHT 480
 #define SINE_TABLE_SIZE 360
+
+extern "C" void __cdecl __CxxFrameHandler3() {}
 
 static SDLTest_CommonState *state;
 int done;
@@ -64,6 +68,14 @@ void UpdatePlasma(Uint32 time) {
 // Main rendering loop
 void loop() {
     SDL_Event event;
+
+    try {
+        std::string str = "Test";
+        std::string large_str = str.assign(1000000, 'x'); // Force a length_error
+    }
+    catch (const std::length_error& e) {
+        std::cerr << "Caught exception: " << e.what() << std::endl;
+    }
 
     // Handle events
     while (SDL_PollEvent(&event)) {

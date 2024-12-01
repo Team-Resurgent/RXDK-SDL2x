@@ -341,7 +341,7 @@
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>xboxkrnl.lib;libcmtd.lib;xapilibd.lib;d3d8d.lib;d3dx8d.lib;xbdm.lib</AdditionalDependencies>
+      <AdditionalDependencies>xboxkrnl.lib;libcmtd.lib;libcpmtd.lib;xapilibd.lib;d3d8d.lib;d3dx8d.lib;xbdm.lib</AdditionalDependencies>
       <IgnoreAllDefaultLibraries>true</IgnoreAllDefaultLibraries>
       <BaseAddress>
       </BaseAddress>
