@@ -9,12 +9,12 @@
  * ====================================================
  */
 
-/*
- * scalbln(double x, long n)
- * scalbln(x,n) returns x * 2**n computed by exponent
- * manipulation rather than by actually performing an
- * exponentiation or a multiplication.
- */
+ /*
+  * scalbln(double x, long n)
+  * scalbln(x,n) returns x * 2**n computed by exponent
+  * manipulation rather than by actually performing an
+  * exponentiation or a multiplication.
+  */
 
 #include "math_libm.h"
 #include "math_private.h"
@@ -25,10 +25,10 @@
 #endif
 
 static const double
-two54  = 1.80143985094819840000e+16, /* 0x43500000, 0x00000000 */
+two54 = 1.80143985094819840000e+16, /* 0x43500000, 0x00000000 */
 twom54 = 5.55111512312578270212e-17, /* 0x3C900000, 0x00000000 */
-huge   = 1.0e+300,
-tiny   = 1.0e-300;
+huge = 1.0e+300,
+tiny = 1.0e-300;
 
 double scalbln(double x, long n)
 {
@@ -64,7 +64,6 @@ double scalbln(double x, long n)
 	return x * twom54;
 }
 libm_hidden_def(scalbln)
-
 
 double scalbn(double x, int n)
 {

@@ -11,11 +11,11 @@
   freely, subject to the following restrictions:
 
   1. The origin of this software must not be misrepresented; you must not
-     claim that you wrote the original software. If you use this software
-     in a product, an acknowledgment in the product documentation would be
-     appreciated but is not required.
+	 claim that you wrote the original software. If you use this software
+	 in a product, an acknowledgment in the product documentation would be
+	 appreciated but is not required.
   2. Altered source versions must be plainly marked as such, and must not be
-     misrepresented as being the original software.
+	 misrepresented as being the original software.
   3. This notice may not be removed or altered from any source distribution.
 */
 #include "../SDL_internal.h"
@@ -46,35 +46,35 @@
 
 typedef enum SDL_ThreadState
 {
-    SDL_THREAD_STATE_ALIVE,
-    SDL_THREAD_STATE_DETACHED,
-    SDL_THREAD_STATE_ZOMBIE,
-    SDL_THREAD_STATE_CLEANED,
+	SDL_THREAD_STATE_ALIVE,
+	SDL_THREAD_STATE_DETACHED,
+	SDL_THREAD_STATE_ZOMBIE,
+	SDL_THREAD_STATE_CLEANED,
 } SDL_ThreadState;
 
 /* This is the system-independent thread info structure */
 struct SDL_Thread
 {
-    SDL_threadID threadid;
-    SYS_ThreadHandle handle;
-    int status;
-    SDL_atomic_t state;  /* SDL_THREAD_STATE_* */
-    SDL_error errbuf;
-    char *name;
-    size_t stacksize;  /* 0 for default, >0 for user-specified stack size. */
-    void *data;
+	SDL_threadID threadid;
+	SYS_ThreadHandle handle;
+	int status;
+	SDL_atomic_t state;  /* SDL_THREAD_STATE_* */
+	SDL_error errbuf;
+	char* name;
+	size_t stacksize;  /* 0 for default, >0 for user-specified stack size. */
+	void* data;
 };
 
 /* This is the function called to run a thread */
-extern void SDL_RunThread(void *data);
+extern void SDL_RunThread(void* data);
 
 /* This is the system-independent thread local storage structure */
 typedef struct {
-    unsigned int limit;
-    struct {
-        void *data;
-        void (SDLCALL *destructor)(void*);
-    } array[1];
+	unsigned int limit;
+	struct {
+		void* data;
+		void (SDLCALL* destructor)(void*);
+	} array[1];
 } SDL_TLSData;
 
 /* This is how many TLS entries we allocate at once */
@@ -84,13 +84,13 @@ typedef struct {
    This is only intended as a fallback if getting real thread-local
    storage fails or isn't supported on this platform.
  */
-extern SDL_TLSData *SDL_Generic_GetTLSData(void);
+extern SDL_TLSData* SDL_Generic_GetTLSData(void);
 
 /* Set cross-platform, slow, thread local storage for this thread.
    This is only intended as a fallback if getting real thread-local
    storage fails or isn't supported on this platform.
  */
-extern int SDL_Generic_SetTLSData(SDL_TLSData *data);
+extern int SDL_Generic_SetTLSData(SDL_TLSData* data);
 
 #endif /* SDL_thread_c_h_ */
 

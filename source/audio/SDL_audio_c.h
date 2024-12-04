@@ -11,11 +11,11 @@
   freely, subject to the following restrictions:
 
   1. The origin of this software must not be misrepresented; you must not
-     claim that you wrote the original software. If you use this software
-     in a product, an acknowledgment in the product documentation would be
-     appreciated but is not required.
+	 claim that you wrote the original software. If you use this software
+	 in a product, an acknowledgment in the product documentation would be
+	 appreciated but is not required.
   2. Altered source versions must be plainly marked as such, and must not be
-     misrepresented as being the original software.
+	 misrepresented as being the original software.
   3. This notice may not be removed or altered from any source distribution.
 */
 
@@ -40,10 +40,10 @@
 #include "samplerate.h"
 extern SDL_bool SRC_available;
 extern int SRC_converter;
-extern SRC_STATE* (*SRC_src_new)(int converter_type, int channels, int *error);
-extern int (*SRC_src_process)(SRC_STATE *state, SRC_DATA *data);
-extern int (*SRC_src_reset)(SRC_STATE *state);
-extern SRC_STATE* (*SRC_src_delete)(SRC_STATE *state);
+extern SRC_STATE* (*SRC_src_new)(int converter_type, int channels, int* error);
+extern int (*SRC_src_process)(SRC_STATE* state, SRC_DATA* data);
+extern int (*SRC_src_reset)(SRC_STATE* state);
+extern SRC_STATE* (*SRC_src_delete)(SRC_STATE* state);
 extern const char* (*SRC_src_strerror)(int error);
 #endif
 
@@ -52,7 +52,7 @@ extern SDL_AudioFormat SDL_FirstAudioFormat(SDL_AudioFormat format);
 extern SDL_AudioFormat SDL_NextAudioFormat(void);
 
 /* Function to calculate the size and silence for a SDL_AudioSpec */
-extern void SDL_CalculateAudioSpec(SDL_AudioSpec * spec);
+extern void SDL_CalculateAudioSpec(SDL_AudioSpec* spec);
 
 /* Choose the audio filter functions below */
 extern void SDL_ChooseAudioConverters(void);

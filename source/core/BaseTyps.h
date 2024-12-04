@@ -16,9 +16,9 @@
 // Common macros gleamed from COMPOBJ.H
 
 #ifdef __cplusplus
-    #define EXTERN_C    extern "C"
+#define EXTERN_C    extern "C"
 #else
-    #define EXTERN_C    extern
+#define EXTERN_C    extern
 #endif
 
 #ifdef _WIN32
@@ -54,9 +54,6 @@
 
 #define STDMETHODIMPV           HRESULT STDMETHODVCALLTYPE
 #define STDMETHODIMPV_(type)    type STDMETHODVCALLTYPE
-
-
-
 
 /****** Interface Declaration ***********************************************/
 
@@ -147,9 +144,8 @@
  *          };
  */
 
-
 #if defined(__cplusplus) && !defined(CINTERFACE)
-//#define interface               struct FAR
+ //#define interface               struct FAR
 #define interface struct
 #define STDMETHOD(method)       virtual HRESULT STDMETHODCALLTYPE method
 #define STDMETHOD_(type,method) virtual type STDMETHODCALLTYPE method
@@ -161,8 +157,6 @@
 #define DECLARE_INTERFACE(iface)    interface DECLSPEC_NOVTABLE iface
 #define DECLARE_INTERFACE_(iface, baseiface)    interface DECLSPEC_NOVTABLE iface : public baseiface
 
-
-
 #else
 
 #define interface               struct
@@ -171,9 +165,6 @@
 #define STDMETHOD_(type,method) type (STDMETHODCALLTYPE * method)
 #define STDMETHODV(method)       HRESULT (STDMETHODVCALLTYPE * method)
 #define STDMETHODV_(type,method) type (STDMETHODVCALLTYPE * method)
-
-
-
 
 #define PURE
 #define THIS_                   INTERFACE FAR* This,
@@ -208,4 +199,3 @@ typedef unsigned short wchar_t;
 #endif
 
 #endif
-

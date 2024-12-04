@@ -11,11 +11,11 @@
   freely, subject to the following restrictions:
 
   1. The origin of this software must not be misrepresented; you must not
-     claim that you wrote the original software. If you use this software
-     in a product, an acknowledgment in the product documentation would be
-     appreciated but is not required.
+	 claim that you wrote the original software. If you use this software
+	 in a product, an acknowledgment in the product documentation would be
+	 appreciated but is not required.
   2. Altered source versions must be plainly marked as such, and must not be
-     misrepresented as being the original software.
+	 misrepresented as being the original software.
   3. This notice may not be removed or altered from any source distribution.
 */
 #include "../../SDL_internal.h"
@@ -33,33 +33,33 @@ struct SDL_mutex {
 };
 
 /* Create a mutex */
-SDL_mutex *SDL_CreateMutex(void)
+SDL_mutex* SDL_CreateMutex(void)
 {
-	SDL_mutex *mutex;
+	SDL_mutex* mutex;
 
 	/* Allocate mutex memory */
-	mutex = (SDL_mutex *)malloc(sizeof(*mutex));
-	if ( mutex ) {
+	mutex = (SDL_mutex*)malloc(sizeof(*mutex));
+	if (mutex) {
 		/* Create the mutex, with initial value signaled */
 		mutex->id = CreateMutex(NULL, FALSE, NULL);
-		if ( ! mutex->id ) {
+		if (!mutex->id) {
 			SDL_SetError("Couldn't create mutex");
 			free(mutex);
 			mutex = NULL;
 		}
-	} else {
+	}
+	else {
 		SDL_OutOfMemory();
 	}
 	return(mutex);
 }
 
-
 /* Free the mutex */
 void
-SDL_DestroyMutex(SDL_mutex * mutex)
+SDL_DestroyMutex(SDL_mutex* mutex)
 {
-	if ( mutex ) {
-		if ( mutex->id ) {
+	if (mutex) {
+		if (mutex->id) {
 			CloseHandle(mutex->id);
 			mutex->id = 0;
 		}
@@ -69,13 +69,13 @@ SDL_DestroyMutex(SDL_mutex * mutex)
 
 /* Lock the mutex */
 int
-SDL_LockMutex(SDL_mutex * mutex)
+SDL_LockMutex(SDL_mutex* mutex)
 {
-	if ( mutex == NULL ) {
+	if (mutex == NULL) {
 		SDL_SetError("Passed a NULL mutex");
 		return -1;
 	}
-	if ( WaitForSingleObject(mutex->id, INFINITE) == WAIT_FAILED ) {
+	if (WaitForSingleObject(mutex->id, INFINITE) == WAIT_FAILED) {
 		SDL_SetError("Couldn't wait on mutex");
 		return -1;
 	}
@@ -84,28 +84,28 @@ SDL_LockMutex(SDL_mutex * mutex)
 
 /* TryLock the mutex */
 int
-SDL_TryLockMutex(SDL_mutex * mutex)
+SDL_TryLockMutex(SDL_mutex* mutex)
 {
-    int retval = 0;
-    if (mutex == NULL) {
-        return SDL_SetError("Passed a NULL mutex");
-    }
+	int retval = 0;
+	if (mutex == NULL) {
+		return SDL_SetError("Passed a NULL mutex");
+	}
 
-    if (TryEnterCriticalSection(mutex->id) == 0) {
-        retval = SDL_MUTEX_TIMEDOUT;
-    }
-    return retval;
+	if (TryEnterCriticalSection(mutex->id) == 0) {
+		retval = SDL_MUTEX_TIMEDOUT;
+	}
+	return retval;
 }
 
 /* Unlock the mutex */
 int
-SDL_UnlockMutex(SDL_mutex * mutex)
+SDL_UnlockMutex(SDL_mutex* mutex)
 {
-	if ( mutex == NULL ) {
+	if (mutex == NULL) {
 		SDL_SetError("Passed a NULL mutex");
 		return -1;
 	}
-	if ( ReleaseMutex(mutex->id) == FALSE ) {
+	if (ReleaseMutex(mutex->id) == FALSE) {
 		SDL_SetError("Couldn't release mutex");
 		return -1;
 	}

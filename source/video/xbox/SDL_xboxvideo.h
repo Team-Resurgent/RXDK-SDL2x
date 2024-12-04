@@ -11,11 +11,11 @@
   freely, subject to the following restrictions:
 
   1. The origin of this software must not be misrepresented; you must not
-     claim that you wrote the original software. If you use this software
-     in a product, an acknowledgment in the product documentation would be
-     appreciated but is not required.
+	 claim that you wrote the original software. If you use this software
+	 in a product, an acknowledgment in the product documentation would be
+	 appreciated but is not required.
   2. Altered source versions must be plainly marked as such, and must not be
-     misrepresented as being the original software.
+	 misrepresented as being the original software.
   3. This notice may not be removed or altered from any source distribution.
 */
 #include "../../SDL_internal.h"
@@ -37,17 +37,17 @@
 
 typedef struct SDL_VideoData
 {
-    int render; // Redundant
+	int render; // Redundant
 } SDL_VideoData;
 
 typedef struct IDirect3D8 IDirect3D8;
-extern SDL_bool D3D_LoadDLL(/*void **pD3DDLL,*/ IDirect3D8 **pDirect3D8Interface );
+extern SDL_bool D3D_LoadDLL(/*void **pD3DDLL,*/ IDirect3D8** pDirect3D8Interface);
 
 // TODO: Not used atm
 SDL_bool XBOX_HasScreenKeyboardSupport(_THIS);
-void XBOX_ShowScreenKeyboard(_THIS, SDL_Window *window);
-void XBOX_HideScreenKeyboard(_THIS, SDL_Window *window);
-SDL_bool XBOX_IsScreenKeyboardShown(_THIS, SDL_Window *window);
+void XBOX_ShowScreenKeyboard(_THIS, SDL_Window* window);
+void XBOX_HideScreenKeyboard(_THIS, SDL_Window* window);
+SDL_bool XBOX_IsScreenKeyboardShown(_THIS, SDL_Window* window);
 
 #endif /* SDL_xboxvideo_h_ */
 

@@ -381,13 +381,12 @@ PACK_RGB24_32_STEP1(R1, R2, G1, G2, B1, B2, RGB1, RGB2, RGB3, RGB4, RGB5, RGB6) 
 	b_8_22 = _mm_packus_epi16(b_16_1, b_16_2); \
 	\
 
-
-void SSE_FUNCTION_NAME(uint32_t width, uint32_t height, 
-	const uint8_t *Y, const uint8_t *U, const uint8_t *V, uint32_t Y_stride, uint32_t UV_stride, 
-	uint8_t *RGB, uint32_t RGB_stride, 
+void SSE_FUNCTION_NAME(uint32_t width, uint32_t height,
+	const uint8_t* Y, const uint8_t* U, const uint8_t* V, uint32_t Y_stride, uint32_t UV_stride,
+	uint8_t* RGB, uint32_t RGB_stride,
 	YCbCrType yuv_type)
 {
-	const YUV2RGBParam *const param = &(YUV2RGB[yuv_type]);
+	const YUV2RGBParam* const param = &(YUV2RGB[yuv_type]);
 #if YUV_FORMAT == YUV_FORMAT_420
 	const int y_pixel_stride = 1;
 	const int uv_pixel_stride = 1;
@@ -417,17 +416,17 @@ void SSE_FUNCTION_NAME(uint32_t width, uint32_t height,
 
 	if (width >= 32) {
 		uint32_t xpos, ypos;
-		for(ypos=0; ypos<(height-(uv_y_sample_interval-1)); ypos+=uv_y_sample_interval)
+		for (ypos = 0; ypos < (height - (uv_y_sample_interval - 1)); ypos += uv_y_sample_interval)
 		{
-			const uint8_t *y_ptr1=Y+ypos*Y_stride,
-				*y_ptr2=Y+(ypos+1)*Y_stride,
-				*u_ptr=U+(ypos/uv_y_sample_interval)*UV_stride,
-				*v_ptr=V+(ypos/uv_y_sample_interval)*UV_stride;
-			
-			uint8_t *rgb_ptr1=RGB+ypos*RGB_stride,
-				*rgb_ptr2=RGB+(ypos+1)*RGB_stride;
-			
-			for(xpos=0; xpos<(width-31); xpos+=32)
+			const uint8_t* y_ptr1 = Y + ypos * Y_stride,
+				* y_ptr2 = Y + (ypos + 1) * Y_stride,
+				* u_ptr = U + (ypos / uv_y_sample_interval) * UV_stride,
+				* v_ptr = V + (ypos / uv_y_sample_interval) * UV_stride;
+
+			uint8_t* rgb_ptr1 = RGB + ypos * RGB_stride,
+				* rgb_ptr2 = RGB + (ypos + 1) * RGB_stride;
+
+			for (xpos = 0; xpos < (width - 31); xpos += 32)
 			{
 				YUV2RGB_32
 				{
@@ -439,23 +438,23 @@ void SSE_FUNCTION_NAME(uint32_t width, uint32_t height,
 					}
 				}
 
-				y_ptr1+=32*y_pixel_stride;
-				y_ptr2+=32*y_pixel_stride;
-				u_ptr+=32*uv_pixel_stride/uv_x_sample_interval;
-				v_ptr+=32*uv_pixel_stride/uv_x_sample_interval;
-				rgb_ptr1+=32*rgb_pixel_stride;
-				rgb_ptr2+=32*rgb_pixel_stride;
+				y_ptr1 += 32 * y_pixel_stride;
+				y_ptr2 += 32 * y_pixel_stride;
+				u_ptr += 32 * uv_pixel_stride / uv_x_sample_interval;
+				v_ptr += 32 * uv_pixel_stride / uv_x_sample_interval;
+				rgb_ptr1 += 32 * rgb_pixel_stride;
+				rgb_ptr2 += 32 * rgb_pixel_stride;
 			}
 		}
 
 		/* Catch the last line, if needed */
-		if (uv_y_sample_interval == 2 && ypos == (height-1))
+		if (uv_y_sample_interval == 2 && ypos == (height - 1))
 		{
-			const uint8_t *y_ptr=Y+ypos*Y_stride,
-				*u_ptr=U+(ypos/uv_y_sample_interval)*UV_stride,
-				*v_ptr=V+(ypos/uv_y_sample_interval)*UV_stride;
-			
-			uint8_t *rgb_ptr=RGB+ypos*RGB_stride;
+			const uint8_t* y_ptr = Y + ypos * Y_stride,
+				* u_ptr = U + (ypos / uv_y_sample_interval) * UV_stride,
+				* v_ptr = V + (ypos / uv_y_sample_interval) * UV_stride;
+
+			uint8_t* rgb_ptr = RGB + ypos * RGB_stride;
 
 			STD_FUNCTION_NAME(width, 1, y_ptr, u_ptr, v_ptr, Y_stride, UV_stride, rgb_ptr, RGB_stride, yuv_type);
 		}
@@ -466,13 +465,13 @@ void SSE_FUNCTION_NAME(uint32_t width, uint32_t height,
 		int converted = (width & ~31);
 		if (converted != width)
 		{
-			const uint8_t *y_ptr=Y+converted*y_pixel_stride,
-				*u_ptr=U+converted*uv_pixel_stride/uv_x_sample_interval,
-				*v_ptr=V+converted*uv_pixel_stride/uv_x_sample_interval;
-			
-			uint8_t *rgb_ptr=RGB+converted*rgb_pixel_stride;
+			const uint8_t* y_ptr = Y + converted * y_pixel_stride,
+				* u_ptr = U + converted * uv_pixel_stride / uv_x_sample_interval,
+				* v_ptr = V + converted * uv_pixel_stride / uv_x_sample_interval;
 
-			STD_FUNCTION_NAME(width-converted, height, y_ptr, u_ptr, v_ptr, Y_stride, UV_stride, rgb_ptr, RGB_stride, yuv_type);
+			uint8_t* rgb_ptr = RGB + converted * rgb_pixel_stride;
+
+			STD_FUNCTION_NAME(width - converted, height, y_ptr, u_ptr, v_ptr, Y_stride, UV_stride, rgb_ptr, RGB_stride, yuv_type);
 		}
 	}
 }

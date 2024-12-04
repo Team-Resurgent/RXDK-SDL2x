@@ -11,11 +11,11 @@
   freely, subject to the following restrictions:
 
   1. The origin of this software must not be misrepresented; you must not
-     claim that you wrote the original software. If you use this software
-     in a product, an acknowledgment in the product documentation would be
-     appreciated but is not required.
+	 claim that you wrote the original software. If you use this software
+	 in a product, an acknowledgment in the product documentation would be
+	 appreciated but is not required.
   2. Altered source versions must be plainly marked as such, and must not be
-     misrepresented as being the original software.
+	 misrepresented as being the original software.
   3. This notice may not be removed or altered from any source distribution.
 */
 #include "../../SDL_internal.h"
@@ -87,9 +87,9 @@ do { \
     op; \
 } while (0)
 
-/*
- * Define draw operators for RGB555
- */
+ /*
+  * Define draw operators for RGB555
+  */
 
 #define DRAW_SETPIXEL_RGB555 \
     DRAW_SETPIXEL(RGB555_FROM_RGB(*pixel, sr, sg, sb))
@@ -118,9 +118,9 @@ do { \
 #define DRAW_SETPIXELXY_MOD_RGB555(x, y) \
     DRAW_SETPIXELXY(x, y, Uint16, 2, DRAW_SETPIXEL_MOD_RGB555)
 
-/*
- * Define draw operators for RGB565
- */
+  /*
+   * Define draw operators for RGB565
+   */
 
 #define DRAW_SETPIXEL_RGB565 \
     DRAW_SETPIXEL(RGB565_FROM_RGB(*pixel, sr, sg, sb))
@@ -149,9 +149,9 @@ do { \
 #define DRAW_SETPIXELXY_MOD_RGB565(x, y) \
     DRAW_SETPIXELXY(x, y, Uint16, 2, DRAW_SETPIXEL_MOD_RGB565)
 
-/*
- * Define draw operators for RGB888
- */
+   /*
+	* Define draw operators for RGB888
+	*/
 
 #define DRAW_SETPIXEL_RGB888 \
     DRAW_SETPIXEL(RGB888_FROM_RGB(*pixel, sr, sg, sb))
@@ -180,9 +180,9 @@ do { \
 #define DRAW_SETPIXELXY_MOD_RGB888(x, y) \
     DRAW_SETPIXELXY(x, y, Uint32, 4, DRAW_SETPIXEL_MOD_RGB888)
 
-/*
- * Define draw operators for ARGB8888
- */
+	/*
+	 * Define draw operators for ARGB8888
+	 */
 
 #define DRAW_SETPIXEL_ARGB8888 \
     DRAW_SETPIXEL(ARGB8888_FROM_RGBA(*pixel, sr, sg, sb, sa))
@@ -211,9 +211,9 @@ do { \
 #define DRAW_SETPIXELXY_MOD_ARGB8888(x, y) \
     DRAW_SETPIXELXY(x, y, Uint32, 4, DRAW_SETPIXEL_MOD_ARGB8888)
 
-/*
- * Define draw operators for general RGB
- */
+	 /*
+	  * Define draw operators for general RGB
+	  */
 
 #define DRAW_SETPIXEL_RGB \
     DRAW_SETPIXEL(PIXEL_FROM_RGB(*pixel, fmt, sr, sg, sb))
@@ -254,10 +254,9 @@ do { \
 #define DRAW_SETPIXELXY4_MOD_RGB(x, y) \
     DRAW_SETPIXELXY(x, y, Uint32, 4, DRAW_SETPIXEL_MOD_RGB)
 
-
-/*
- * Define draw operators for general RGBA
- */
+	  /*
+	   * Define draw operators for general RGBA
+	   */
 
 #define DRAW_SETPIXEL_RGBA \
     DRAW_SETPIXEL(PIXEL_FROM_RGBA(*pixel, fmt, sr, sg, sb, sa))
@@ -286,13 +285,13 @@ do { \
 #define DRAW_SETPIXELXY4_MOD_RGBA(x, y) \
     DRAW_SETPIXELXY(x, y, Uint32, 4, DRAW_SETPIXEL_MOD_RGBA)
 
-/*
- * Define line drawing macro
- */
+	   /*
+		* Define line drawing macro
+		*/
 
 #define ABS(_x) ((_x) < 0 ? -(_x) : (_x))
 
-/* Horizontal line */
+		/* Horizontal line */
 #define HLINE(type, op, draw_end) \
 { \
     int length; \
@@ -573,4 +572,4 @@ do { \
     } \
 } while (0)
 
-/* vi: set ts=4 sw=4 expandtab: */
+ /* vi: set ts=4 sw=4 expandtab: */

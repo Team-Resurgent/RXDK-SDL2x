@@ -11,11 +11,11 @@
   freely, subject to the following restrictions:
 
   1. The origin of this software must not be misrepresented; you must not
-     claim that you wrote the original software. If you use this software
-     in a product, an acknowledgment in the product documentation would be
-     appreciated but is not required.
+	 claim that you wrote the original software. If you use this software
+	 in a product, an acknowledgment in the product documentation would be
+	 appreciated but is not required.
   2. Altered source versions must be plainly marked as such, and must not be
-     misrepresented as being the original software.
+	 misrepresented as being the original software.
   3. This notice may not be removed or altered from any source distribution.
 */
 
@@ -43,40 +43,41 @@
 static DWORD thread_local_storage = TLS_OUT_OF_INDEXES;
 static SDL_bool generic_local_storage = SDL_FALSE;
 
-SDL_TLSData *
+SDL_TLSData*
 SDL_SYS_GetTLSData(void)
 {
-    if (thread_local_storage == TLS_OUT_OF_INDEXES && !generic_local_storage) {
-        static SDL_SpinLock lock;
-        SDL_AtomicLock(&lock);
-        if (thread_local_storage == TLS_OUT_OF_INDEXES && !generic_local_storage) {
-            DWORD storage = TlsAlloc();
-            if (storage != TLS_OUT_OF_INDEXES) {
-                SDL_MemoryBarrierRelease();
-                thread_local_storage = storage;
-            } else {
-                generic_local_storage = SDL_TRUE;
-            }
-        }
-        SDL_AtomicUnlock(&lock);
-    }
-    if (generic_local_storage) {
-        return SDL_Generic_GetTLSData();
-    }
-    SDL_MemoryBarrierAcquire();
-    return (SDL_TLSData *)TlsGetValue(thread_local_storage);
+	if (thread_local_storage == TLS_OUT_OF_INDEXES && !generic_local_storage) {
+		static SDL_SpinLock lock;
+		SDL_AtomicLock(&lock);
+		if (thread_local_storage == TLS_OUT_OF_INDEXES && !generic_local_storage) {
+			DWORD storage = TlsAlloc();
+			if (storage != TLS_OUT_OF_INDEXES) {
+				SDL_MemoryBarrierRelease();
+				thread_local_storage = storage;
+			}
+			else {
+				generic_local_storage = SDL_TRUE;
+			}
+		}
+		SDL_AtomicUnlock(&lock);
+	}
+	if (generic_local_storage) {
+		return SDL_Generic_GetTLSData();
+	}
+	SDL_MemoryBarrierAcquire();
+	return (SDL_TLSData*)TlsGetValue(thread_local_storage);
 }
 
 int
-SDL_SYS_SetTLSData(SDL_TLSData *data)
+SDL_SYS_SetTLSData(SDL_TLSData* data)
 {
-    if (generic_local_storage) {
-        return SDL_Generic_SetTLSData(data);
-    }
-    if (!TlsSetValue(thread_local_storage, data)) {
-        return SDL_SetError("TlsSetValue() failed");
-    }
-    return 0;
+	if (generic_local_storage) {
+		return SDL_Generic_SetTLSData(data);
+	}
+	if (!TlsSetValue(thread_local_storage, data)) {
+		return SDL_SetError("TlsSetValue() failed");
+	}
+	return 0;
 }
 
 #endif /* SDL_THREAD_XBOX */

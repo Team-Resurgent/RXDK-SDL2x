@@ -11,11 +11,11 @@
   freely, subject to the following restrictions:
 
   1. The origin of this software must not be misrepresented; you must not
-     claim that you wrote the original software. If you use this software
-     in a product, an acknowledgment in the product documentation would be
-     appreciated but is not required.
+	 claim that you wrote the original software. If you use this software
+	 in a product, an acknowledgment in the product documentation would be
+	 appreciated but is not required.
   2. Altered source versions must be plainly marked as such, and must not be
-     misrepresented as being the original software.
+	 misrepresented as being the original software.
   3. This notice may not be removed or altered from any source distribution.
 */
 
@@ -52,46 +52,46 @@ static XINPUT_DEBUG_KEYSTROKE g_keyboardStroke;
 CHAR XBInput_GetKeyboardInput()
 {
 	DWORD i;
-    DWORD dwInsertions, dwRemovals;
-    XGetDeviceChanges( XDEVICE_TYPE_DEBUG_KEYBOARD, &dwInsertions, &dwRemovals );
+	DWORD dwInsertions, dwRemovals;
+	XGetDeviceChanges(XDEVICE_TYPE_DEBUG_KEYBOARD, &dwInsertions, &dwRemovals);
 
-    // Get status about gamepad insertions and removals. Note that, in order to
-    // not miss devices, we will check for removed device BEFORE checking for
-    // insertions
+	// Get status about gamepad insertions and removals. Note that, in order to
+	// not miss devices, we will check for removed device BEFORE checking for
+	// insertions
 
-    // Loop through all ports
-    for( i=0; i < XGetPortCount(); i++ )
-    {
-        // Handle removed devices.
-        if( dwRemovals & (1<<i) )
-        {
-            XInputClose( g_hKeyboardDevice[i] );
-            g_hKeyboardDevice[i] = NULL;
-        }
+	// Loop through all ports
+	for (i = 0; i < XGetPortCount(); i++)
+	{
+		// Handle removed devices.
+		if (dwRemovals & (1 << i))
+		{
+			XInputClose(g_hKeyboardDevice[i]);
+			g_hKeyboardDevice[i] = NULL;
+		}
 
-        // Handle inserted devices
-        if( dwInsertions & (1<<i) )
-        {
-            // Now open the device
-            XINPUT_POLLING_PARAMETERS pollValues;
-            pollValues.fAutoPoll       = TRUE;
-            pollValues.fInterruptOut   = TRUE;
-            pollValues.bInputInterval  = 32;  
-            pollValues.bOutputInterval = 32;
-            pollValues.ReservedMBZ1    = 0;
-            pollValues.ReservedMBZ2    = 0;
+		// Handle inserted devices
+		if (dwInsertions & (1 << i))
+		{
+			// Now open the device
+			XINPUT_POLLING_PARAMETERS pollValues;
+			pollValues.fAutoPoll = TRUE;
+			pollValues.fInterruptOut = TRUE;
+			pollValues.bInputInterval = 32;
+			pollValues.bOutputInterval = 32;
+			pollValues.ReservedMBZ1 = 0;
+			pollValues.ReservedMBZ2 = 0;
 
-            g_hKeyboardDevice[i] = XInputOpen( XDEVICE_TYPE_DEBUG_KEYBOARD, i, 
-                                               XDEVICE_NO_SLOT, &pollValues );
-        }
+			g_hKeyboardDevice[i] = XInputOpen(XDEVICE_TYPE_DEBUG_KEYBOARD, i,
+				XDEVICE_NO_SLOT, &pollValues);
+		}
 
-        // If we have a valid device, poll it's state and track button changes
-        if( g_hKeyboardDevice[i] )
-        {
-            if( ERROR_SUCCESS == XInputDebugGetKeystroke( &g_keyboardStroke ) )
-                return g_keyboardStroke.Ascii;
-        }
-    }
+		// If we have a valid device, poll it's state and track button changes
+		if (g_hKeyboardDevice[i])
+		{
+			if (ERROR_SUCCESS == XInputDebugGetKeystroke(&g_keyboardStroke))
+				return g_keyboardStroke.Ascii;
+		}
+	}
 
 	return '\0';
 }
@@ -103,9 +103,10 @@ void XBOX_UpdateKeyboard(void)
 	if (g_keyboardStroke.VirtualKey == 0)
 		return;
 
-	if ( g_keyboardStroke.Flags & XINPUT_DEBUG_KEYSTROKE_FLAG_KEYUP ) {
+	if (g_keyboardStroke.Flags & XINPUT_DEBUG_KEYSTROKE_FLAG_KEYUP) {
 		SDL_SendKeyboardKey(SDL_RELEASED, xbox_keymap[g_keyboardStroke.VirtualKey]);
-	} else {
+	}
+	else {
 		SDL_SendKeyboardKey(SDL_PRESSED, xbox_keymap[g_keyboardStroke.VirtualKey]);
 	}
 }
@@ -119,10 +120,10 @@ void XBOX_InitKeyboard(_THIS)
 	DWORD i;
 	DWORD dwDeviceMask;
 
-    XINPUT_DEBUG_KEYQUEUE_PARAMETERS keyboardSettings;
+	XINPUT_DEBUG_KEYQUEUE_PARAMETERS keyboardSettings;
 
 	/* Map the DIK scancodes to SDL keysyms */
-	for ( i=0; i<SDL_TABLESIZE(xbox_keymap); ++i )
+	for (i = 0; i < SDL_TABLESIZE(xbox_keymap); ++i)
 		xbox_keymap[i] = 0;
 
 	/* Defined DIK_* constants */
@@ -241,41 +242,41 @@ void XBOX_InitKeyboard(_THIS)
 		XInitDevices(0, NULL);
 
 	Sleep(1000);
- 
-    keyboardSettings.dwFlags          = XINPUT_DEBUG_KEYQUEUE_FLAG_KEYDOWN|XINPUT_DEBUG_KEYQUEUE_FLAG_KEYREPEAT|XINPUT_DEBUG_KEYQUEUE_FLAG_KEYUP;
-    keyboardSettings.dwQueueSize      = 25;
-    keyboardSettings.dwRepeatDelay    = 500;
-    keyboardSettings.dwRepeatInterval = 50;
 
-    if( ERROR_SUCCESS != XInputDebugInitKeyboardQueue( &keyboardSettings ) )
-        return;
+	keyboardSettings.dwFlags = XINPUT_DEBUG_KEYQUEUE_FLAG_KEYDOWN | XINPUT_DEBUG_KEYQUEUE_FLAG_KEYREPEAT | XINPUT_DEBUG_KEYQUEUE_FLAG_KEYUP;
+	keyboardSettings.dwQueueSize = 25;
+	keyboardSettings.dwRepeatDelay = 500;
+	keyboardSettings.dwRepeatInterval = 50;
 
-    g_bDevicesInitialized = TRUE;
+	if (ERROR_SUCCESS != XInputDebugInitKeyboardQueue(&keyboardSettings))
+		return;
 
-    // Now find the keyboard device, in this case we shall loop indefinitely, although
-    // it would be better to monitor the time taken and to time out if necessary
-    // in case the keyboard has been unplugged
+	g_bDevicesInitialized = TRUE;
 
-    dwDeviceMask = XGetDevices( XDEVICE_TYPE_DEBUG_KEYBOARD );
+	// Now find the keyboard device, in this case we shall loop indefinitely, although
+	// it would be better to monitor the time taken and to time out if necessary
+	// in case the keyboard has been unplugged
 
-    // Open the devices
-    for( i=0; i < XGetPortCount(); i++ )
-    {
-        if( dwDeviceMask & (1<<i) ) 
-        {
-            // Now open the device
-            XINPUT_POLLING_PARAMETERS pollValues;
-            pollValues.fAutoPoll       = TRUE;
-            pollValues.fInterruptOut   = TRUE;
-            pollValues.bInputInterval  = 32;  
-            pollValues.bOutputInterval = 32;
-            pollValues.ReservedMBZ1    = 0;
-            pollValues.ReservedMBZ2    = 0;
+	dwDeviceMask = XGetDevices(XDEVICE_TYPE_DEBUG_KEYBOARD);
 
-            g_hKeyboardDevice[i] = XInputOpen( XDEVICE_TYPE_DEBUG_KEYBOARD, i, 
-                                               XDEVICE_NO_SLOT, &pollValues );
-        }
-    }
+	// Open the devices
+	for (i = 0; i < XGetPortCount(); i++)
+	{
+		if (dwDeviceMask & (1 << i))
+		{
+			// Now open the device
+			XINPUT_POLLING_PARAMETERS pollValues;
+			pollValues.fAutoPoll = TRUE;
+			pollValues.fInterruptOut = TRUE;
+			pollValues.bInputInterval = 32;
+			pollValues.bOutputInterval = 32;
+			pollValues.ReservedMBZ1 = 0;
+			pollValues.ReservedMBZ2 = 0;
+
+			g_hKeyboardDevice[i] = XInputOpen(XDEVICE_TYPE_DEBUG_KEYBOARD, i,
+				XDEVICE_NO_SLOT, &pollValues);
+		}
+	}
 }
 
 #endif //SDL_VIDEO_DRIVER_XBOX

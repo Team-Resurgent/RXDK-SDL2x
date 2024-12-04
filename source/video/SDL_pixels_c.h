@@ -11,11 +11,11 @@
   freely, subject to the following restrictions:
 
   1. The origin of this software must not be misrepresented; you must not
-     claim that you wrote the original software. If you use this software
-     in a product, an acknowledgment in the product documentation would be
-     appreciated but is not required.
+	 claim that you wrote the original software. If you use this software
+	 in a product, an acknowledgment in the product documentation would be
+	 appreciated but is not required.
   2. Altered source versions must be plainly marked as such, and must not be
-     misrepresented as being the original software.
+	 misrepresented as being the original software.
   3. This notice may not be removed or altered from any source distribution.
 */
 
@@ -29,17 +29,17 @@
 #include "SDL_blit.h"
 
 /* Pixel format functions */
-extern int SDL_InitFormat(SDL_PixelFormat * format, Uint32 pixel_format);
+extern int SDL_InitFormat(SDL_PixelFormat* format, Uint32 pixel_format);
 
 /* Blit mapping functions */
-extern SDL_BlitMap *SDL_AllocBlitMap(void);
-extern void SDL_InvalidateMap(SDL_BlitMap * map);
-extern int SDL_MapSurface(SDL_Surface * src, SDL_Surface * dst);
-extern void SDL_FreeBlitMap(SDL_BlitMap * map);
+extern SDL_BlitMap* SDL_AllocBlitMap(void);
+extern void SDL_InvalidateMap(SDL_BlitMap* map);
+extern int SDL_MapSurface(SDL_Surface* src, SDL_Surface* dst);
+extern void SDL_FreeBlitMap(SDL_BlitMap* map);
 
 /* Miscellaneous functions */
-extern void SDL_DitherColors(SDL_Color * colors, int bpp);
-extern Uint8 SDL_FindColor(SDL_Palette * pal, Uint8 r, Uint8 g, Uint8 b, Uint8 a);
+extern void SDL_DitherColors(SDL_Color* colors, int bpp);
+extern Uint8 SDL_FindColor(SDL_Palette* pal, Uint8 r, Uint8 g, Uint8 b, Uint8 a);
 
 #endif /* SDL_pixels_c_h_ */
 

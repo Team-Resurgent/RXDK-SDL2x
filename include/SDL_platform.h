@@ -11,11 +11,11 @@
   freely, subject to the following restrictions:
 
   1. The origin of this software must not be misrepresented; you must not
-     claim that you wrote the original software. If you use this software
-     in a product, an acknowledgment in the product documentation would be
-     appreciated but is not required.
+	 claim that you wrote the original software. If you use this software
+	 in a product, an acknowledgment in the product documentation would be
+	 appreciated but is not required.
   2. Altered source versions must be plainly marked as such, and must not be
-     misrepresented as being the original software.
+	 misrepresented as being the original software.
   3. This notice may not be removed or altered from any source distribution.
 */
 
@@ -67,7 +67,7 @@
 #endif
 
 #if defined(__APPLE__)
-/* lets us know what version of Mac OS X we're compiling on */
+ /* lets us know what version of Mac OS X we're compiling on */
 #include "AvailabilityMacros.h"
 #include "TargetConditionals.h"
 #if TARGET_OS_TV
@@ -176,10 +176,9 @@
 #undef __LINUX__
 #undef __PNACL__
 #define __PNACL__ 1
-/* PNACL with newlib supports static linking only */
+ /* PNACL with newlib supports static linking only */
 #define __SDL_NOGETPROCADDR__
 #endif
-
 
 #include "begin_code.h"
 /* Set up for C function definitions, even when using C++ */
@@ -187,12 +186,12 @@
 extern "C" {
 #endif
 
-/**
- *  \brief Gets the name of the platform.
- */
-extern DECLSPEC const char * SDLCALL SDL_GetPlatform (void);
+	/**
+	 *  \brief Gets the name of the platform.
+	 */
+	extern DECLSPEC const char* SDLCALL SDL_GetPlatform(void);
 
-/* Ends C function definitions when using C++ */
+	/* Ends C function definitions when using C++ */
 #ifdef __cplusplus
 }
 #endif

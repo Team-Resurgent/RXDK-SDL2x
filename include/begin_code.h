@@ -11,11 +11,11 @@
   freely, subject to the following restrictions:
 
   1. The origin of this software must not be misrepresented; you must not
-     claim that you wrote the original software. If you use this software
-     in a product, an acknowledgment in the product documentation would be
-     appreciated but is not required.
+	 claim that you wrote the original software. If you use this software
+	 in a product, an acknowledgment in the product documentation would be
+	 appreciated but is not required.
   2. Altered source versions must be plainly marked as such, and must not be
-     misrepresented as being the original software.
+	 misrepresented as being the original software.
   3. This notice may not be removed or altered from any source distribution.
 */
 
@@ -27,7 +27,7 @@
  *  If you don't like ugly C preprocessor code, don't look at this file. :)
  */
 
-/* This shouldn't be nested -- included it around code only. */
+ /* This shouldn't be nested -- included it around code only. */
 #ifdef _begin_code_h
 #error Nested inclusion of begin_code.h
 #endif
@@ -112,7 +112,7 @@
 #pragma nopackwarning
 #endif
 #ifdef _M_X64
-/* Use 8-byte alignment on 64-bit architectures, so pointers are aligned */
+ /* Use 8-byte alignment on 64-bit architectures, so pointers are aligned */
 #pragma pack(push,8)
 #else
 #pragma pack(push,4)
@@ -158,7 +158,7 @@
 #endif
 #endif /* SDL_NORETURN not defined */
 
-/* Apparently this is needed by several Windows compilers */
+ /* Apparently this is needed by several Windows compilers */
 #if !defined(__MACH__)
 #ifndef NULL
 #ifdef __cplusplus

@@ -1,7 +1,7 @@
 #include <SDL.h>
 #include <SDL_mixer.h>
 
-typedef enum{
+typedef enum {
 	false,
 	true
 } bool;
@@ -9,7 +9,7 @@ typedef enum{
 #define SCREEN_WIDTH 640
 #define SCREEN_HEIGHT 480
 
-SDL_Texture* LoadTextureFromFile(SDL_Renderer* Renderer, char* filepath){
+SDL_Texture* LoadTextureFromFile(SDL_Renderer* Renderer, char* filepath) {
 	SDL_Surface* LoadingSurface;
 	SDL_Texture* ReturnTexture;
 
@@ -20,12 +20,12 @@ SDL_Texture* LoadTextureFromFile(SDL_Renderer* Renderer, char* filepath){
 	return ReturnTexture;
 }
 
-int main(int argc, char* argv[]){
+int main(int argc, char* argv[]) {
 	SDL_Window* MainWindow;
 	SDL_Renderer* Renderer;
 	SDL_Texture* Background;
 	Mix_Music* Music;
-	
+
 	/* Init SDL */
 	if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO) < 0)
 		return -1;
@@ -33,7 +33,7 @@ int main(int argc, char* argv[]){
 	/* Init SDL_Mixer */
 	if (Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 2, 1024) == -1)
 		return -1;
-	
+
 	/* Create Render and Window */
 	MainWindow = SDL_CreateWindow("xboxMixer", 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_SHOWN);
 	Renderer = SDL_CreateRenderer(MainWindow, -1, SDL_RENDERER_ACCELERATED);
@@ -41,15 +41,15 @@ int main(int argc, char* argv[]){
 	/* Load Assets */
 	Background = LoadTextureFromFile(Renderer, "D:\\texture.bmp");
 	Music = Mix_LoadMUS("D:\\Deja_Vu.wav");
-	
+
 	/* Play Music */
 	Mix_PlayMusic(Music, -1);
 
 	/* Main GameLoop */
-	while (true){
+	while (true) {
 		SDL_RenderCopy(Renderer, Background, NULL, NULL);
 		SDL_RenderPresent(Renderer);
 	}
-	
+
 	return 0;
 }

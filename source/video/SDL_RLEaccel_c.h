@@ -11,11 +11,11 @@
   freely, subject to the following restrictions:
 
   1. The origin of this software must not be misrepresented; you must not
-     claim that you wrote the original software. If you use this software
-     in a product, an acknowledgment in the product documentation would be
-     appreciated but is not required.
+	 claim that you wrote the original software. If you use this software
+	 in a product, an acknowledgment in the product documentation would be
+	 appreciated but is not required.
   2. Altered source versions must be plainly marked as such, and must not be
-     misrepresented as being the original software.
+	 misrepresented as being the original software.
   3. This notice may not be removed or altered from any source distribution.
 */
 
@@ -26,12 +26,12 @@
 
 /* Useful functions and variables from SDL_RLEaccel.c */
 
-extern int SDL_RLESurface(SDL_Surface * surface);
-extern int SDLCALL SDL_RLEBlit     (SDL_Surface * src, SDL_Rect * srcrect,
-                                    SDL_Surface * dst, SDL_Rect * dstrect);
-extern int SDLCALL SDL_RLEAlphaBlit(SDL_Surface * src, SDL_Rect * srcrect,
-                                    SDL_Surface * dst, SDL_Rect * dstrect);
-extern void SDL_UnRLESurface(SDL_Surface * surface, int recode);
+extern int SDL_RLESurface(SDL_Surface* surface);
+extern int SDLCALL SDL_RLEBlit(SDL_Surface* src, SDL_Rect* srcrect,
+	SDL_Surface* dst, SDL_Rect* dstrect);
+extern int SDLCALL SDL_RLEAlphaBlit(SDL_Surface* src, SDL_Rect* srcrect,
+	SDL_Surface* dst, SDL_Rect* dstrect);
+extern void SDL_UnRLESurface(SDL_Surface* surface, int recode);
 
 #endif /* SDL_RLEaccel_c_h_ */
 

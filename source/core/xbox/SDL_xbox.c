@@ -11,11 +11,11 @@
   freely, subject to the following restrictions:
 
   1. The origin of this software must not be misrepresented; you must not
-     claim that you wrote the original software. If you use this software
-     in a product, an acknowledgment in the product documentation would be
-     appreciated but is not required.
+	 claim that you wrote the original software. If you use this software
+	 in a product, an acknowledgment in the product documentation would be
+	 appreciated but is not required.
   2. Altered source versions must be plainly marked as such, and must not be
-     misrepresented as being the original software.
+	 misrepresented as being the original software.
   3. This notice may not be removed or altered from any source distribution.
 */
 #include "../../SDL_internal.h"
@@ -28,26 +28,26 @@
 
 /* Sets an error message based on an HRESULT */
 int
-XBOX_SetErrorFromHRESULT(const char *prefix, HRESULT hr)
+XBOX_SetErrorFromHRESULT(const char* prefix, HRESULT hr)
 {
-// TODO
-/*  TCHAR buffer[1024];
-    char *message;
-    FormatMessage(FORMAT_MESSAGE_FROM_SYSTEM, NULL, hr, 0,
-                  buffer, SDL_arraysize(buffer), NULL);
-    message = XBOX_StringToUTF8(buffer);
-    SDL_SetError("%s%s%s", prefix ? prefix : "", prefix ? ": " : "", message);
-    SDL_free(message);
-*/
+	// TODO
+	/*  TCHAR buffer[1024];
+		char *message;
+		FormatMessage(FORMAT_MESSAGE_FROM_SYSTEM, NULL, hr, 0,
+					  buffer, SDL_arraysize(buffer), NULL);
+		message = XBOX_StringToUTF8(buffer);
+		SDL_SetError("%s%s%s", prefix ? prefix : "", prefix ? ": " : "", message);
+		SDL_free(message);
+	*/
 	SDL_SetError("ERROR: XBOX_SetErrorFromHRESULT");
-    return -1;
+	return -1;
 }
 
 /* Sets an error message based on GetLastError() */
 int
-XBOX_SetError(const char *prefix)
+XBOX_SetError(const char* prefix)
 {
-    return XBOX_SetErrorFromHRESULT(prefix, GetLastError());
+	return XBOX_SetErrorFromHRESULT(prefix, GetLastError());
 }
 
 #endif /* __WIN32__ || __WINRT__  || __XBOX__*/

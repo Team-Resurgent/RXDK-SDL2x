@@ -11,11 +11,11 @@
   freely, subject to the following restrictions:
 
   1. The origin of this software must not be misrepresented; you must not
-     claim that you wrote the original software. If you use this software
-     in a product, an acknowledgment in the product documentation would be
-     appreciated but is not required.
+	 claim that you wrote the original software. If you use this software
+	 in a product, an acknowledgment in the product documentation would be
+	 appreciated but is not required.
   2. Altered source versions must be plainly marked as such, and must not be
-     misrepresented as being the original software.
+	 misrepresented as being the original software.
   3. This notice may not be removed or altered from any source distribution.
 */
 
@@ -37,7 +37,7 @@ extern int SDL_SensorInit(void);
 extern void SDL_SensorQuit(void);
 
 /* Internal event queueing functions */
-extern int SDL_PrivateSensorUpdate(SDL_Sensor *sensor, float *data, int num_values);
+extern int SDL_PrivateSensorUpdate(SDL_Sensor* sensor, float* data, int num_values);
 
 #endif /* SDL_sensor_c_h_ */
 

@@ -11,11 +11,11 @@
   freely, subject to the following restrictions:
 
   1. The origin of this software must not be misrepresented; you must not
-     claim that you wrote the original software. If you use this software
-     in a product, an acknowledgment in the product documentation would be
-     appreciated but is not required.
+	 claim that you wrote the original software. If you use this software
+	 in a product, an acknowledgment in the product documentation would be
+	 appreciated but is not required.
   2. Altered source versions must be plainly marked as such, and must not be
-     misrepresented as being the original software.
+	 misrepresented as being the original software.
   3. This notice may not be removed or altered from any source distribution.
 */
 #include "../SDL_internal.h"
@@ -54,57 +54,56 @@ extern Uint8* SDL_expand_byte[9];
 
 typedef struct
 {
-    Uint8 *src;
-    int src_w, src_h;
-    int src_pitch;
-    int src_skip;
-    Uint8 *dst;
-    int dst_w, dst_h;
-    int dst_pitch;
-    int dst_skip;
-    SDL_PixelFormat *src_fmt;
-    SDL_PixelFormat *dst_fmt;
-    Uint8 *table;
-    int flags;
-    Uint32 colorkey;
-    Uint8 r, g, b, a;
+	Uint8* src;
+	int src_w, src_h;
+	int src_pitch;
+	int src_skip;
+	Uint8* dst;
+	int dst_w, dst_h;
+	int dst_pitch;
+	int dst_skip;
+	SDL_PixelFormat* src_fmt;
+	SDL_PixelFormat* dst_fmt;
+	Uint8* table;
+	int flags;
+	Uint32 colorkey;
+	Uint8 r, g, b, a;
 } SDL_BlitInfo;
 
-typedef void (*SDL_BlitFunc) (SDL_BlitInfo *info);
-
+typedef void (*SDL_BlitFunc) (SDL_BlitInfo* info);
 
 typedef struct
 {
-    Uint32 src_format;
-    Uint32 dst_format;
-    int flags;
-    int cpu;
-    SDL_BlitFunc func;
+	Uint32 src_format;
+	Uint32 dst_format;
+	int flags;
+	int cpu;
+	SDL_BlitFunc func;
 } SDL_BlitFuncEntry;
 
 /* Blit mapping definition */
 typedef struct SDL_BlitMap
 {
-    SDL_Surface *dst;
-    int identity;
-    SDL_blit blit;
-    void *data;
-    SDL_BlitInfo info;
+	SDL_Surface* dst;
+	int identity;
+	SDL_blit blit;
+	void* data;
+	SDL_BlitInfo info;
 
-    /* the version count matches the destination; mismatch indicates
-       an invalid mapping */
-    Uint32 dst_palette_version;
-    Uint32 src_palette_version;
+	/* the version count matches the destination; mismatch indicates
+	   an invalid mapping */
+	Uint32 dst_palette_version;
+	Uint32 src_palette_version;
 } SDL_BlitMap;
 
 /* Functions found in SDL_blit.c */
-extern int SDL_CalculateBlit(SDL_Surface * surface);
+extern int SDL_CalculateBlit(SDL_Surface* surface);
 
 /* Functions found in SDL_blit_*.c */
-extern SDL_BlitFunc SDL_CalculateBlit0(SDL_Surface * surface);
-extern SDL_BlitFunc SDL_CalculateBlit1(SDL_Surface * surface);
-extern SDL_BlitFunc SDL_CalculateBlitN(SDL_Surface * surface);
-extern SDL_BlitFunc SDL_CalculateBlitA(SDL_Surface * surface);
+extern SDL_BlitFunc SDL_CalculateBlit0(SDL_Surface* surface);
+extern SDL_BlitFunc SDL_CalculateBlit1(SDL_Surface* surface);
+extern SDL_BlitFunc SDL_CalculateBlitN(SDL_Surface* surface);
+extern SDL_BlitFunc SDL_CalculateBlitA(SDL_Surface* surface);
 
 /*
  * Useful macros for blitting routines
@@ -118,7 +117,7 @@ extern SDL_BlitFunc SDL_CalculateBlitA(SDL_Surface * surface);
 #define DECLARE_ALIGNED(t,v,a)  t v
 #endif
 
-/* Load pixel of the specified format from a buffer and get its R-G-B values */
+ /* Load pixel of the specified format from a buffer and get its R-G-B values */
 #define RGB_FROM_PIXEL(Pixel, fmt, r, g, b)                             \
 {                                                                       \
     r = SDL_expand_byte[fmt->Rloss][((Pixel&fmt->Rmask)>>fmt->Rshift)]; \
@@ -449,7 +448,6 @@ do {                                                                    \
     dB = (Uint8)((((int)(sB-dB)*(int)A)/255)+dB);                       \
 } while(0)
 
-
 /* Blend the RGBA values of two pixels */
 #define ALPHA_BLEND_RGBA(sR, sG, sB, sA, dR, dG, dB, dA)                \
 do {                                                                    \
@@ -458,7 +456,6 @@ do {                                                                    \
     dB = (Uint8)((((int)(sB-dB)*(int)sA)/255)+dB);                      \
     dA = (Uint8)((int)sA+dA-((int)sA*dA)/255);                          \
 } while(0)
-
 
 /* This is a very useful loop for optimizing blitters */
 #if defined(_MSC_VER) && (_MSC_VER == 1300)

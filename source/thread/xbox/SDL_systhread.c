@@ -11,11 +11,11 @@
   freely, subject to the following restrictions:
 
   1. The origin of this software must not be misrepresented; you must not
-     claim that you wrote the original software. If you use this software
-     in a product, an acknowledgment in the product documentation would be
-     appreciated but is not required.
+	 claim that you wrote the original software. If you use this software
+	 in a product, an acknowledgment in the product documentation would be
+	 appreciated but is not required.
   2. Altered source versions must be plainly marked as such, and must not be
-     misrepresented as being the original software.
+	 misrepresented as being the original software.
   3. This notice may not be removed or altered from any source distribution.
 */
 #include "../../SDL_internal.h"
@@ -36,7 +36,7 @@ static DWORD WINAPI RunThread(LPVOID data)
 	return(0);
 }
 
-int SDL_SYS_CreateThread(SDL_Thread *thread, void *args)
+int SDL_SYS_CreateThread(SDL_Thread* thread, void* args)
 {
 	DWORD threadnum;
 
@@ -46,52 +46,55 @@ int SDL_SYS_CreateThread(SDL_Thread *thread, void *args)
 		return(-1);
 	}
 
-    return 0;
+	return 0;
 }
 
 void
-SDL_SYS_SetupThread(const char *name)
+SDL_SYS_SetupThread(const char* name)
 {
- 	return;
+	return;
 }
 
 SDL_threadID
 SDL_ThreadID(void)
 {
-    return ((SDL_threadID) GetCurrentThreadId());
+	return ((SDL_threadID)GetCurrentThreadId());
 }
 
 int
 SDL_SYS_SetThreadPriority(SDL_ThreadPriority priority)
 {
-    int value;
+	int value;
 
-    if (priority == SDL_THREAD_PRIORITY_LOW) {
-        value = THREAD_PRIORITY_LOWEST;
-    } else if (priority == SDL_THREAD_PRIORITY_HIGH) {
-        value = THREAD_PRIORITY_HIGHEST;
-    } else if (priority == SDL_THREAD_PRIORITY_TIME_CRITICAL) {
-        value = THREAD_PRIORITY_TIME_CRITICAL;
-    } else {
-        value = THREAD_PRIORITY_NORMAL;
-    }
-    if (!SetThreadPriority(GetCurrentThread(), value)) {
-        return XBOX_SetError("SetThreadPriority()");
-    }
-    return 0;
+	if (priority == SDL_THREAD_PRIORITY_LOW) {
+		value = THREAD_PRIORITY_LOWEST;
+	}
+	else if (priority == SDL_THREAD_PRIORITY_HIGH) {
+		value = THREAD_PRIORITY_HIGHEST;
+	}
+	else if (priority == SDL_THREAD_PRIORITY_TIME_CRITICAL) {
+		value = THREAD_PRIORITY_TIME_CRITICAL;
+	}
+	else {
+		value = THREAD_PRIORITY_NORMAL;
+	}
+	if (!SetThreadPriority(GetCurrentThread(), value)) {
+		return XBOX_SetError("SetThreadPriority()");
+	}
+	return 0;
 }
 
 void
-SDL_SYS_WaitThread(SDL_Thread * thread)
+SDL_SYS_WaitThread(SDL_Thread* thread)
 {
 	WaitForSingleObject(thread->handle, INFINITE);
 	CloseHandle(thread->handle);
 }
 
 void
-SDL_SYS_DetachThread(SDL_Thread * thread)
+SDL_SYS_DetachThread(SDL_Thread* thread)
 {
-    CloseHandle(thread->handle);
+	CloseHandle(thread->handle);
 }
 
 #endif /* SDL_THREAD_XBOX */

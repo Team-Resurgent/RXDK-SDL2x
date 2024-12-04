@@ -11,11 +11,11 @@
   freely, subject to the following restrictions:
 
   1. The origin of this software must not be misrepresented; you must not
-     claim that you wrote the original software. If you use this software
-     in a product, an acknowledgment in the product documentation would be
-     appreciated but is not required.
+	 claim that you wrote the original software. If you use this software
+	 in a product, an acknowledgment in the product documentation would be
+	 appreciated but is not required.
   2. Altered source versions must be plainly marked as such, and must not be
-     misrepresented as being the original software.
+	 misrepresented as being the original software.
   3. This notice may not be removed or altered from any source distribution.
 */
 #include "SDL_config.h"
@@ -488,27 +488,27 @@ static const SDLTest_SurfaceImage_t SDLTest_imagePrimitives = {
 /**
  * \brief Returns the Primitives test image as SDL_Surface.
  */
-SDL_Surface *SDLTest_ImagePrimitives()
+SDL_Surface* SDLTest_ImagePrimitives()
 {
-   SDL_Surface *surface = SDL_CreateRGBSurfaceFrom(
-        (void*)SDLTest_imagePrimitives.pixel_data,
-        SDLTest_imagePrimitives.width,
-        SDLTest_imagePrimitives.height,
-        SDLTest_imagePrimitives.bytes_per_pixel * 8,
-        SDLTest_imagePrimitives.width * SDLTest_imagePrimitives.bytes_per_pixel,
+	SDL_Surface* surface = SDL_CreateRGBSurfaceFrom(
+		(void*)SDLTest_imagePrimitives.pixel_data,
+		SDLTest_imagePrimitives.width,
+		SDLTest_imagePrimitives.height,
+		SDLTest_imagePrimitives.bytes_per_pixel * 8,
+		SDLTest_imagePrimitives.width * SDLTest_imagePrimitives.bytes_per_pixel,
 #if (SDL_BYTEORDER == SDL_BIG_ENDIAN)
-         0xff000000, /* Red bit mask. */
-         0x00ff0000, /* Green bit mask. */
-         0x0000ff00, /* Blue bit mask. */
-         0x000000ff  /* Alpha bit mask. */
+		0xff000000, /* Red bit mask. */
+		0x00ff0000, /* Green bit mask. */
+		0x0000ff00, /* Blue bit mask. */
+		0x000000ff  /* Alpha bit mask. */
 #else
-         0x000000ff, /* Red bit mask. */
-         0x0000ff00, /* Green bit mask. */
-         0x00ff0000, /* Blue bit mask. */
-         0xff000000  /* Alpha bit mask. */
+		0x000000ff, /* Red bit mask. */
+		0x0000ff00, /* Green bit mask. */
+		0x00ff0000, /* Blue bit mask. */
+		0xff000000  /* Alpha bit mask. */
 #endif
-         );
-   return surface;
+	);
+	return surface;
 }
 
 /* vi: set ts=4 sw=4 expandtab: */

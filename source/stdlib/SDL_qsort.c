@@ -11,11 +11,11 @@
   freely, subject to the following restrictions:
 
   1. The origin of this software must not be misrepresented; you must not
-     claim that you wrote the original software. If you use this software
-     in a product, an acknowledgment in the product documentation would be
-     appreciated but is not required.
+	 claim that you wrote the original software. If you use this software
+	 in a product, an acknowledgment in the product documentation would be
+	 appreciated but is not required.
   2. Altered source versions must be plainly marked as such, and must not be
-     misrepresented as being the original software.
+	 misrepresented as being the original software.
   3. This notice may not be removed or altered from any source distribution.
 */
 
@@ -30,9 +30,9 @@
 
 #if defined(HAVE_QSORT)
 void
-SDL_qsort(void *base, size_t nmemb, size_t size, int (*compare) (const void *, const void *))
+SDL_qsort(void* base, size_t nmemb, size_t size, int (*compare) (const void*, const void*))
 {
-    qsort(base, nmemb, size, compare);
+	qsort(base, nmemb, size, compare);
 }
 
 #else
@@ -111,41 +111,41 @@ benefit!
  * Gareth McCaughan
  */
 
-/* Copyright (c) 1998-2016 Gareth McCaughan
- *
- * This software is provided 'as-is', without any express or implied
- * warranty. In no event will the authors be held liable for any
- * damages arising from the use of this software.
- *
- * Permission is granted to anyone to use this software for any purpose,
- * including commercial applications, and to alter it and redistribute it
- * freely, subject to the following restrictions:
- *
- * 1. The origin of this software must not be misrepresented;
- *    you must not claim that you wrote the original software.
- *    If you use this software in a product, an acknowledgment
- *    in the product documentation would be appreciated but
- *    is not required.
- *
- * 2. Altered source versions must be plainly marked as such,
- *    and must not be misrepresented as being the original software.
- *
- * 3. This notice may not be removed or altered from any source
- *    distribution.
- */
+ /* Copyright (c) 1998-2016 Gareth McCaughan
+  *
+  * This software is provided 'as-is', without any express or implied
+  * warranty. In no event will the authors be held liable for any
+  * damages arising from the use of this software.
+  *
+  * Permission is granted to anyone to use this software for any purpose,
+  * including commercial applications, and to alter it and redistribute it
+  * freely, subject to the following restrictions:
+  *
+  * 1. The origin of this software must not be misrepresented;
+  *    you must not claim that you wrote the original software.
+  *    If you use this software in a product, an acknowledgment
+  *    in the product documentation would be appreciated but
+  *    is not required.
+  *
+  * 2. Altered source versions must be plainly marked as such,
+  *    and must not be misrepresented as being the original software.
+  *
+  * 3. This notice may not be removed or altered from any source
+  *    distribution.
+  */
 
-/* Revision history since release:
- *   1998-03-19 v1.12 First release I have any records of.
- *   2007-09-02 v1.13 Fix bug kindly reported by Dan Bodoh
- *                    (premature termination of recursion).
- *                    Add a few clarifying comments.
- *                    Minor improvements to debug output.
- *   2016-02-21 v1.14 Replace licence with 2-clause BSD,
- *                    and clarify a couple of things in
- *                    comments. No code changes.
- */
+  /* Revision history since release:
+   *   1998-03-19 v1.12 First release I have any records of.
+   *   2007-09-02 v1.13 Fix bug kindly reported by Dan Bodoh
+   *                    (premature termination of recursion).
+   *                    Add a few clarifying comments.
+   *                    Minor improvements to debug output.
+   *   2016-02-21 v1.14 Replace licence with 2-clause BSD,
+   *                    and clarify a couple of things in
+   *                    comments. No code changes.
+   */
 
-/* BEGIN SDL CHANGE ... commented this out with an #if 0 block. --ryan. */
+   /* BEGIN SDL CHANGE ... commented this out with an #if 0 block. --ryan. */
 #if 0
 #include <assert.h>
 #include <stdlib.h>
@@ -153,7 +153,7 @@ benefit!
 
 #define DEBUG_QSORT
 
-static char _ID[]="<qsort.c gjm 1.14 2016-02-21>";
+static char _ID[] = "<qsort.c gjm 1.14 2016-02-21>";
 #endif
 /* END SDL CHANGE ... commented this out with an #if 0 block. --ryan. */
 
@@ -162,29 +162,29 @@ static char _ID[]="<qsort.c gjm 1.14 2016-02-21>";
  */
 #define WORD_BYTES sizeof(int)
 
-/* How big does our stack need to be? Answer: one entry per
- * bit in a |size_t|.
- */
+ /* How big does our stack need to be? Answer: one entry per
+  * bit in a |size_t|.
+  */
 #define STACK_SIZE (8*sizeof(size_t))
 
-/* Different situations have slightly different requirements,
- * and we make life epsilon easier by using different truncation
- * points for the three different cases.
- * So far, I have tuned TRUNC_words and guessed that the same
- * value might work well for the other two cases. Of course
- * what works well on my machine might work badly on yours.
- */
+  /* Different situations have slightly different requirements,
+   * and we make life epsilon easier by using different truncation
+   * points for the three different cases.
+   * So far, I have tuned TRUNC_words and guessed that the same
+   * value might work well for the other two cases. Of course
+   * what works well on my machine might work badly on yours.
+   */
 #define TRUNC_nonaligned	12
 #define TRUNC_aligned		12
 #define TRUNC_words		12*WORD_BYTES	/* nb different meaning */
 
-/* We use a simple pivoting algorithm for shortish sub-arrays
- * and a more complicated one for larger ones. The threshold
- * is PIVOT_THRESHOLD.
- */
+   /* We use a simple pivoting algorithm for shortish sub-arrays
+	* and a more complicated one for larger ones. The threshold
+	* is PIVOT_THRESHOLD.
+	*/
 #define PIVOT_THRESHOLD 40
 
-typedef struct { char * first; char * last; } stack_entry;
+typedef struct { char* first; char* last; } stack_entry;
 #define pushLeft {stack[stacktop].first=ffirst;stack[stacktop++].last=last;}
 #define pushRight {stack[stacktop].first=first;stack[stacktop++].last=llast;}
 #define doLeft {first=ffirst;llast=last;continue;}
@@ -259,9 +259,9 @@ typedef struct { char * first; char * last; } stack_entry;
  *        16-bit |int|s and 4096-bit |size_t|s. :-)
  */
 
-/* The recursion logic is the same in each case.
- * We keep chopping up until we reach subarrays of size
- * strictly less than Trunc; we leave these unsorted. */
+ /* The recursion logic is the same in each case.
+  * We keep chopping up until we reach subarrays of size
+  * strictly less than Trunc; we leave these unsorted. */
 #define Recurse(Trunc)				\
       { size_t l=last-ffirst,r=llast-first;	\
         if (l<Trunc) {				\
@@ -273,7 +273,7 @@ typedef struct { char * first; char * last; } stack_entry;
         else doLeft				\
       }
 
-/* and so is the pivoting logic (note: last is inclusive): */
+  /* and so is the pivoting logic (note: last is inclusive): */
 #define Pivot(swapper,sz)			\
   if ((size_t)(last-first)>PIVOT_THRESHOLD*sz) mid=pivot_big(first,mid,last,sz,compare);\
   else {	\
@@ -326,7 +326,7 @@ typedef struct { char * first; char * last; } stack_entry;
     last-=sz; }					\
   if (first!=base) swapper(first,(char*)base);
 
-/* and so is the insertion sort, in the first two cases: */
+ /* and so is the insertion sort, in the first two cases: */
 #define Insertion(swapper)			\
   last=((char*)base)+nmemb*size;		\
   for (first=((char*)base)+size;first!=last;first+=size) {	\
@@ -360,175 +360,176 @@ typedef struct { char * first; char * last; } stack_entry;
 
 /* ---------------------------------------------------------------------- */
 
-static char * pivot_big(char *first, char *mid, char *last, size_t size,
-                        int compare(const void *, const void *)) {
-  size_t d=(((last-first)/size)>>3)*size;
+static char* pivot_big(char* first, char* mid, char* last, size_t size,
+	int compare(const void*, const void*)) {
+	size_t d = (((last - first) / size) >> 3) * size;
 #ifdef DEBUG_QSORT
-fprintf(stderr, "pivot_big: first=%p last=%p size=%lu n=%lu\n", first, (unsigned long)last, size, (unsigned long)((last-first+1)/size));
+	fprintf(stderr, "pivot_big: first=%p last=%p size=%lu n=%lu\n", first, (unsigned long)last, size, (unsigned long)((last - first + 1) / size));
 #endif
-  char *m1,*m2,*m3;
-  { char *a=first, *b=first+d, *c=first+2*d;
+	char* m1, * m2, * m3;
+	{
+		char* a = first, * b = first + d, * c = first + 2 * d;
 #ifdef DEBUG_QSORT
-fprintf(stderr,"< %d %d %d @ %p %p %p\n",*(int*)a,*(int*)b,*(int*)c, a,b,c);
+		fprintf(stderr, "< %d %d %d @ %p %p %p\n", *(int*)a, *(int*)b, *(int*)c, a, b, c);
 #endif
-    m1 = compare(a,b)<0 ?
-           (compare(b,c)<0 ? b : (compare(a,c)<0 ? c : a))
-         : (compare(a,c)<0 ? a : (compare(b,c)<0 ? c : b));
-  }
-  { char *a=mid-d, *b=mid, *c=mid+d;
+		m1 = compare(a, b) < 0 ?
+			(compare(b, c) < 0 ? b : (compare(a, c) < 0 ? c : a))
+			: (compare(a, c) < 0 ? a : (compare(b, c) < 0 ? c : b));
+	}
+	{
+		char* a = mid - d, * b = mid, * c = mid + d;
 #ifdef DEBUG_QSORT
-fprintf(stderr,". %d %d %d @ %p %p %p\n",*(int*)a,*(int*)b,*(int*)c, a,b,c);
+		fprintf(stderr, ". %d %d %d @ %p %p %p\n", *(int*)a, *(int*)b, *(int*)c, a, b, c);
 #endif
-    m2 = compare(a,b)<0 ?
-           (compare(b,c)<0 ? b : (compare(a,c)<0 ? c : a))
-         : (compare(a,c)<0 ? a : (compare(b,c)<0 ? c : b));
-  }
-  { char *a=last-2*d, *b=last-d, *c=last;
+		m2 = compare(a, b) < 0 ?
+			(compare(b, c) < 0 ? b : (compare(a, c) < 0 ? c : a))
+			: (compare(a, c) < 0 ? a : (compare(b, c) < 0 ? c : b));
+	}
+	{
+		char* a = last - 2 * d, * b = last - d, * c = last;
 #ifdef DEBUG_QSORT
-fprintf(stderr,"> %d %d %d @ %p %p %p\n",*(int*)a,*(int*)b,*(int*)c, a,b,c);
+		fprintf(stderr, "> %d %d %d @ %p %p %p\n", *(int*)a, *(int*)b, *(int*)c, a, b, c);
 #endif
-    m3 = compare(a,b)<0 ?
-           (compare(b,c)<0 ? b : (compare(a,c)<0 ? c : a))
-         : (compare(a,c)<0 ? a : (compare(b,c)<0 ? c : b));
-  }
+		m3 = compare(a, b) < 0 ?
+			(compare(b, c) < 0 ? b : (compare(a, c) < 0 ? c : a))
+			: (compare(a, c) < 0 ? a : (compare(b, c) < 0 ? c : b));
+	}
 #ifdef DEBUG_QSORT
-fprintf(stderr,"-> %d %d %d @ %p %p %p\n",*(int*)m1,*(int*)m2,*(int*)m3, m1,m2,m3);
+	fprintf(stderr, "-> %d %d %d @ %p %p %p\n", *(int*)m1, *(int*)m2, *(int*)m3, m1, m2, m3);
 #endif
-  return compare(m1,m2)<0 ?
-           (compare(m2,m3)<0 ? m2 : (compare(m1,m3)<0 ? m3 : m1))
-         : (compare(m1,m3)<0 ? m1 : (compare(m2,m3)<0 ? m3 : m2));
+	return compare(m1, m2) < 0 ?
+		(compare(m2, m3) < 0 ? m2 : (compare(m1, m3) < 0 ? m3 : m1))
+		: (compare(m1, m3) < 0 ? m1 : (compare(m2, m3) < 0 ? m3 : m2));
 }
 
 /* ---------------------------------------------------------------------- */
 
-static void qsort_nonaligned(void *base, size_t nmemb, size_t size,
-           int (*compare)(const void *, const void *)) {
+static void qsort_nonaligned(void* base, size_t nmemb, size_t size,
+	int (*compare)(const void*, const void*)) {
+	stack_entry stack[STACK_SIZE];
+	int stacktop = 0;
+	char* first, * last;
+	char* pivot = malloc(size);
+	size_t trunc = TRUNC_nonaligned * size;
+	assert(pivot != 0);
 
-  stack_entry stack[STACK_SIZE];
-  int stacktop=0;
-  char *first,*last;
-  char *pivot=malloc(size);
-  size_t trunc=TRUNC_nonaligned*size;
-  assert(pivot!=0);
+	first = (char*)base; last = first + (nmemb - 1) * size;
 
-  first=(char*)base; last=first+(nmemb-1)*size;
-
-  if ((size_t)(last-first)>=trunc) {
-    char *ffirst=first, *llast=last;
-    while (1) {
-      /* Select pivot */
-      { char * mid=first+size*((last-first)/size >> 1);
-        Pivot(SWAP_nonaligned,size);
-        memcpy(pivot,mid,size);
-      }
-      /* Partition. */
-      Partition(SWAP_nonaligned,size);
-      /* Prepare to recurse/iterate. */
-      Recurse(trunc)
-    }
-  }
-  PreInsertion(SWAP_nonaligned,TRUNC_nonaligned,size);
-  Insertion(SWAP_nonaligned);
-  free(pivot);
+	if ((size_t)(last - first) >= trunc) {
+		char* ffirst = first, * llast = last;
+		while (1) {
+			/* Select pivot */
+			{
+				char* mid = first + size * ((last - first) / size >> 1);
+				Pivot(SWAP_nonaligned, size);
+				memcpy(pivot, mid, size);
+			}
+			/* Partition. */
+			Partition(SWAP_nonaligned, size);
+			/* Prepare to recurse/iterate. */
+			Recurse(trunc)
+		}
+	}
+	PreInsertion(SWAP_nonaligned, TRUNC_nonaligned, size);
+	Insertion(SWAP_nonaligned);
+	free(pivot);
 }
 
-static void qsort_aligned(void *base, size_t nmemb, size_t size,
-           int (*compare)(const void *, const void *)) {
+static void qsort_aligned(void* base, size_t nmemb, size_t size,
+	int (*compare)(const void*, const void*)) {
+	stack_entry stack[STACK_SIZE];
+	int stacktop = 0;
+	char* first, * last;
+	char* pivot = malloc(size);
+	size_t trunc = TRUNC_aligned * size;
+	assert(pivot != 0);
 
-  stack_entry stack[STACK_SIZE];
-  int stacktop=0;
-  char *first,*last;
-  char *pivot=malloc(size);
-  size_t trunc=TRUNC_aligned*size;
-  assert(pivot!=0);
+	first = (char*)base; last = first + (nmemb - 1) * size;
 
-  first=(char*)base; last=first+(nmemb-1)*size;
-
-  if ((size_t)(last-first)>=trunc) {
-    char *ffirst=first,*llast=last;
-    while (1) {
-      /* Select pivot */
-      { char * mid=first+size*((last-first)/size >> 1);
-        Pivot(SWAP_aligned,size);
-        memcpy(pivot,mid,size);
-      }
-      /* Partition. */
-      Partition(SWAP_aligned,size);
-      /* Prepare to recurse/iterate. */
-      Recurse(trunc)
-    }
-  }
-  PreInsertion(SWAP_aligned,TRUNC_aligned,size);
-  Insertion(SWAP_aligned);
-  free(pivot);
+	if ((size_t)(last - first) >= trunc) {
+		char* ffirst = first, * llast = last;
+		while (1) {
+			/* Select pivot */
+			{
+				char* mid = first + size * ((last - first) / size >> 1);
+				Pivot(SWAP_aligned, size);
+				memcpy(pivot, mid, size);
+			}
+			/* Partition. */
+			Partition(SWAP_aligned, size);
+			/* Prepare to recurse/iterate. */
+			Recurse(trunc)
+		}
+	}
+	PreInsertion(SWAP_aligned, TRUNC_aligned, size);
+	Insertion(SWAP_aligned);
+	free(pivot);
 }
 
-static void qsort_words(void *base, size_t nmemb,
-           int (*compare)(const void *, const void *)) {
+static void qsort_words(void* base, size_t nmemb,
+	int (*compare)(const void*, const void*)) {
+	stack_entry stack[STACK_SIZE];
+	int stacktop = 0;
+	char* first, * last;
+	char* pivot = malloc(WORD_BYTES);
+	assert(pivot != 0);
 
-  stack_entry stack[STACK_SIZE];
-  int stacktop=0;
-  char *first,*last;
-  char *pivot=malloc(WORD_BYTES);
-  assert(pivot!=0);
+	first = (char*)base; last = first + (nmemb - 1) * WORD_BYTES;
 
-  first=(char*)base; last=first+(nmemb-1)*WORD_BYTES;
-
-  if (last-first>=TRUNC_words) {
-    char *ffirst=first, *llast=last;
-    while (1) {
+	if (last - first >= TRUNC_words) {
+		char* ffirst = first, * llast = last;
+		while (1) {
 #ifdef DEBUG_QSORT
-fprintf(stderr,"Doing %d:%d: ",
-        (first-(char*)base)/WORD_BYTES,
-        (last-(char*)base)/WORD_BYTES);
+			fprintf(stderr, "Doing %d:%d: ",
+				(first - (char*)base) / WORD_BYTES,
+				(last - (char*)base) / WORD_BYTES);
 #endif
-      /* Select pivot */
-      { char * mid=first+WORD_BYTES*((last-first) / (2*WORD_BYTES));
-        Pivot(SWAP_words,WORD_BYTES);
-        *(int*)pivot=*(int*)mid;
+			/* Select pivot */
+			{
+				char* mid = first + WORD_BYTES * ((last - first) / (2 * WORD_BYTES));
+				Pivot(SWAP_words, WORD_BYTES);
+				*(int*)pivot = *(int*)mid;
 #ifdef DEBUG_QSORT
-fprintf(stderr,"pivot = %p = #%lu = %d\n", mid, (unsigned long)(((int*)mid)-((int*)base)), *(int*)mid);
+				fprintf(stderr, "pivot = %p = #%lu = %d\n", mid, (unsigned long)(((int*)mid) - ((int*)base)), *(int*)mid);
 #endif
-      }
-      /* Partition. */
-      Partition(SWAP_words,WORD_BYTES);
+			}
+			/* Partition. */
+			Partition(SWAP_words, WORD_BYTES);
 #ifdef DEBUG_QSORT
-fprintf(stderr, "after partitioning first=#%lu last=#%lu\n", (first-(char*)base)/4lu, (last-(char*)base)/4lu);
+			fprintf(stderr, "after partitioning first=#%lu last=#%lu\n", (first - (char*)base) / 4lu, (last - (char*)base) / 4lu);
 #endif
-      /* Prepare to recurse/iterate. */
-      Recurse(TRUNC_words)
-    }
-  }
-  PreInsertion(SWAP_words,(TRUNC_words/WORD_BYTES),WORD_BYTES);
-  /* Now do insertion sort. */
-  last=((char*)base)+nmemb*WORD_BYTES;
-  for (first=((char*)base)+WORD_BYTES;first!=last;first+=WORD_BYTES) {
-    /* Find the right place for |first|. My apologies for var reuse */
-    int *pl=(int*)(first-WORD_BYTES),*pr=(int*)first;
-    *(int*)pivot=*(int*)first;
-    for (;compare(pl,pivot)>0;pr=pl,--pl) {
-      *pr=*pl; }
-    if (pr!=(int*)first) *pr=*(int*)pivot;
-  }
-  free(pivot);
+			/* Prepare to recurse/iterate. */
+			Recurse(TRUNC_words)
+		}
+	}
+	PreInsertion(SWAP_words, (TRUNC_words / WORD_BYTES), WORD_BYTES);
+	/* Now do insertion sort. */
+	last = ((char*)base) + nmemb * WORD_BYTES;
+	for (first = ((char*)base) + WORD_BYTES;first != last;first += WORD_BYTES) {
+		/* Find the right place for |first|. My apologies for var reuse */
+		int* pl = (int*)(first - WORD_BYTES), * pr = (int*)first;
+		*(int*)pivot = *(int*)first;
+		for (;compare(pl, pivot) > 0;pr = pl, --pl) {
+			*pr = *pl;
+		}
+		if (pr != (int*)first) *pr = *(int*)pivot;
+	}
+	free(pivot);
 }
 
 /* ---------------------------------------------------------------------- */
 
-extern void qsortG(void *base, size_t nmemb, size_t size,
-           int (*compare)(const void *, const void *)) {
-
-  if (nmemb<=1) return;
-  if (((size_t)base|size)&(WORD_BYTES-1))
-    qsort_nonaligned(base,nmemb,size,compare);
-  else if (size!=WORD_BYTES)
-    qsort_aligned(base,nmemb,size,compare);
-  else
-    qsort_words(base,nmemb,compare);
+extern void qsortG(void* base, size_t nmemb, size_t size,
+	int (*compare)(const void*, const void*)) {
+	if (nmemb <= 1) return;
+	if (((size_t)base | size) & (WORD_BYTES - 1))
+		qsort_nonaligned(base, nmemb, size, compare);
+	else if (size != WORD_BYTES)
+		qsort_aligned(base, nmemb, size, compare);
+	else
+		qsort_words(base, nmemb, compare);
 }
-
 
 #endif /* HAVE_QSORT */
 
 /* vi: set ts=4 sw=4 expandtab: */
-

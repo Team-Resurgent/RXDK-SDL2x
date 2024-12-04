@@ -11,11 +11,11 @@
   freely, subject to the following restrictions:
 
   1. The origin of this software must not be misrepresented; you must not
-     claim that you wrote the original software. If you use this software
-     in a product, an acknowledgment in the product documentation would be
-     appreciated but is not required.
+	 claim that you wrote the original software. If you use this software
+	 in a product, an acknowledgment in the product documentation would be
+	 appreciated but is not required.
   2. Altered source versions must be plainly marked as such, and must not be
-     misrepresented as being the original software.
+	 misrepresented as being the original software.
   3. This notice may not be removed or altered from any source distribution.
 */
 
@@ -45,32 +45,32 @@
 #include "SDL_error.h"
 
 #include "begin_code.h"
-/* Set up for C function definitions, even when using C++ */
+ /* Set up for C function definitions, even when using C++ */
 #ifdef __cplusplus
 extern "C" {
 #endif
 
-/**
- *  This function dynamically loads a shared object and returns a pointer
- *  to the object handle (or NULL if there was an error).
- *  The 'sofile' parameter is a system dependent name of the object file.
- */
-extern DECLSPEC void *SDLCALL SDL_LoadObject(const char *sofile);
+	/**
+	 *  This function dynamically loads a shared object and returns a pointer
+	 *  to the object handle (or NULL if there was an error).
+	 *  The 'sofile' parameter is a system dependent name of the object file.
+	 */
+	extern DECLSPEC void* SDLCALL SDL_LoadObject(const char* sofile);
 
-/**
- *  Given an object handle, this function looks up the address of the
- *  named function in the shared object and returns it.  This address
- *  is no longer valid after calling SDL_UnloadObject().
- */
-extern DECLSPEC void *SDLCALL SDL_LoadFunction(void *handle,
-                                               const char *name);
+	/**
+	 *  Given an object handle, this function looks up the address of the
+	 *  named function in the shared object and returns it.  This address
+	 *  is no longer valid after calling SDL_UnloadObject().
+	 */
+	extern DECLSPEC void* SDLCALL SDL_LoadFunction(void* handle,
+		const char* name);
 
-/**
- *  Unload a shared object from memory.
- */
-extern DECLSPEC void SDLCALL SDL_UnloadObject(void *handle);
+	/**
+	 *  Unload a shared object from memory.
+	 */
+	extern DECLSPEC void SDLCALL SDL_UnloadObject(void* handle);
 
-/* Ends C function definitions when using C++ */
+	/* Ends C function definitions when using C++ */
 #ifdef __cplusplus
 }
 #endif
