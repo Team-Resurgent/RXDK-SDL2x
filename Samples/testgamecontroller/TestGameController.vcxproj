@@ -99,14 +99,14 @@
       <Message>Creating Xbox Image...</Message>
       <Command>"$(RXDK_LIBS)bin\patchSubsystem.exe" -i="$(OutDir)$(TargetFileName)" -s=0x000E
 "$(RXDK_LIBS)bin\imagebld.exe" /in:"$(OutDir)$(TargetFileName)" /out:"$(OutDir)$(TargetName).xbe" /nologo /stack:65536 /debug /nolibwarn
+MKDIR "$(OutDir)Build"
+COPY /Y "$(OutDir)$(TargetName).xbe" "$(OutDir)Build\default.xbe"
+COPY /Y "$(OutDir)..\axis.bmp" "$(OutDir)Build\axis.bmp"
+COPY /Y "$(OutDir)..\button.bmp" "$(OutDir)Build\button.bmp"
+COPY /Y "$(OutDir)..\controllermap.bmp" "$(OutDir)BUILD\controllermap.bmp"
 MKDIR "$(OutDir)XISO"
-COPY /Y "$(OutDir)$(TargetName).xbe" "$(OutDir)XISO\default.xbe"
-COPY /Y "$(OutDir)..\axis.bmp" "$(OutDir)XISO\axis.bmp"
-COPY /Y "$(OutDir)..\button.bmp" "$(OutDir)XISO\button.bmp"
-COPY /Y "$(OutDir)..\controllermap.bmp" "$(OutDir)XISO\controllermap.bmp"
-COPY /Y "$(OutDir)..\testgamecontroller.cpp" "$(OutDir)XISO\testgamecontroller.cpp"
-$(SolutionDir)Tools\extract-xiso.exe -c "$(OutDir)XISO" "$(OutDir)xiso.iso"
-RD /S /Q "$(OutDir)XISO"</Command>
+"$(SolutionDir)Tools\xdvdfs.exe" pack "$(OutDir)Build" "$(OutDir)XISO\$(ProjectName).iso"
+</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
