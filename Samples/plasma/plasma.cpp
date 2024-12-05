@@ -13,9 +13,7 @@
 #define WINDOW_HEIGHT 480
 #define SINE_TABLE_SIZE 360
 
-extern "C" void __cdecl __CxxFrameHandler3() {}
-
-static SDLTest_CommonState* state;
+static SDLTest_CommonState *state;
 int done;
 SDL_Texture* plasmaTexture = NULL;
 float sineTable[SINE_TABLE_SIZE];
@@ -69,18 +67,10 @@ void UpdatePlasma(Uint32 time) {
 void loop() {
 	SDL_Event event;
 
-	try {
-		std::string str = "Test";
-		std::string large_str = str.assign(1000000, 'x'); // Force a length_error
-	}
-	catch (const std::length_error& e) {
-		std::cerr << "Caught exception: " << e.what() << std::endl;
-	}
-
-	// Handle events
-	while (SDL_PollEvent(&event)) {
-		SDLTest_CommonEvent(state, &event, &done);
-	}
+    // Handle events
+    while (SDL_PollEvent(&event)) {
+        SDLTest_CommonEvent(state, &event, &done);
+    }
 
 	for (int i = 0; i < state->num_windows; ++i) {
 		SDL_Renderer* renderer = state->renderers[i];

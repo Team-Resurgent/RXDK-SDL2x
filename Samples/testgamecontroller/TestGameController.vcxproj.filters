@@ -9,10 +9,24 @@
       <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
       <Extensions>h;hpp;hxx;hm;inl;inc;xsd</Extensions>
     </Filter>
+    <Filter Include="Media">
+      <UniqueIdentifier>{1cc7a4db-a18a-44ab-b800-c4bf166c7b6d}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="testgamecontroller.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="Media\axis.bmp">
+      <Filter>Media</Filter>
+    </Image>
+    <Image Include="Media\button.bmp">
+      <Filter>Media</Filter>
+    </Image>
+    <Image Include="Media\controllermap.bmp">
+      <Filter>Media</Filter>
+    </Image>
   </ItemGroup>
 </Project>

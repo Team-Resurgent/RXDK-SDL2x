@@ -9,10 +9,18 @@
       <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
       <Extensions>h;hpp;hxx;hm;inl;inc;xsd</Extensions>
     </Filter>
+    <Filter Include="Media">
+      <UniqueIdentifier>{895ff9d2-5656-497e-ad44-c2d4842aeeea}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="loopwave.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <Media Include="Media\sample.wav">
+      <Filter>Media</Filter>
+    </Media>
   </ItemGroup>
 </Project>

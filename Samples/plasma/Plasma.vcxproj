@@ -99,10 +99,10 @@
       <Message>Creating Xbox Image...</Message>
       <Command>"$(RXDK_LIBS)bin\patchSubsystem.exe" -i="$(OutDir)$(TargetFileName)" -s=0x000E
 "$(RXDK_LIBS)bin\imagebld.exe" /in:"$(OutDir)$(TargetFileName)" /out:"$(OutDir)$(TargetName).xbe" /nologo /stack:65536 /debug /nolibwarn
-MKDIR "$(OutDir)Build"
-COPY /Y "$(OutDir)$(TargetName).xbe" "$(OutDir)Build\default.xbe"
-MKDIR "$(OutDir)XISO"
-"$(SolutionDir)Tools\xdvdfs.exe" pack "$(OutDir)Build" "$(OutDir)XISO\$(ProjectName).iso"</Command>
+MKDIR "$(OutDir)BUILD"
+COPY /Y "$(OutDir)$(TargetName).xbe" "$(OutDir)BUILD\default.xbe"
+XCOPY /I /E /S /Y /F "$(ProjectDir)Media\*" "$(OutDir)BUILD"
+"$(RXDK_LIBS)bin\xdvdfs.exe" pack "$(OutDir)BUILD" "$(OutDir)$(ProjectName).iso"</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -141,10 +141,10 @@ MKDIR "$(OutDir)XISO"
       <Message>Creating Xbox Image...</Message>
       <Command>"$(RXDK_LIBS)bin\patchSubsystem.exe" -i="$(OutDir)$(TargetFileName)" -s=0x000E
 "$(RXDK_LIBS)bin\imagebld.exe" /in:"$(OutDir)$(TargetFileName)" /out:"$(OutDir)$(TargetName).xbe" /nologo /stack:65536 /debug /nolibwarn
-MKDIR "$(OutDir)XISO"
-COPY /Y "$(OutDir)$(TargetName).xbe" "$(OutDir)XISO\default.xbe"
-$(SolutionDir)Tools\extract-xiso.exe -c "$(OutDir)XISO" "$(OutDir)xiso.iso"
-RD /S /Q "$(OutDir)XISO"</Command>
+MKDIR "$(OutDir)BUILD"
+COPY /Y "$(OutDir)$(TargetName).xbe" "$(OutDir)BUILD\default.xbe"
+XCOPY /I /E /S /Y /F "$(ProjectDir)Media\*" "$(OutDir)BUILD"
+"$(RXDK_LIBS)bin\xdvdfs.exe" pack "$(OutDir)BUILD" "$(OutDir)$(ProjectName).iso"</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup Label="ProjectConfigurations">

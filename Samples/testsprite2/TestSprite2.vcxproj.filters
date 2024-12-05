@@ -9,10 +9,18 @@
       <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
       <Extensions>h;hpp;hxx;hm;inl;inc;xsd</Extensions>
     </Filter>
+    <Filter Include="Media">
+      <UniqueIdentifier>{a0b89e81-5113-45ec-9d64-743d87aa5914}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="testsprite2.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="Media\icon.bmp">
+      <Filter>Media</Filter>
+    </Image>
   </ItemGroup>
 </Project>

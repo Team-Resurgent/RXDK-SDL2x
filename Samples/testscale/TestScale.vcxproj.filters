@@ -9,10 +9,21 @@
       <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
       <Extensions>h;hpp;hxx;hm;inl;inc;xsd</Extensions>
     </Filter>
+    <Filter Include="Media">
+      <UniqueIdentifier>{bd143292-73c5-42b3-b354-f21f6bfbf2bd}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="testscale.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="Media\icon.bmp">
+      <Filter>Media</Filter>
+    </Image>
+    <Image Include="Media\sample.bmp">
+      <Filter>Media</Filter>
+    </Image>
   </ItemGroup>
 </Project>
