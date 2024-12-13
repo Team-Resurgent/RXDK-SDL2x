@@ -398,6 +398,13 @@ SDL_Quit(void)
 	SDL_memset(SDL_SubsystemRefCount, 0x0, sizeof(SDL_SubsystemRefCount));
 
 	SDL_bInMainQuit = SDL_FALSE;
+
+#ifdef XBOX
+	/* Xbox-specific behavior: Return to dashboard */
+	SDL_Log("SDL_Quit: Returning to Xbox dashboard...\n");
+	HalWriteSMBusValue(0x20, 0x1B, FALSE, 0x08 | 0x04);
+	HalReturnToFirmware(1);
+#endif
 }
 
 /* Get the library version number */

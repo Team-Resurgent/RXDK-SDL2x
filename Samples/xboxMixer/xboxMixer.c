@@ -39,8 +39,8 @@ int main(int argc, char* argv[]) {
 	Renderer = SDL_CreateRenderer(MainWindow, -1, SDL_RENDERER_ACCELERATED);
 
 	/* Load Assets */
-	Background = LoadTextureFromFile(Renderer, "D:\\texture.bmp");
-	Music = Mix_LoadMUS("D:\\Deja_Vu.wav");
+	Background = LoadTextureFromFile(Renderer, "D:\\Lose_my_breath.bmp");
+	Music = Mix_LoadMUS("D:\\lose-my-breath.wav");
 
 	/* Play Music */
 	Mix_PlayMusic(Music, -1);

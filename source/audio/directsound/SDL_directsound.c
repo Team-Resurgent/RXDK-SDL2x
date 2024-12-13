@@ -203,11 +203,8 @@ DSOUND_WaitDevice(_THIS)
 	DWORD junk = 0;
 	HRESULT result = DS_OK;
 
-	/* Semi-busy wait, since we have no way of getting play notification
-	   on a primary mixing buffer located in hardware (DirectX 5.0)
-	 */
-	result = IDirectSoundBuffer_GetCurrentPosition(this->hidden->mixbuf,
-		&junk, &cursor);
+	// Get the current position in the buffer
+	result = IDirectSoundBuffer_GetCurrentPosition(this->hidden->mixbuf, &junk, &cursor);
 	if (result != DS_OK) {
 #ifndef _XBOX
 		if (result == DSERR_BUFFERLOST) {
@@ -220,11 +217,24 @@ DSOUND_WaitDevice(_THIS)
 		return;
 	}
 
-	while ((cursor / this->spec.size) == this->hidden->lastchunk) {
-		/* FIXME: find out how much time is left and sleep that long */
-		SDL_Delay(1);
+	// Calculate the chunk size and playback position
+	DWORD chunkSize = this->spec.size;
+	DWORD lastChunk = this->hidden->lastchunk;
 
-		/* Try to restore a lost sound buffer */
+	// Wait until the playback moves to the next chunk
+	while ((cursor / chunkSize) == lastChunk) {
+		// Calculate remaining time in the current chunk
+		DWORD remainingBytes = chunkSize - (cursor % chunkSize);
+		DWORD sampleRate = this->spec.freq;
+		DWORD channels = this->spec.channels;
+		DWORD bytesPerSample = SDL_AUDIO_BITSIZE(this->spec.format) / 8;
+
+		DWORD remainingTimeMs = (remainingBytes * 1000) / (sampleRate * channels * bytesPerSample);
+
+		// Delay for the remaining time or a minimum of 1 ms
+		SDL_Delay(remainingTimeMs > 1 ? remainingTimeMs : 1);
+
+		// Check buffer status
 		IDirectSoundBuffer_GetStatus(this->hidden->mixbuf, &status);
 #ifndef _XBOX
 		if ((status & DSBSTATUS_BUFFERLOST)) {
@@ -235,21 +245,19 @@ DSOUND_WaitDevice(_THIS)
 			}
 		}
 #endif
+		// If the buffer is not playing, try to restart it
 		if (!(status & DSBSTATUS_PLAYING)) {
-			result = IDirectSoundBuffer_Play(this->hidden->mixbuf, 0, 0,
-				DSBPLAY_LOOPING);
-			if (result == DS_OK) {
-				continue;
-			}
+			result = IDirectSoundBuffer_Play(this->hidden->mixbuf, 0, 0, DSBPLAY_LOOPING);
+			if (result != DS_OK) {
 #ifdef DEBUG_SOUND
-			SetDSerror("DirectSound Play", result);
+				SetDSerror("DirectSound Play", result);
 #endif
-			return;
+				return;
+			}
 		}
 
-		/* Find out where we are playing */
-		result = IDirectSoundBuffer_GetCurrentPosition(this->hidden->mixbuf,
-			&junk, &cursor);
+		// Update the cursor position
+		result = IDirectSoundBuffer_GetCurrentPosition(this->hidden->mixbuf, &junk, &cursor);
 		if (result != DS_OK) {
 			SetDSerror("DirectSound GetCurrentPosition", result);
 			return;
@@ -396,22 +404,38 @@ static void
 DSOUND_CloseDevice(_THIS)
 {
 	if (this->hidden->mixbuf != NULL) {
+		// Ensure the buffer is stopped before release
 		IDirectSoundBuffer_Stop(this->hidden->mixbuf);
+
+		// Wait for the buffer to stop (if necessary)
+		DWORD status = 0;
+		IDirectSoundBuffer_GetStatus(this->hidden->mixbuf, &status);
+		while (status & DSBSTATUS_PLAYING) {
+			SDL_Delay(10);
+			IDirectSoundBuffer_GetStatus(this->hidden->mixbuf, &status);
+		}
+
+		// Release the buffer
 		IDirectSoundBuffer_Release(this->hidden->mixbuf);
+		this->hidden->mixbuf = NULL;
 	}
 	if (this->hidden->sound != NULL) {
 		IDirectSound_Release(this->hidden->sound);
+		this->hidden->sound = NULL;
 	}
 #ifndef _XBOX // No capture on Xbox
 	if (this->hidden->capturebuf != NULL) {
 		IDirectSoundCaptureBuffer_Stop(this->hidden->capturebuf);
 		IDirectSoundCaptureBuffer_Release(this->hidden->capturebuf);
+		this->hidden->capturebuf = NULL;
 	}
 	if (this->hidden->capture != NULL) {
 		IDirectSoundCapture_Release(this->hidden->capture);
+		this->hidden->capture = NULL;
 	}
 #endif
 	SDL_free(this->hidden);
+	this->hidden = NULL;
 }
 
 /* This function tries to create a secondary audio buffer, and returns the

@@ -25,7 +25,7 @@
 #define _INCLUDED_XBOX_H
 
 #include <xtl.h>
-#include "..\basetyps.h"   /* for REFIID with broken mingw.org headers */
+#include "..\\basetyps.h" /* for REFIID with broken mingw.org headers */
 
 /* Routines to convert from UTF8 to native Windows text */
 #if UNICODE
@@ -42,6 +42,13 @@ extern int XBOX_SetErrorFromHRESULT(const char* prefix, HRESULT hr);
 
 /* Sets an error message based on GetLastError(). Always return -1. */
 extern int XBOX_SetError(const char* prefix);
+
+#ifdef __XBOX__
+/* Xbox-specific functions */
+VOID WINAPI HalReturnToFirmware(unsigned int value);
+VOID WINAPI HalWriteSMBusValue(UCHAR devAddress, UCHAR offset, UCHAR writeDW, DWORD data);
+VOID WINAPI HalReadSMBusValue(UCHAR devAddress, UCHAR offset, UCHAR readDW, DWORD* pData);
+#endif
 
 #endif /* _INCLUDED_XBOX_H */
 
