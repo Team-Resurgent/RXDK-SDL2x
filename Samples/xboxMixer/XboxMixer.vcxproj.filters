@@ -18,4 +18,14 @@
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
+  <ItemGroup>
+    <Image Include="Media\Lose_my_breath.bmp">
+      <Filter>Media</Filter>
+    </Image>
+  </ItemGroup>
+  <ItemGroup>
+    <Media Include="Media\lose-my-breath.wav">
+      <Filter>Media</Filter>
+    </Media>
+  </ItemGroup>
 </Project>

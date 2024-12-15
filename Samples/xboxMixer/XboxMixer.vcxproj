@@ -152,6 +152,12 @@ MKDIR "$(OutDir)XISO"
   <ItemGroup Label="ProjectConfigurations">
     <ClCompile Include="xboxMixer.c" />
   </ItemGroup>
+  <ItemGroup>
+    <Image Include="Media\Lose_my_breath.bmp" />
+  </ItemGroup>
+  <ItemGroup>
+    <Media Include="Media\lose-my-breath.wav" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>

@@ -43,6 +43,9 @@ static LARGE_INTEGER hires_start_ticks;
 /* The number of ticks per second of the high-resolution performance counter */
 static LARGE_INTEGER hires_ticks_per_second;
 
+ULONGLONG NTAPI KeQueryPerformanceFrequency(void);
+ULONGLONG NTAPI KeQueryPerformanceCounter(void);
+
 static void
 SDL_SetSystemTimerResolution(const UINT uPeriod)
 {
@@ -94,9 +97,12 @@ SDL_TicksInit(void)
 		SDL_TimerResolutionChanged, NULL);
 
 	/* Set first ticks value */
-	/* QueryPerformanceCounter has had problems in the past, but lots of games
-	   use it, so we'll rely on it here.
-	 */
+#ifdef XBOX
+	// On Xbox, use KeQueryPerformanceCounter and KeQueryPerformanceFrequency
+	hires_timer_available = TRUE; // Assume high-resolution timer is always available on Xbox
+	hires_ticks_per_second.QuadPart = KeQueryPerformanceFrequency();
+	hires_start_ticks.QuadPart = KeQueryPerformanceCounter();
+#else
 	if (QueryPerformanceFrequency(&hires_ticks_per_second) == TRUE) {
 		hires_timer_available = TRUE;
 		QueryPerformanceCounter(&hires_start_ticks);
@@ -107,6 +113,7 @@ SDL_TicksInit(void)
 		start = timeGetTime();
 #endif /* __WINRT__ */
 	}
+#endif
 }
 
 void
@@ -122,8 +129,24 @@ SDL_TicksQuit(void)
 }
 
 Uint32
-SDL_GetTicks(void)
-{
+SDL_GetTicks(void) {
+#ifdef XBOX
+	// Use KeQueryPerformanceCounter for high-resolution timing on Xbox
+	if (!ticks_started) {
+		SDL_TicksInit();
+	}
+
+	ULONGLONG counter = KeQueryPerformanceCounter();
+	ULONGLONG frequency = KeQueryPerformanceFrequency();
+
+	if (frequency > 0) {
+		return (Uint32)((counter * 1000) / frequency); // Convert to milliseconds
+	}
+	else {
+		// Fallback: Use SDL_GetPerformanceFrequency's fallback value
+		return SDL_GetPerformanceCounter() / SDL_GetPerformanceFrequency();
+	}
+#else
 	DWORD now = 0;
 	LARGE_INTEGER hires_now;
 
@@ -147,28 +170,39 @@ SDL_GetTicks(void)
 	}
 
 	return (now - start);
+#endif
 }
 
 Uint64
-SDL_GetPerformanceCounter(void)
-{
+SDL_GetPerformanceCounter(void) {
+#ifdef XBOX
+	// Use KeQueryPerformanceCounter for Xbox
+	ULONGLONG count = KeQueryPerformanceCounter();
+	return count;
+#else
 	LARGE_INTEGER counter;
 
 	if (!QueryPerformanceCounter(&counter)) {
 		return SDL_GetTicks();
 	}
 	return counter.QuadPart;
+#endif
 }
 
 Uint64
-SDL_GetPerformanceFrequency(void)
-{
+SDL_GetPerformanceFrequency(void) {
+#ifdef XBOX
+	// Use KeQueryPerformanceFrequency for Xbox
+	ULONGLONG freq = KeQueryPerformanceFrequency();
+	return freq;
+#else
 	LARGE_INTEGER frequency;
 
 	if (!QueryPerformanceFrequency(&frequency)) {
-		return 1000;
+		return 1000; // Fallback for systems without high-resolution timers
 	}
 	return frequency.QuadPart;
+#endif
 }
 
 void
