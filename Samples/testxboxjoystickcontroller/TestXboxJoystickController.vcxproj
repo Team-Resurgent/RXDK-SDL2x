@@ -13,10 +13,10 @@
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
     <Keyword>Win32Proj</Keyword>
-    <ProjectGuid>{0D4387C1-7F3F-4027-8FD8-A85A7CC9790A}</ProjectGuid>
-    <RootNamespace>TestScale</RootNamespace>
+    <ProjectGuid>{80AF5321-E112-4564-B023-DF14180E82FC}</ProjectGuid>
+    <RootNamespace>TestXboxJoystickController</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
-    <ProjectName>TestScale</ProjectName>
+    <ProjectName>TestXboxJoystickController</ProjectName>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
@@ -62,7 +62,7 @@
     <SourcePath />
     <ExcludePath>$(CommonExcludePath);$(VC_ExecutablePath_x86);$(RXDK_LIBS)lib</ExcludePath>
     <ReferencePath>$(RXDK_LIBS)lib</ReferencePath>
-    <LibraryPath>$(RXDK_LIBS)lib;..\..\Release</LibraryPath>
+    <LibraryPath>$(RXDK_LIBS)lib;..\..\Release;..\..\libSDL2x_mixer\Release</LibraryPath>
     <OutDir>$(ProjectDir)$(Configuration)\</OutDir>
     <LinkIncremental>false</LinkIncremental>
   </PropertyGroup>
@@ -70,7 +70,7 @@
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <SDLCheck>false</SDLCheck>
-      <PreprocessorDefinitions>XBOX;_XBOX;_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>XBOX;_XBOX;_DEBUG;XBOX_DEBUG_LOGGING</PreprocessorDefinitions>
       <ConformanceMode>false</ConformanceMode>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <AdditionalIncludeDirectories>..\..\include</AdditionalIncludeDirectories>
@@ -115,7 +115,7 @@ MKDIR "$(OutDir)XISO"
       <PreprocessorDefinitions>XBOX;_XBOX;NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>false</ConformanceMode>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
-      <AdditionalIncludeDirectories>..\..\include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\libSDL2x_mixer\include;..\..\include</AdditionalIncludeDirectories>
       <BufferSecurityCheck>false</BufferSecurityCheck>
       <ExceptionHandling>Sync</ExceptionHandling>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
@@ -128,7 +128,7 @@ MKDIR "$(OutDir)XISO"
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>xboxkrnl.lib;libcmt.lib;xapilib.lib;d3d8.lib;d3dx8.lib;dsound.lib;xkbd.lib;libsdl2x.lib</AdditionalDependencies>
+      <AdditionalDependencies>xboxkrnl.lib;libcmt.lib;xapilib.lib;d3d8.lib;d3dx8.lib;dsound.lib;xkbd.lib;libsdl2x.lib;libSDL2x_mixer.lib</AdditionalDependencies>
       <IgnoreAllDefaultLibraries>true</IgnoreAllDefaultLibraries>
       <BaseAddress>
       </BaseAddress>
@@ -150,11 +150,7 @@ MKDIR "$(OutDir)XISO"
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup Label="ProjectConfigurations">
-    <ClCompile Include="testscale.cpp" />
-  </ItemGroup>
-  <ItemGroup>
-    <Image Include="Media\icon.bmp" />
-    <Image Include="Media\sample.bmp" />
+    <ClCompile Include="TestXboxJoystickController.c" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
