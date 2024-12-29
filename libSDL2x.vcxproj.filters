@@ -56,9 +56,6 @@
     <Filter Include="Source Files\cpuinfo">
       <UniqueIdentifier>{aaa2ee14-3320-461e-8abb-bd2dffb60da9}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files\libm">
-      <UniqueIdentifier>{21ddd599-bf96-447d-94d0-5366221d7722}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Source Files\events">
       <UniqueIdentifier>{2eaafed4-25de-4c94-a16a-311abbc4097d}</UniqueIdentifier>
     </Filter>
@@ -286,66 +283,6 @@
     </ClCompile>
     <ClCompile Include="source\cpuinfo\SDL_cpuinfo.c">
       <Filter>Source Files\cpuinfo</Filter>
-    </ClCompile>
-    <ClCompile Include="source\libm\e_atan2.c">
-      <Filter>Source Files\libm</Filter>
-    </ClCompile>
-    <ClCompile Include="source\libm\e_exp.c">
-      <Filter>Source Files\libm</Filter>
-    </ClCompile>
-    <ClCompile Include="source\libm\e_fmod.c">
-      <Filter>Source Files\libm</Filter>
-    </ClCompile>
-    <ClCompile Include="source\libm\e_log.c">
-      <Filter>Source Files\libm</Filter>
-    </ClCompile>
-    <ClCompile Include="source\libm\e_log10.c">
-      <Filter>Source Files\libm</Filter>
-    </ClCompile>
-    <ClCompile Include="source\libm\e_pow.c">
-      <Filter>Source Files\libm</Filter>
-    </ClCompile>
-    <ClCompile Include="source\libm\e_rem_pio2.c">
-      <Filter>Source Files\libm</Filter>
-    </ClCompile>
-    <ClCompile Include="source\libm\e_sqrt.c">
-      <Filter>Source Files\libm</Filter>
-    </ClCompile>
-    <ClCompile Include="source\libm\k_cos.c">
-      <Filter>Source Files\libm</Filter>
-    </ClCompile>
-    <ClCompile Include="source\libm\k_rem_pio2.c">
-      <Filter>Source Files\libm</Filter>
-    </ClCompile>
-    <ClCompile Include="source\libm\k_sin.c">
-      <Filter>Source Files\libm</Filter>
-    </ClCompile>
-    <ClCompile Include="source\libm\k_tan.c">
-      <Filter>Source Files\libm</Filter>
-    </ClCompile>
-    <ClCompile Include="source\libm\s_atan.c">
-      <Filter>Source Files\libm</Filter>
-    </ClCompile>
-    <ClCompile Include="source\libm\s_copysign.c">
-      <Filter>Source Files\libm</Filter>
-    </ClCompile>
-    <ClCompile Include="source\libm\s_cos.c">
-      <Filter>Source Files\libm</Filter>
-    </ClCompile>
-    <ClCompile Include="source\libm\s_fabs.c">
-      <Filter>Source Files\libm</Filter>
-    </ClCompile>
-    <ClCompile Include="source\libm\s_floor.c">
-      <Filter>Source Files\libm</Filter>
-    </ClCompile>
-    <ClCompile Include="source\libm\s_scalbn.c">
-      <Filter>Source Files\libm</Filter>
-    </ClCompile>
-    <ClCompile Include="source\libm\s_sin.c">
-      <Filter>Source Files\libm</Filter>
-    </ClCompile>
-    <ClCompile Include="source\libm\s_tan.c">
-      <Filter>Source Files\libm</Filter>
     </ClCompile>
     <ClCompile Include="source\events\SDL_events.c">
       <Filter>Source Files\events</Filter>
@@ -594,12 +531,6 @@
     </ClInclude>
     <ClInclude Include="source\core\xbox\SDL_xbox.h">
       <Filter>Source Files\core\xbox</Filter>
-    </ClInclude>
-    <ClInclude Include="source\libm\math_libm.h">
-      <Filter>Source Files\libm</Filter>
-    </ClInclude>
-    <ClInclude Include="source\libm\math_private.h">
-      <Filter>Source Files\libm</Filter>
     </ClInclude>
     <ClInclude Include="source\events\SDL_events_c.h">
       <Filter>Source Files\events</Filter>

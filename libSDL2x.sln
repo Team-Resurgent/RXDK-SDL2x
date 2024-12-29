@@ -76,6 +76,11 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ShowImage", "Samples\showim
 		{A9BE8326-536F-42C4-8022-32F42D472DE4} = {A9BE8326-536F-42C4-8022-32F42D472DE4}
 	EndProjectSection
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "TestXboxJoystickController", "Samples\testxboxjoystickcontroller\TestXboxJoystickController.vcxproj", "{80AF5321-E112-4564-B023-DF14180E82FC}"
+	ProjectSection(ProjectDependencies) = postProject
+		{7C481C7D-ECA7-4F9E-879C-105784F3543D} = {7C481C7D-ECA7-4F9E-879C-105784F3543D}
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x86 = Debug|x86
@@ -142,6 +147,10 @@ Global
 		{34202D7F-1F0A-47A9-B835-23B5C3EB9CCA}.Debug|x86.Build.0 = Debug|Win32
 		{34202D7F-1F0A-47A9-B835-23B5C3EB9CCA}.Release|x86.ActiveCfg = Release|Win32
 		{34202D7F-1F0A-47A9-B835-23B5C3EB9CCA}.Release|x86.Build.0 = Release|Win32
+		{80AF5321-E112-4564-B023-DF14180E82FC}.Debug|x86.ActiveCfg = Debug|Win32
+		{80AF5321-E112-4564-B023-DF14180E82FC}.Debug|x86.Build.0 = Debug|Win32
+		{80AF5321-E112-4564-B023-DF14180E82FC}.Release|x86.ActiveCfg = Release|Win32
+		{80AF5321-E112-4564-B023-DF14180E82FC}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -159,6 +168,7 @@ Global
 		{84226336-A1D8-47F3-A321-D02AA0EA984F} = {08C06746-811D-40D7-8A41-0FFBBE0049A5}
 		{AC5891F2-795B-4D53-AFAA-AF4893E00CDC} = {08C06746-811D-40D7-8A41-0FFBBE0049A5}
 		{34202D7F-1F0A-47A9-B835-23B5C3EB9CCA} = {08C06746-811D-40D7-8A41-0FFBBE0049A5}
+		{80AF5321-E112-4564-B023-DF14180E82FC} = {08C06746-811D-40D7-8A41-0FFBBE0049A5}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {0A16CDAF-36CC-4E42-94AC-D4F421962F63}

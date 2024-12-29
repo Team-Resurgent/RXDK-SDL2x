@@ -36,26 +36,6 @@
     <ClCompile Include="source\joystick\SDL_gamecontroller.c" />
     <ClCompile Include="source\joystick\SDL_joystick.c" />
     <ClCompile Include="source\joystick\xbox\SDL_sysjoystick.c" />
-    <ClCompile Include="source\libm\e_atan2.c" />
-    <ClCompile Include="source\libm\e_exp.c" />
-    <ClCompile Include="source\libm\e_fmod.c" />
-    <ClCompile Include="source\libm\e_log.c" />
-    <ClCompile Include="source\libm\e_log10.c" />
-    <ClCompile Include="source\libm\e_pow.c" />
-    <ClCompile Include="source\libm\e_rem_pio2.c" />
-    <ClCompile Include="source\libm\e_sqrt.c" />
-    <ClCompile Include="source\libm\k_cos.c" />
-    <ClCompile Include="source\libm\k_rem_pio2.c" />
-    <ClCompile Include="source\libm\k_sin.c" />
-    <ClCompile Include="source\libm\k_tan.c" />
-    <ClCompile Include="source\libm\s_atan.c" />
-    <ClCompile Include="source\libm\s_copysign.c" />
-    <ClCompile Include="source\libm\s_cos.c" />
-    <ClCompile Include="source\libm\s_fabs.c" />
-    <ClCompile Include="source\libm\s_floor.c" />
-    <ClCompile Include="source\libm\s_scalbn.c" />
-    <ClCompile Include="source\libm\s_sin.c" />
-    <ClCompile Include="source\libm\s_tan.c" />
     <ClCompile Include="source\loadso\dummy\SDL_sysloadso.c" />
     <ClCompile Include="source\power\SDL_power.c" />
     <ClCompile Include="source\power\xbox\SDL_syspower.c" />
@@ -217,8 +197,6 @@
     <ClInclude Include="source\joystick\SDL_gamecontrollerdb.h" />
     <ClInclude Include="source\joystick\SDL_joystick_c.h" />
     <ClInclude Include="source\joystick\SDL_sysjoystick.h" />
-    <ClInclude Include="source\libm\math_libm.h" />
-    <ClInclude Include="source\libm\math_private.h" />
     <ClInclude Include="source\power\SDL_syspower.h" />
     <ClInclude Include="source\render\SDL_d3dmath.h" />
     <ClInclude Include="source\render\SDL_sysrender.h" />
@@ -275,13 +253,13 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
     <ConfigurationType>StaticLibrary</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
-    <PlatformToolset>v142</PlatformToolset>
+    <PlatformToolset>v143</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
     <ConfigurationType>StaticLibrary</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
-    <PlatformToolset>v142</PlatformToolset>
+    <PlatformToolset>v143</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
@@ -325,7 +303,7 @@
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <SDLCheck>false</SDLCheck>
-      <PreprocessorDefinitions>XBOX;_XBOX;__XBOX__;_LIB;_DEBUG;XBOX_DEBUG_LOGGING;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>XBOX;_XBOX;__XBOX__;_LIB;_DEBUG;XBOX_DEBUG_LOGGING</PreprocessorDefinitions>
       <ConformanceMode>false</ConformanceMode>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <AdditionalIncludeDirectories>include</AdditionalIncludeDirectories>
