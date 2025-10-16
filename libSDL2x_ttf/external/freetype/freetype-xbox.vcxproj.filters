@@ -1,0 +1,120 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;c++;cppm;ixx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;h++;hm;inl;inc;ipp;xsd</Extensions>
+    </Filter>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="Source Files\sfnt">
+      <UniqueIdentifier>{103e4176-cdc3-4c45-94a8-21ef8449c2e3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\base">
+      <UniqueIdentifier>{a7e7e54b-5c20-44b2-b6dd-299bd79d0a77}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\truetype">
+      <UniqueIdentifier>{3791d9c9-06cd-4fd8-a4fc-9035d5c61c76}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\raster">
+      <UniqueIdentifier>{56f20124-13e3-4fca-b8f6-48e6793a829b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\smooth">
+      <UniqueIdentifier>{52b60ce7-f4bf-458f-9a23-f99c5fd15efb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\autofit">
+      <UniqueIdentifier>{3ad45968-4573-452d-a74e-159f17ee7cc1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\psnames">
+      <UniqueIdentifier>{865d0b0b-c8cb-423c-bb96-9b47d14e8b70}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\psaux">
+      <UniqueIdentifier>{036b36e6-78d0-4aca-858f-90abecb43fb4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\pshinter">
+      <UniqueIdentifier>{f132c1f8-1cec-4181-941d-c27404f5e78b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\cff">
+      <UniqueIdentifier>{fc636820-a65c-4c0e-afe7-bcd395710985}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\type1">
+      <UniqueIdentifier>{56f25662-6138-4619-9c3e-84be86001345}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\type42">
+      <UniqueIdentifier>{7b28ae53-bc36-4595-8c37-02d0b4c8f069}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="src\autofit\autofit.c">
+      <Filter>Source Files\autofit</Filter>
+    </ClCompile>
+    <ClCompile Include="src\base\ftbase.c">
+      <Filter>Source Files\base</Filter>
+    </ClCompile>
+    <ClCompile Include="src\base\ftbitmap.c">
+      <Filter>Source Files\base</Filter>
+    </ClCompile>
+    <ClCompile Include="src\base\ftdebug.c">
+      <Filter>Source Files\base</Filter>
+    </ClCompile>
+    <ClCompile Include="src\base\ftglyph.c">
+      <Filter>Source Files\base</Filter>
+    </ClCompile>
+    <ClCompile Include="src\base\ftinit.c">
+      <Filter>Source Files\base</Filter>
+    </ClCompile>
+    <ClCompile Include="src\base\ftmm.c">
+      <Filter>Source Files\base</Filter>
+    </ClCompile>
+    <ClCompile Include="src\base\ftstroke.c">
+      <Filter>Source Files\base</Filter>
+    </ClCompile>
+    <ClCompile Include="src\base\ftsystem.c">
+      <Filter>Source Files\base</Filter>
+    </ClCompile>
+    <ClCompile Include="src\sfnt\sfnt.c">
+      <Filter>Source Files\sfnt</Filter>
+    </ClCompile>
+    <ClCompile Include="src\truetype\truetype.c">
+      <Filter>Source Files\truetype</Filter>
+    </ClCompile>
+    <ClCompile Include="src\raster\raster.c">
+      <Filter>Source Files\raster</Filter>
+    </ClCompile>
+    <ClCompile Include="src\smooth\smooth.c">
+      <Filter>Source Files\smooth</Filter>
+    </ClCompile>
+    <ClCompile Include="src\psnames\psnames.c">
+      <Filter>Source Files\psnames</Filter>
+    </ClCompile>
+    <ClCompile Include="src\psaux\psaux.c">
+      <Filter>Source Files\psaux</Filter>
+    </ClCompile>
+    <ClCompile Include="src\pshinter\pshinter.c">
+      <Filter>Source Files\pshinter</Filter>
+    </ClCompile>
+    <ClCompile Include="src\cff\cff.c">
+      <Filter>Source Files\cff</Filter>
+    </ClCompile>
+    <ClCompile Include="src\type1\type1.c">
+      <Filter>Source Files\type1</Filter>
+    </ClCompile>
+    <ClCompile Include="src\type42\type42.c">
+      <Filter>Source Files\type42</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="include\freetype\config\ftmodule.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\freetype\internal\ftcalc.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+</Project>
