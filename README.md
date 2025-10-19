@@ -14,6 +14,8 @@ This project has been updated to work with **RXDK**, which provides a modern dev
 ## ✅ Working SDL2 Addons
 
 - **SDL2 Mixer**: Fully functional and integrated into the port.
+- **SDL2 Image**: Fully functional and integrated into the port.
+- **SDL2 TTF**:   Fully functional and integrated into the port.
 
 ---
 
