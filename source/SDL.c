@@ -402,8 +402,9 @@ SDL_Quit(void)
 #ifdef XBOX
 	/* Xbox-specific behavior: Return to dashboard */
 	SDL_Log("SDL_Quit: Returning to Xbox dashboard...\n");
-	HalWriteSMBusValue(0x20, 0x1B, FALSE, 0x08 | 0x04);
-	HalReturnToFirmware(1);
+	//HalWriteSMBusValue(0x20, 0x1B, FALSE, 0x08 | 0x04);
+	//HalReturnToFirmware(1);
+	HalReturnToFirmware(2);
 #endif
 }
 

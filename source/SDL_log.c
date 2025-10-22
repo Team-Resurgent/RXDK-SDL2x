@@ -297,7 +297,27 @@ SDL_LogMessageV(int category, SDL_LogPriority priority, const char* fmt, va_list
 	SDL_vsnprintf(message, SDL_MAX_LOG_MESSAGE, fmt, ap);
 
 #if defined(_XBOX) && defined(XBOX_DEBUG_LOGGING) && defined(_DEBUG)
-	OutputDebugString(message);
+/* Convert UTF-8 -> UTF-16 locally and append CRLF */
+int wlen = MultiByteToWideChar(CP_UTF8, 0, message, -1, NULL, 0);
+if (wlen > 0) {
+	WCHAR* wmsg = (WCHAR*)SDL_stack_alloc(WCHAR, wlen);
+	if (wmsg) {
+		MultiByteToWideChar(CP_UTF8, 0, message, -1, wmsg, wlen);
+		OutputDebugStringW(wmsg);
+		OutputDebugStringW(L"\r\n");
+		SDL_stack_free(wmsg);
+	}
+	else {
+		/* Fallback: at least emit something */
+		OutputDebugStringA(message);
+		OutputDebugStringA("\r\n");
+	}
+}
+else {
+	/* Fallback if conversion fails */
+	OutputDebugStringA(message);
+	OutputDebugStringA("\r\n");
+}
 #endif
 
 	/* Chop off final endline. */
