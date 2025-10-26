@@ -30,7 +30,7 @@ XBOX_PumpEvents(_THIS)
 {
 	// Xbox keyboard and mouse
 	XBOX_UpdateKeyboard();
-	SDL_GetMouse()->UpdateMouseState();
+	//SDL_GetMouse()->UpdateMouseState();
 }
 
 #endif /* SDL_VIDEO_DRIVER_XBOX */

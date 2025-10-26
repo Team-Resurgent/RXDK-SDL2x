@@ -177,7 +177,7 @@ XBOX_CreateDevice(int devindex)
 	device->SetWindowFullscreen = NULL;
 	device->SetWindowGammaRamp = NULL;
 	device->GetWindowGammaRamp = NULL;
-	device->SetWindowGrab = XBOX_SetWindowGrab;
+	//device->SetWindowGrab = XBOX_SetWindowGrab;
 	device->DestroyWindow = XBOX_DestroyWindow;
 	device->GetWindowWMInfo = NULL;
 
@@ -269,7 +269,7 @@ XBOX_VideoInit(_THIS)
 	display.current_mode = current_mode;
 	display.driverdata = NULL;
 
-	SDL_AddVideoDisplay(&display);
+	SDL_AddVideoDisplay(&display, SDL_FALSE);
 
 	return 0;
 }

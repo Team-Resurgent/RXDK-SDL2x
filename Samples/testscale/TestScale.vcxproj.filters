@@ -14,7 +14,10 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="testscale.cpp">
+    <ClCompile Include="testscale.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="testutils.c">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -25,5 +28,10 @@
     <Image Include="Media\sample.bmp">
       <Filter>Media</Filter>
     </Image>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="testutils.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

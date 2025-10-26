@@ -1791,10 +1791,8 @@ D3D_Reset(SDL_Renderer* renderer)
 	return 0;
 }
 
-SDL_Renderer*
-D3D_CreateRenderer(SDL_Window* window, Uint32 flags)
+int D3D_CreateRenderer(SDL_Renderer *renderer, SDL_Window* window, Uint32 flags)
 {
-	SDL_Renderer* renderer;
 	D3D_RenderData* data;
 	HRESULT result;
 	D3DPRESENT_PARAMETERS pparams;
@@ -1812,24 +1810,18 @@ D3D_CreateRenderer(SDL_Window* window, Uint32 flags)
 	DWORD vidflags;
 #endif
 
-	renderer = (SDL_Renderer*)SDL_calloc(1, sizeof(*renderer));
-	if (!renderer) {
-		SDL_OutOfMemory();
-		return NULL;
-	}
-
 	data = (D3D_RenderData*)SDL_calloc(1, sizeof(*data));
 	if (!data) {
 		SDL_free(renderer);
 		SDL_OutOfMemory();
-		return NULL;
+		return -1;
 	}
 
 	if (!D3D_LoadDLL(/*&data->d3dDLL,*/ &data->d3d)) {
 		SDL_free(renderer);
 		SDL_free(data);
 		SDL_SetError("Unable to create Direct3D interface");
-		return NULL;
+		return -1;
 	}
 
 	renderer->WindowEvent = D3D_WindowEvent;
@@ -1947,7 +1939,7 @@ D3D_CreateRenderer(SDL_Window* window, Uint32 flags)
 	if (FAILED(result)) {
 		D3D_DestroyRenderer(renderer);
 		D3D_SetError("CreateDevice()", result);
-		return NULL;
+		return -1;
 	}
 
 #ifndef _XBOX
@@ -2010,7 +2002,7 @@ D3D_CreateRenderer(SDL_Window* window, Uint32 flags)
 
 	data->drawstate.blend = SDL_BLENDMODE_INVALID;
 
-	return renderer;
+	return 0;
 }
 
 SDL_RenderDriver D3D_RenderDriver = {

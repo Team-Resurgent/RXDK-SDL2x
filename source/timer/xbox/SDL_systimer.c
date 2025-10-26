@@ -83,8 +83,7 @@ SDL_TimerResolutionChanged(void* userdata, const char* name, const char* oldValu
 	}
 }
 
-void
-SDL_TicksInit(void)
+void SDL_TicksInit(void)
 {
 	if (ticks_started) {
 		return;
@@ -128,8 +127,7 @@ SDL_TicksQuit(void)
 	ticks_started = SDL_FALSE;
 }
 
-Uint32
-SDL_GetTicks(void) {
+Uint64 SDLCALL SDL_GetTicks64(void) {
 #ifdef XBOX
 	// Use KeQueryPerformanceCounter for high-resolution timing on Xbox
 	if (!ticks_started) {
@@ -183,7 +181,7 @@ SDL_GetPerformanceCounter(void) {
 	LARGE_INTEGER counter;
 
 	if (!QueryPerformanceCounter(&counter)) {
-		return SDL_GetTicks();
+		return SDL_GetTicks64();
 	}
 	return counter.QuadPart;
 #endif
