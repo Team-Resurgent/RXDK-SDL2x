@@ -1,6 +1,6 @@
 /*
   Simple DirectMedia Layer
-  Copyright (C) 1997-2019 Sam Lantinga <slouken@libsdl.org>
+  Copyright (C) 1997-2025 Sam Lantinga <slouken@libsdl.org>
 
   This software is provided 'as-is', without any express or implied
   warranty.  In no event will the authors be held liable for any damages
@@ -11,22 +11,21 @@
   freely, subject to the following restrictions:
 
   1. The origin of this software must not be misrepresented; you must not
-	 claim that you wrote the original software. If you use this software
-	 in a product, an acknowledgment in the product documentation would be
-	 appreciated but is not required.
+     claim that you wrote the original software. If you use this software
+     in a product, an acknowledgment in the product documentation would be
+     appreciated but is not required.
   2. Altered source versions must be plainly marked as such, and must not be
-	 misrepresented as being the original software.
+     misrepresented as being the original software.
   3. This notice may not be removed or altered from any source distribution.
 */
 
-/**
- *  \file SDL_opengles2.h
- *
- *  This is a simple file to encapsulate the OpenGL ES 2.0 API headers.
+/*
+ * This is a simple file to encapsulate the OpenGL ES 2.0 API headers.
  */
+
 #include "SDL_config.h"
 
-#ifndef _MSC_VER
+#if !defined(_MSC_VER) && !defined(SDL_USE_BUILTIN_OPENGL_DEFINITIONS)
 
 #ifdef __IPHONEOS__
 #include <OpenGLES/ES2/gl.h>
@@ -39,7 +38,7 @@
 
 #else /* _MSC_VER */
 
- /* OpenGL ES2 headers for Visual Studio */
+/* OpenGL ES2 headers for Visual Studio */
 #include "SDL_opengles2_khrplatform.h"
 #include "SDL_opengles2_gl2platform.h"
 #include "SDL_opengles2_gl2.h"

@@ -6,8 +6,8 @@ typedef enum {
 	true
 } bool;
 
-#define SCREEN_WIDTH 640
-#define SCREEN_HEIGHT 480
+#define SCREEN_WIDTH 100
+#define SCREEN_HEIGHT 200
 
 SDL_Texture* LoadTextureFromFile(SDL_Renderer* Renderer, char* filepath) {
 	SDL_Surface* LoadingSurface;

@@ -20,63 +20,24 @@
 */
 #include "../../SDL_internal.h"
 
-#if defined(SDL_JOYSTICK_XBOX)
-
-/* This is the dummy implementation of the SDL joystick API */
+#if !defined(SDL_JOYSTICK_DISABLED) && defined(__XBOX__) /* Use your own build flag here */
 
 #include "SDL_joystick.h"
 #include "../SDL_sysjoystick.h"
 #include "../SDL_joystick_c.h"
 #include "SDL_events.h"
 
+/* Include the Xbox specific headers */
 #include <xtl.h>
 #include <math.h>
 #include <stdio.h>		/* For the definition of NULL */
 
-#define XBINPUT_DEADZONE 0.24f
-#define AXIS_MIN	-32768  /* minimum value for axis coordinate */
-#define AXIS_MAX	32767   /* maximum value for axis coordinate */
-#define MAX_AXES	4		/* each joystick can have up to 4 axes */
-#define MAX_BUTTONS	12		/* and 12 buttons                      */
-#define	MAX_HATS	2
+#ifndef XUSER_MAX_COUNT
+#define XUSER_MAX_COUNT 4
+#endif
+#define IS_BUTTON_PRESSED(buttons, index) ((buttons) & (1 << (index)))
 
 extern BOOL g_bDevicesInitialized;
-
-typedef struct GamePad
-{
-	// The following members are inherited from XINPUT_GAMEPAD:
-	WORD    wButtons;
-	BYTE    bAnalogButtons[8];
-	SHORT   sThumbLX;
-	SHORT   sThumbLY;
-	SHORT   sThumbRX;
-	SHORT   sThumbRY;
-
-	// Thumb stick values converted to range [-1,+1]
-	FLOAT      fX1;
-	FLOAT      fY1;
-	FLOAT      fX2;
-	FLOAT      fY2;
-
-	// State of buttons tracked since last poll
-	WORD       wLastButtons;
-	BOOL       bLastAnalogButtons[8];
-	WORD       wPressedButtons;
-	BOOL       bPressedAnalogButtons[8];
-
-	// Rumble properties
-	XINPUT_RUMBLE   Rumble;
-	XINPUT_FEEDBACK Feedback;
-
-	// Device properties
-	XINPUT_CAPABILITIES caps;
-	HANDLE     hDevice;
-
-	// Flags for whether game pad was just inserted or removed
-	BOOL       bInserted;
-	BOOL       bRemoved;
-} XBGAMEPAD;
-
 // Global instance of XInput polling parameters
 XINPUT_POLLING_PARAMETERS g_PollingParameters =
 {
@@ -88,176 +49,229 @@ XINPUT_POLLING_PARAMETERS g_PollingParameters =
 	0,
 };
 
-// Global instance of input states
-XINPUT_STATE g_InputStates[4];
+typedef struct {
+	HANDLE device_handle;      /* Handle from XInputOpen */
+	DWORD port;                /* Controller port number: 0-3 */
+	BOOL connected;            /* Is the device currently connected? */
+	XINPUT_CAPABILITIES caps;  /* Capabilities for this device */
+	XINPUT_FEEDBACK feedback; // Persistent feedback structure
+	/* Rumble Tracking */
+	Uint32 rumble_end_time;    /* Time when rumble should stop */
+	BOOL rumble_active;        /* Is rumble currently active? */
+} XboxControllerDevice;
 
-// Global instance of custom gamepad devices
-XBGAMEPAD g_Gamepads[4];
+static XboxControllerDevice g_Controllers[XUSER_MAX_COUNT];
+static int g_NumControllers = 0;
 
-// The private structure used to keep track of a joystick
-struct joystick_hwdata
-{
-	XBGAMEPAD	pGamepad;
-	Uint8 index;
+static int XBOX_JoystickInit(void) {
+	SDL_Log("Initializing XBOX Joystick driver\n");
 
-	/* values used to translate device-specific coordinates into
-	   SDL-standard ranges */
-	struct _transaxis {
-		int offset;
-		float scale;
-	} transaxis[6];
-};
-
-float (xfabsf)(float x)
-{
-	if (x == 0)
-		return x;
-	else
-		return (x < 0.0F ? -x : x);
-}
-
-VOID XBInput_RefreshDeviceList(XBGAMEPAD* pGamepads, int i)
-{
-	DWORD dwInsertions, dwRemovals, b;
-
-	XGetDeviceChanges(XDEVICE_TYPE_GAMEPAD, &dwInsertions, &dwRemovals);
-
-	// Handle removed devices.
-	pGamepads->bRemoved = (dwRemovals & (1 << i)) ? TRUE : FALSE;
-	if (pGamepads->bRemoved)
-	{
-		// If the controller was removed after XGetDeviceChanges but before
-		// XInputOpen, the device handle will be NULL
-		if (pGamepads->hDevice)
-			XInputClose(pGamepads->hDevice);
-		pGamepads->hDevice = NULL;
-
-		pGamepads->Feedback.Rumble.wLeftMotorSpeed = 0;
-		pGamepads->Feedback.Rumble.wRightMotorSpeed = 0;
+	// Initialize devices once
+	if (!g_bDevicesInitialized) {
+		XDEVICE_PREALLOC_TYPE deviceTypes[] = { {XDEVICE_TYPE_GAMEPAD, 4} };
+		XInitDevices(sizeof(deviceTypes) / sizeof(XDEVICE_PREALLOC_TYPE), deviceTypes);
+		g_bDevicesInitialized = TRUE;
+		SDL_Log("XInitDevices completed\n");
 	}
 
-	// Handle inserted devices
-	pGamepads->bInserted = (dwInsertions & (1 << i)) ? TRUE : FALSE;
-	if (pGamepads->bInserted)
-	{
-		// TCR C6-2 Device Types
-		pGamepads->hDevice = XInputOpen(XDEVICE_TYPE_GAMEPAD, i,
-			XDEVICE_NO_SLOT, &g_PollingParameters);
+	// Check connected devices
+	DWORD dwDevices = XGetDevices(XDEVICE_TYPE_GAMEPAD);
+	SDL_Log("Device mask: %08X\n", dwDevices);
 
-		// if the controller is removed after XGetDeviceChanges but before
-		// XInputOpen, the device handle will be NULL
-		if (pGamepads->hDevice)
-		{
-			XInputGetCapabilities(pGamepads->hDevice, &pGamepads->caps);
+	for (DWORD port = 0; port < XUSER_MAX_COUNT; port++) {
+		if (!(dwDevices & (1 << port))) {
+			SDL_Log("No controller detected at port %d\n", port);
+			g_Controllers[port].connected = FALSE;
+			continue;
+		}
 
-			// Initialize last pressed buttons
-			XInputGetState(pGamepads->hDevice, &g_InputStates[i]);
+		SDL_Log("Attempting to open controller at port %d\n", port);
+		XINPUT_POLLING_PARAMETERS pollParams = g_PollingParameters;
+		HANDLE h = XInputOpen(XDEVICE_TYPE_GAMEPAD, port, XDEVICE_NO_SLOT, &pollParams);
 
-			pGamepads->wLastButtons = g_InputStates[i].Gamepad.wButtons;
+		if (!h) {
+			SDL_Log("XInputOpen failed for port %d\n", port);
+			g_Controllers[port].connected = FALSE;
+			continue;
+		}
 
-			for (b = 0; b < 8; b++)
-			{
-				pGamepads->bLastAnalogButtons[b] =
-					// Turn the 8-bit polled value into a boolean value
-					(g_InputStates[i].Gamepad.bAnalogButtons[b] > XINPUT_GAMEPAD_MAX_CROSSTALK);
-			}
+		g_Controllers[port].device_handle = h;
+		g_Controllers[port].connected = TRUE;
+		g_Controllers[port].port = port;
+
+		// Retrieve capabilities
+		if (XInputGetCapabilities(h, &g_Controllers[port].caps) != ERROR_SUCCESS) {
+			SDL_Log("Failed to get capabilities for port %d\n", port);
+			XInputClose(h);
+			g_Controllers[port].device_handle = NULL;
+			g_Controllers[port].connected = FALSE;
+			continue;
+		}
+
+		g_Controllers[port].rumble_active = FALSE;
+		g_Controllers[port].rumble_end_time = 0;
+	}
+
+	g_NumControllers = 0;
+	for (DWORD port = 0; port < XUSER_MAX_COUNT; port++) {
+		if (g_Controllers[port].connected) {
+			SDL_Log("Controller at port %d is connected\n", port);
+			g_NumControllers++;
 		}
 	}
+	SDL_Log("Number of connected controllers: %d\n", g_NumControllers);
+
+	return 0;
 }
 
-static int
-XBOX_JoystickInit(void)
-{
-	return 0;
+static void XBOX_JoystickDetect(void) {
+	//SDL_Log("Detecting XBOX Joysticks\n");
+
+	DWORD dwDevices = XGetDevices(XDEVICE_TYPE_GAMEPAD);
+	//SDL_Log("Device mask: %08X\n", dwDevices);
+
+	for (DWORD port = 0; port < XUSER_MAX_COUNT; port++) {
+		if (!(dwDevices & (1 << port))) {
+			if (g_Controllers[port].connected) {
+				SDL_Log("Controller disconnected at port %d\n", port);
+				XInputClose(g_Controllers[port].device_handle);
+				g_Controllers[port].device_handle = NULL;
+				g_Controllers[port].connected = FALSE;
+				g_NumControllers--;
+				SDL_PrivateJoystickRemoved(port);
+			}
+			continue;
+		}
+
+		if (!g_Controllers[port].connected) {
+			SDL_Log("Attempting to open controller at port %d\n", port);
+			XINPUT_POLLING_PARAMETERS pollParams = g_PollingParameters;
+			HANDLE h = XInputOpen(XDEVICE_TYPE_GAMEPAD, port, XDEVICE_NO_SLOT, &pollParams);
+
+			if (!h) {
+				SDL_Log("XInputOpen failed for port %d\n", port);
+				continue;
+			}
+
+			g_Controllers[port].device_handle = h;
+			g_Controllers[port].connected = TRUE;
+			g_Controllers[port].port = port;
+
+			if (XInputGetCapabilities(h, &g_Controllers[port].caps) != ERROR_SUCCESS) {
+				SDL_Log("Failed to get capabilities for port %d\n", port);
+				XInputClose(h);
+				g_Controllers[port].device_handle = NULL;
+				g_Controllers[port].connected = FALSE;
+				continue;
+			}
+
+			g_Controllers[port].rumble_active = FALSE;
+			g_Controllers[port].rumble_end_time = 0;
+			g_NumControllers++;
+			SDL_PrivateJoystickAdded(port);
+		}
+	}
+
+	//SDL_Log("Number of connected controllers: %d\n", g_NumControllers);
 }
 
 static int
 XBOX_JoystickGetCount(void)
 {
-	return(4);
-}
-
-static void
-XBOX_JoystickDetect(void)
-{
+	//SDL_Log("XBOX_JoystickGetCount\n");
+	return g_NumControllers;
 }
 
 static const char*
-XBOX_JoystickGetDeviceName(int device_index)
-{
-	return("XBOX Gamepad Plugin");
+XBOX_JoystickGetDeviceName(int device_index) {
+	SDL_Log("XBOX_JoystickGetDeviceName called for device index %d\n", device_index);
+	int count = 0;
+	for (int i = 0; i < XUSER_MAX_COUNT; i++) {
+		if (g_Controllers[i].connected) {
+			if (count == device_index) {
+				return "Xbox Controller";
+			}
+			count++;
+		}
+	}
+	return NULL;
 }
 
 static int
 XBOX_JoystickGetDevicePlayerIndex(int device_index)
 {
+	SDL_Log("XBOX_JoystickGetDevicePlayerIndex called for device index %d\n", device_index);
+	// Player index matches the order or port number.
+	// Here we just return the port as player index.
+	int count = 0;
+	for (int i = 0; i < XUSER_MAX_COUNT; i++) {
+		if (g_Controllers[i].connected) {
+			if (count == device_index) {
+				return g_Controllers[i].port;
+			}
+			count++;
+		}
+	}
 	return -1;
 }
 
 static SDL_JoystickGUID
 XBOX_JoystickGetDeviceGUID(int device_index)
 {
+	//SDL_Log("XBOX_JoystickGetDeviceGUID called for device index %d\n", device_index);
 	SDL_JoystickGUID guid;
 	SDL_zero(guid);
+	// You can craft a stable GUID. For simplicity, leave it zeroed.
 	return guid;
 }
 
 static SDL_JoystickID
 XBOX_JoystickGetDeviceInstanceID(int device_index)
 {
-	return -1;
+	//SDL_Log("XBOX_JoystickGetDeviceInstanceID called for device index %d\n", device_index);
+	// Instance ID can be the device_index itself or something stable.
+	return (SDL_JoystickID)device_index;
 }
 
 static int
 XBOX_JoystickOpen(SDL_Joystick* joystick, int device_index)
 {
-	DWORD b = 0;
-	DWORD dwDeviceMask;
+	SDL_Log("XBOX_JoystickOpen called for device index %d\n", device_index);
+	int count = 0;
+	int foundPort = -1;
 
-	if (!g_bDevicesInitialized)
-		XInitDevices(0, NULL);
-
-	g_bDevicesInitialized = TRUE;
-
-	dwDeviceMask = XGetDevices(XDEVICE_TYPE_GAMEPAD);
-
-	joystick->hwdata = (struct joystick_hwdata*)malloc(sizeof(*joystick->hwdata));
-
-	joystick->nbuttons = MAX_BUTTONS;
-	joystick->naxes = MAX_AXES;
-	joystick->nhats = MAX_HATS;
-	joystick->is_game_controller = SDL_TRUE;
-	joystick->name = "Xbox SDL Gamepad V0.02";
-
-	// Set the idex (can we ditch the hwdata index and just use instance_id???)
-	joystick->hwdata->index = joystick->instance_id = device_index;
-
-	ZeroMemory(&g_InputStates[joystick->hwdata->index], sizeof(XINPUT_STATE));
-	ZeroMemory(&joystick->hwdata->pGamepad, sizeof(XBGAMEPAD));
-	if (dwDeviceMask & (1 << joystick->hwdata->index))
-	{
-		// Get a handle to the device
-		joystick->hwdata->pGamepad.hDevice = XInputOpen(XDEVICE_TYPE_GAMEPAD, joystick->hwdata->index,
-			XDEVICE_NO_SLOT, &g_PollingParameters);
-
-		if (joystick->hwdata->pGamepad.hDevice)
-		{
-			// Store capabilities of the device
-			XInputGetCapabilities(joystick->hwdata->pGamepad.hDevice, &joystick->hwdata->pGamepad.caps);
-
-			// Initialize last pressed buttons
-			XInputGetState(joystick->hwdata->pGamepad.hDevice, &g_InputStates[joystick->hwdata->index]);
-
-			joystick->hwdata->pGamepad.wLastButtons = g_InputStates[joystick->hwdata->index].Gamepad.wButtons;
-
-			for (b = 0; b < 8; b++)
-			{
-				joystick->hwdata->pGamepad.bLastAnalogButtons[b] =
-					// Turn the 8-bit polled value into a boolean value
-					(g_InputStates[joystick->hwdata->index].Gamepad.bAnalogButtons[b] > XINPUT_GAMEPAD_MAX_CROSSTALK);
+	for (int i = 0; i < XUSER_MAX_COUNT; i++) {
+		if (g_Controllers[i].connected) {
+			if (count == device_index) {
+				foundPort = i;
+				break;
 			}
+			count++;
 		}
 	}
+
+	if (foundPort == -1) {
+		SDL_Log("Invalid device index: %d\n", device_index);
+		return SDL_SetError("Invalid device index");
+	}
+
+	joystick->instance_id = XBOX_JoystickGetDeviceInstanceID(device_index);
+
+	// For standard Xbox controller:
+	// Typically: 2 analog sticks = 4 axes, triggers can be axes if desired.
+	// We'll expose leftX, leftY, rightX, rightY axes = 4 axes
+	joystick->naxes = 4;
+
+	// For buttons: A,B,X,Y,Black,White,Start,Back,DPad(U,D,L,R), L/R thumb press
+	// The original Xbox controller had A,B,X,Y, Black, White, Start, Back, LThumbPress, RThumbPress and a D-Pad.
+	// We'll treat D-Pad as a hat, so exclude that from the button count.
+	// That�s 8 buttons (A,B,X,Y,Black,White,Start,Back) + 2 thumb presses = 10 buttons.
+	joystick->nbuttons = 12;
+	joystick->nhats = 1; // for D-Pad
+
+	joystick->hwdata = &g_Controllers[foundPort];
+
+	SDL_Log("Joystick opened successfully for port %d\n", foundPort);
 
 	return 0;
 }
@@ -265,221 +279,162 @@ XBOX_JoystickOpen(SDL_Joystick* joystick, int device_index)
 static int
 XBOX_JoystickRumble(SDL_Joystick* joystick, Uint16 low_frequency_rumble, Uint16 high_frequency_rumble, Uint32 duration_ms)
 {
-	return SDL_Unsupported();
+	SDL_Log("XBOX_JoystickRumble called with low: %u, high: %u, duration: %u ms\n", low_frequency_rumble, high_frequency_rumble, duration_ms);
+
+	XboxControllerDevice* dev = (XboxControllerDevice*)joystick->hwdata;
+	if (!dev || !dev->connected || !dev->device_handle) {
+		SDL_Log("Rumble failed: device not connected or handle invalid.\n");
+		return SDL_Unsupported();
+	}
+
+	// Clear feedback
+	SDL_zero(dev->feedback);
+
+	// Set rumble motor speeds
+	dev->feedback.Rumble.wLeftMotorSpeed = (low_frequency_rumble * 65535) / SDL_MAX_UINT16;
+	dev->feedback.Rumble.wRightMotorSpeed = (high_frequency_rumble * 65535) / SDL_MAX_UINT16;
+
+	// Send rumble command
+	DWORD res = XInputSetState(dev->device_handle, &dev->feedback);
+	SDL_Log("XInputSetState called. Result: %lu\n", res);
+
+	if (res == ERROR_SUCCESS) {
+		SDL_Log("Rumble started successfully.\n");
+		dev->rumble_active = TRUE;
+	}
+	else if (res == ERROR_IO_PENDING) {
+		SDL_Log("Rumble operation is pending. It will complete asynchronously.\n");
+		dev->rumble_active = TRUE;
+	}
+	else {
+		SDL_Log("Rumble command failed with error: %lu\n", res);
+		return SDL_Unsupported();
+	}
+
+	// Set end time for stopping rumble
+	if (duration_ms > 0) {
+		dev->rumble_end_time = SDL_GetTicks() + duration_ms;
+		SDL_Log("Rumble will stop in %u ms.\n", duration_ms);
+	}
+	else {
+		dev->rumble_end_time = 0; // No auto-stop
+		SDL_Log("Rumble set to run indefinitely.\n");
+	}
+
+	return 0;
 }
 
-static void
-XBOX_JoystickUpdate(SDL_Joystick* joystick)
-{
-	static int prev_buttons[4] = { 0 };
-	static Sint16 nX = 0, nY = 0;
-	static Sint16 nXR = 0, nYR = 0;
+static void XBOX_JoystickUpdate(SDL_Joystick* joystick) {
+	XboxControllerDevice* dev = (XboxControllerDevice*)joystick->hwdata;
 
-	DWORD b = 0;
-	FLOAT fX1 = 0;
-	FLOAT fY1 = 0;
-	FLOAT fX2 = 0;
-	FLOAT fY2 = 0;
-
-	int hat = 0, changed = 0;
-
-	// TCR C6-7 Controller Discovery
-	// Get status about gamepad insertions and removals.
-	XBInput_RefreshDeviceList(&joystick->hwdata->pGamepad, joystick->hwdata->index);
-
-	// If the device isn't valid, bail now
-	if (joystick->hwdata->pGamepad.hDevice == NULL) {
+	// Validate handle and connection status
+	if (!dev || !dev->connected || !dev->device_handle) {
 		return;
 	}
 
-	// Read the input state
-	XInputGetState(joystick->hwdata->pGamepad.hDevice, &g_InputStates[joystick->hwdata->index]);
+	// Poll for disconnection or rumble stop
+	XInputPoll(dev->device_handle);
 
-	// Copy gamepad to local structure
-	memcpy(&joystick->hwdata->pGamepad, &g_InputStates[joystick->hwdata->index].Gamepad, sizeof(XINPUT_GAMEPAD));
-
-	// Put Xbox device input for the gamepad into our custom format
-	fX1 = (joystick->hwdata->pGamepad.sThumbLX + 0.5f) / 32767.5f;
-	joystick->hwdata->pGamepad.fX1 = (fX1 >= 0.0f ? 1.0f : -1.0f) *
-		max(0.0f, (xfabsf(fX1) - XBINPUT_DEADZONE) / (1.0f - XBINPUT_DEADZONE));
-
-	fY1 = (joystick->hwdata->pGamepad.sThumbLY + 0.5f) / 32767.5f;
-	joystick->hwdata->pGamepad.fY1 = (fY1 >= 0.0f ? 1.0f : -1.0f) *
-		max(0.0f, (xfabsf(fY1) - XBINPUT_DEADZONE) / (1.0f - XBINPUT_DEADZONE));
-
-	fX2 = (joystick->hwdata->pGamepad.sThumbRX + 0.5f) / 32767.5f;
-	joystick->hwdata->pGamepad.fX2 = (fX2 >= 0.0f ? 1.0f : -1.0f) *
-		max(0.0f, (xfabsf(fX2) - XBINPUT_DEADZONE) / (1.0f - XBINPUT_DEADZONE));
-
-	fY2 = (joystick->hwdata->pGamepad.sThumbRY + 0.5f) / 32767.5f;
-	joystick->hwdata->pGamepad.fY2 = (fY2 >= 0.0f ? 1.0f : -1.0f) *
-		max(0.0f, (xfabsf(fY2) - XBINPUT_DEADZONE) / (1.0f - XBINPUT_DEADZONE));
-
-	// Get the boolean buttons that have been pressed since the last
-	// call. Each button is represented by one bit.
-	joystick->hwdata->pGamepad.wPressedButtons = (joystick->hwdata->pGamepad.wLastButtons ^ joystick->hwdata->pGamepad.wButtons) & joystick->hwdata->pGamepad.wButtons;
-	joystick->hwdata->pGamepad.wLastButtons = joystick->hwdata->pGamepad.wButtons;
-
-	if (joystick->hwdata->pGamepad.wButtons & XINPUT_GAMEPAD_START)
-	{
-		if (!joystick->buttons[8])
-			SDL_PrivateJoystickButton(joystick, (Uint8)8, SDL_PRESSED);
-	}
-	else
-	{
-		if (joystick->buttons[8])
-			SDL_PrivateJoystickButton(joystick, (Uint8)8, SDL_RELEASED);
+	Uint32 current_time = SDL_GetTicks();
+	if (dev->rumble_active && current_time >= dev->rumble_end_time) {
+		SDL_Log("XBOX_JoystickUpdate: Stopping rumble motors.\n");
+		SDL_zero(dev->feedback);
+		XInputSetState(dev->device_handle, &dev->feedback);
+		dev->rumble_active = FALSE;
 	}
 
-	if (joystick->hwdata->pGamepad.wButtons & XINPUT_GAMEPAD_BACK)
-	{
-		if (!joystick->buttons[9])
-			SDL_PrivateJoystickButton(joystick, (Uint8)9, SDL_PRESSED);
-	}
-	else
-	{
-		if (joystick->buttons[9])
-			SDL_PrivateJoystickButton(joystick, (Uint8)9, SDL_RELEASED);
-	}
+	// Get state from controller
+	XINPUT_STATE state;
+	DWORD res = XInputGetState(dev->device_handle, &state);
 
-	if (joystick->hwdata->pGamepad.wButtons & XINPUT_GAMEPAD_LEFT_THUMB)
-	{
-		if (!joystick->buttons[10])
-			SDL_PrivateJoystickButton(joystick, (Uint8)10, SDL_PRESSED);
-	}
-	else
-	{
-		if (joystick->buttons[10])
-			SDL_PrivateJoystickButton(joystick, (Uint8)10, SDL_RELEASED);
+	// Handle disconnection
+	if (res != ERROR_SUCCESS) {
+		SDL_Log("XInputGetState failed for port %d. Disconnecting controller.\n", dev->port);
+
+		// Notify SDL that the joystick has been removed
+		SDL_PrivateJoystickRemoved(joystick->instance_id);
+
+		// Close the handle and mark as disconnected
+		XInputClose(dev->device_handle);
+		dev->device_handle = NULL;
+		dev->connected = FALSE;
+
+		return;
 	}
 
-	if (joystick->hwdata->pGamepad.wButtons & XINPUT_GAMEPAD_RIGHT_THUMB)
-	{
-		if (!joystick->buttons[11])
-			SDL_PrivateJoystickButton(joystick, (Uint8)11, SDL_PRESSED);
-	}
-	else
-	{
-		if (joystick->buttons[11])
-			SDL_PrivateJoystickButton(joystick, (Uint8)11, SDL_RELEASED);
-	}
+	// Apply dead zones to thumbsticks
+#define DEAD_ZONE 7849
+	SHORT sThumbLX = (abs(state.Gamepad.sThumbLX) > DEAD_ZONE) ? state.Gamepad.sThumbLX : 0;
+	SHORT sThumbLY = (abs(state.Gamepad.sThumbLY) > DEAD_ZONE) ? state.Gamepad.sThumbLY : 0;
+	SHORT sThumbRX = (abs(state.Gamepad.sThumbRX) > DEAD_ZONE) ? state.Gamepad.sThumbRX : 0;
+	SHORT sThumbRY = (abs(state.Gamepad.sThumbRY) > DEAD_ZONE) ? state.Gamepad.sThumbRY : 0;
 
-	// Get the analog buttons that have been pressed or released since
-	// the last call.
-	for (b = 0; b < 8; b++)
-	{
-		// Turn the 8-bit polled value into a boolean value
-		BOOL bPressed = (joystick->hwdata->pGamepad.bAnalogButtons[b] > XINPUT_GAMEPAD_MAX_CROSSTALK);
+	// Map thumbstick axes
+	SDL_PrivateJoystickAxis(joystick, 0, sThumbLX);
+	SDL_PrivateJoystickAxis(joystick, 1, sThumbLY);
+	SDL_PrivateJoystickAxis(joystick, 2, sThumbRX);
+	SDL_PrivateJoystickAxis(joystick, 3, sThumbRY);
 
-		if (bPressed)
-			joystick->hwdata->pGamepad.bAnalogButtons[b] = !joystick->hwdata->pGamepad.bLastAnalogButtons[b];
-		else
-			joystick->hwdata->pGamepad.bAnalogButtons[b] = FALSE;
+	WORD Digital_Buttons = state.Gamepad.wButtons;
+	BYTE* Analog_Buttons = state.Gamepad.bAnalogButtons;
 
-		// Store the current state for the next time
-		joystick->hwdata->pGamepad.bLastAnalogButtons[b] = bPressed;
+	// Map face buttons
+	SDL_PrivateJoystickButton(joystick, 0, (Analog_Buttons[XINPUT_GAMEPAD_A] > 0) ? SDL_PRESSED : SDL_RELEASED);
+	SDL_PrivateJoystickButton(joystick, 1, (Analog_Buttons[XINPUT_GAMEPAD_B] > 0) ? SDL_PRESSED : SDL_RELEASED);
+	SDL_PrivateJoystickButton(joystick, 2, (Analog_Buttons[XINPUT_GAMEPAD_X] > 0) ? SDL_PRESSED : SDL_RELEASED);
+	SDL_PrivateJoystickButton(joystick, 3, (Analog_Buttons[XINPUT_GAMEPAD_Y] > 0) ? SDL_PRESSED : SDL_RELEASED);
 
-		if (bPressed) {
-			if (!joystick->buttons[b]) {
-				SDL_PrivateJoystickButton(joystick, (Uint8)b, SDL_PRESSED);
-			}
-		}
-		else {
-			if (joystick->buttons[b]) {
-				SDL_PrivateJoystickButton(joystick, (Uint8)b, SDL_RELEASED);
-			}
-		}
-	}
+	// Map shoulder buttons
+	SDL_PrivateJoystickButton(joystick, 4, (Analog_Buttons[XINPUT_GAMEPAD_BLACK] > 0) ? SDL_PRESSED : SDL_RELEASED);
+	SDL_PrivateJoystickButton(joystick, 5, (Analog_Buttons[XINPUT_GAMEPAD_WHITE] > 0) ? SDL_PRESSED : SDL_RELEASED);
 
-	// do the HATS baby
+	// Map triggers as buttons with threshold
+	SDL_PrivateJoystickButton(joystick, 6, (Analog_Buttons[XINPUT_GAMEPAD_LEFT_TRIGGER] > XINPUT_GAMEPAD_MAX_CROSSTALK) ? SDL_PRESSED : SDL_RELEASED);
+	SDL_PrivateJoystickButton(joystick, 7, (Analog_Buttons[XINPUT_GAMEPAD_RIGHT_TRIGGER] > XINPUT_GAMEPAD_MAX_CROSSTALK) ? SDL_PRESSED : SDL_RELEASED);
 
-	hat = SDL_HAT_CENTERED;
-	if (joystick->hwdata->pGamepad.wButtons & XINPUT_GAMEPAD_DPAD_DOWN)
-		hat |= SDL_HAT_DOWN;
-	if (joystick->hwdata->pGamepad.wButtons & XINPUT_GAMEPAD_DPAD_UP)
-		hat |= SDL_HAT_UP;
-	if (joystick->hwdata->pGamepad.wButtons & XINPUT_GAMEPAD_DPAD_LEFT)
-		hat |= SDL_HAT_LEFT;
-	if (joystick->hwdata->pGamepad.wButtons & XINPUT_GAMEPAD_DPAD_RIGHT)
-		hat |= SDL_HAT_RIGHT;
+	// Map start/back/thumbstick buttons
+	SDL_PrivateJoystickButton(joystick, 8, (Digital_Buttons & XINPUT_GAMEPAD_START) ? SDL_PRESSED : SDL_RELEASED);
+	SDL_PrivateJoystickButton(joystick, 9, (Digital_Buttons & XINPUT_GAMEPAD_BACK) ? SDL_PRESSED : SDL_RELEASED);
+	SDL_PrivateJoystickButton(joystick, 10, (Digital_Buttons & XINPUT_GAMEPAD_LEFT_THUMB) ? SDL_PRESSED : SDL_RELEASED);
+	SDL_PrivateJoystickButton(joystick, 11, (Digital_Buttons & XINPUT_GAMEPAD_RIGHT_THUMB) ? SDL_PRESSED : SDL_RELEASED);
 
-	changed = hat ^ prev_buttons[joystick->hwdata->index];
+	// Map D-Pad as hat
+	Uint8 hat = SDL_HAT_CENTERED;
+	if (Digital_Buttons & XINPUT_GAMEPAD_DPAD_UP)    hat |= SDL_HAT_UP;
+	if (Digital_Buttons & XINPUT_GAMEPAD_DPAD_DOWN)  hat |= SDL_HAT_DOWN;
+	if (Digital_Buttons & XINPUT_GAMEPAD_DPAD_LEFT)  hat |= SDL_HAT_LEFT;
+	if (Digital_Buttons & XINPUT_GAMEPAD_DPAD_RIGHT) hat |= SDL_HAT_RIGHT;
 
-	if (changed) {
-		SDL_PrivateJoystickHat(joystick, 0, hat);
-	}
-
-	prev_buttons[joystick->hwdata->index] = hat;
-
-	// Axis - LStick
-
-	if ((joystick->hwdata->pGamepad.sThumbLX <= -10000) ||
-		(joystick->hwdata->pGamepad.sThumbLX >= 10000))
-	{
-		if (joystick->hwdata->pGamepad.sThumbLX < 0)
-			joystick->hwdata->pGamepad.sThumbLX++;
-		nX = ((Sint16)joystick->hwdata->pGamepad.sThumbLX);
-	}
-	else
-		nX = 0;
-
-	if (nX != joystick->axes[0].value)
-		SDL_PrivateJoystickAxis(joystick, (Uint8)0, (Sint16)nX);
-
-	if ((joystick->hwdata->pGamepad.sThumbLY <= -10000) ||
-		(joystick->hwdata->pGamepad.sThumbLY >= 10000))
-	{
-		if (joystick->hwdata->pGamepad.sThumbLY < 0)
-			joystick->hwdata->pGamepad.sThumbLY++;
-		nY = -((Sint16)(joystick->hwdata->pGamepad.sThumbLY));
-	}
-	else
-		nY = 0;
-
-	if (nY != joystick->axes[1].value)
-		SDL_PrivateJoystickAxis(joystick, (Uint8)1, (Sint16)nY);
-
-	// Axis - RStick
-
-	if ((joystick->hwdata->pGamepad.sThumbRX <= -10000) ||
-		(joystick->hwdata->pGamepad.sThumbRX >= 10000))
-	{
-		if (joystick->hwdata->pGamepad.sThumbRX < 0)
-			joystick->hwdata->pGamepad.sThumbRX++;
-		nXR = ((Sint16)joystick->hwdata->pGamepad.sThumbRX);
-	}
-	else
-		nXR = 0;
-
-	if (nXR != joystick->axes[2].value)
-		SDL_PrivateJoystickAxis(joystick, (Uint8)2, (Sint16)nXR);
-
-	if ((joystick->hwdata->pGamepad.sThumbRY <= -10000) ||
-		(joystick->hwdata->pGamepad.sThumbRY >= 10000))
-	{
-		if (joystick->hwdata->pGamepad.sThumbRY < 0)
-			joystick->hwdata->pGamepad.sThumbRY++;
-		nYR = -((Sint16)joystick->hwdata->pGamepad.sThumbRY);
-	}
-	else
-		nYR = 0;
-
-	if (nYR != joystick->axes[3].value)
-		SDL_PrivateJoystickAxis(joystick, (Uint8)3, (Sint16)nYR);
+	SDL_PrivateJoystickHat(joystick, 0, hat);
 }
 
 static void
 XBOX_JoystickClose(SDL_Joystick* joystick)
 {
-	if (joystick->hwdata != NULL) {
-		/* free system specific hardware data */
-		free(joystick->hwdata);
+	SDL_Log("XBOX_JoystickClose\n");
+	XboxControllerDevice* dev = (XboxControllerDevice*)joystick->hwdata;
+	if (dev && dev->connected && dev->device_handle) {
+		XInputClose(dev->device_handle);
+		dev->device_handle = NULL;
+		dev->connected = FALSE;
 	}
+	joystick->hwdata = NULL;
 }
 
 static void
 XBOX_JoystickQuit(void)
 {
+	SDL_Log("XBOX_JoystickQuit\n");
+	// Close all open devices
+	for (int i = 0; i < XUSER_MAX_COUNT; i++) {
+		if (g_Controllers[i].connected && g_Controllers[i].device_handle) {
+			XInputClose(g_Controllers[i].device_handle);
+			g_Controllers[i].device_handle = NULL;
+			g_Controllers[i].connected = FALSE;
+		}
+	}
+	g_NumControllers = 0;
+	SDL_Log("All controllers have been closed and resources released.\n");
 }
 
 SDL_JoystickDriver SDL_XBOX_JoystickDriver =
@@ -498,6 +453,6 @@ SDL_JoystickDriver SDL_XBOX_JoystickDriver =
 	XBOX_JoystickQuit,
 };
 
-#endif /* SDL_JOYSTICK_XBOX */
+#endif /* !SDL_JOYSTICK_DISABLED && __XBOX__ */
 
 /* vi: set ts=4 sw=4 expandtab: */

@@ -128,9 +128,9 @@ SDL_TicksQuit(void)
 	ticks_started = SDL_FALSE;
 }
 
-Uint32
-SDL_GetTicks(void) {
-#ifdef XBOX
+Uint64
+SDL_GetTicks64(void)
+{
 	// Use KeQueryPerformanceCounter for high-resolution timing on Xbox
 	if (!ticks_started) {
 		SDL_TicksInit();
@@ -140,37 +140,12 @@ SDL_GetTicks(void) {
 	ULONGLONG frequency = KeQueryPerformanceFrequency();
 
 	if (frequency > 0) {
-		return (Uint32)((counter * 1000) / frequency); // Convert to milliseconds
+		return (Uint64)((counter * 1000) / frequency); // Convert to milliseconds
 	}
 	else {
 		// Fallback: Use SDL_GetPerformanceFrequency's fallback value
 		return SDL_GetPerformanceCounter() / SDL_GetPerformanceFrequency();
 	}
-#else
-	DWORD now = 0;
-	LARGE_INTEGER hires_now;
-
-	if (!ticks_started) {
-		SDL_TicksInit();
-	}
-
-	if (hires_timer_available) {
-		QueryPerformanceCounter(&hires_now);
-
-		hires_now.QuadPart -= hires_start_ticks.QuadPart;
-		hires_now.QuadPart *= 1000;
-		hires_now.QuadPart /= hires_ticks_per_second.QuadPart;
-
-		return (DWORD)hires_now.QuadPart;
-	}
-	else {
-#ifndef __WINRT__
-		now = timeGetTime();
-#endif /* __WINRT__ */
-	}
-
-	return (now - start);
-#endif
 }
 
 Uint64

@@ -419,6 +419,33 @@
     <ClCompile Include="source\haptic\dummy\SDL_syshaptic.c">
       <Filter>Source Files\haptic\dummy</Filter>
     </ClCompile>
+    <ClCompile Include="source\SDL_utils.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="source\render\software\SDL_triangle.c">
+      <Filter>Source Files\render\software</Filter>
+    </ClCompile>
+    <ClCompile Include="source\joystick\controller_type.c">
+      <Filter>Source Files\joystick</Filter>
+    </ClCompile>
+    <ClCompile Include="source\joystick\SDL_steam_virtual_gamepad.c">
+      <Filter>Source Files\joystick</Filter>
+    </ClCompile>
+    <ClCompile Include="source\SDL_guid.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="source\stdlib\SDL_crc16.c">
+      <Filter>Source Files\stdlib</Filter>
+    </ClCompile>
+    <ClCompile Include="source\stdlib\SDL_crc32.c">
+      <Filter>Source Files\stdlib</Filter>
+    </ClCompile>
+    <ClCompile Include="source\stdlib\SDL_strtokr.c">
+      <Filter>Source Files\stdlib</Filter>
+    </ClCompile>
+    <ClCompile Include="source\SDL_list.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
     <ClCompile Include="source\test\SDL_test_assert.c">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -849,6 +876,12 @@
     </ClInclude>
     <ClInclude Include="include\SDL_vulkan.h">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="source\render\software\SDL_triangle.h">
+      <Filter>Source Files\render\software</Filter>
+    </ClInclude>
+    <ClInclude Include="source\stdlib\SDL_vacopy.h">
+      <Filter>Source Files\stdlib</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

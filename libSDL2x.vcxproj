@@ -33,9 +33,13 @@
     <ClCompile Include="source\file\SDL_rwops.c" />
     <ClCompile Include="source\haptic\dummy\SDL_syshaptic.c" />
     <ClCompile Include="source\haptic\SDL_haptic.c" />
+    <ClCompile Include="source\joystick\controller_type.c" />
     <ClCompile Include="source\joystick\SDL_gamecontroller.c" />
     <ClCompile Include="source\joystick\SDL_joystick.c" />
-    <ClCompile Include="source\joystick\xbox\SDL_sysjoystick.c" />
+    <ClCompile Include="source\joystick\SDL_steam_virtual_gamepad.c" />
+    <ClCompile Include="source\joystick\xbox\SDL_sysjoystick.c">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">false</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="source\libm\e_atan2.c" />
     <ClCompile Include="source\libm\e_exp.c" />
     <ClCompile Include="source\libm\e_fmod.c" />
@@ -70,20 +74,27 @@
     <ClCompile Include="source\render\software\SDL_drawpoint.c" />
     <ClCompile Include="source\render\software\SDL_render_sw.c" />
     <ClCompile Include="source\render\software\SDL_rotate.c" />
+    <ClCompile Include="source\render\software\SDL_triangle.c" />
     <ClCompile Include="source\SDL.c" />
     <ClCompile Include="source\SDL_assert.c" />
     <ClCompile Include="source\SDL_dataqueue.c" />
     <ClCompile Include="source\SDL_error.c" />
+    <ClCompile Include="source\SDL_guid.c" />
     <ClCompile Include="source\SDL_hints.c" />
+    <ClCompile Include="source\SDL_list.c" />
     <ClCompile Include="source\SDL_log.c" />
+    <ClCompile Include="source\SDL_utils.c" />
     <ClCompile Include="source\sensor\dummy\SDL_dummysensor.c" />
     <ClCompile Include="source\sensor\SDL_sensor.c" />
+    <ClCompile Include="source\stdlib\SDL_crc16.c" />
+    <ClCompile Include="source\stdlib\SDL_crc32.c" />
     <ClCompile Include="source\stdlib\SDL_getenv.c" />
     <ClCompile Include="source\stdlib\SDL_iconv.c" />
     <ClCompile Include="source\stdlib\SDL_malloc.c" />
     <ClCompile Include="source\stdlib\SDL_qsort.c" />
     <ClCompile Include="source\stdlib\SDL_stdlib.c" />
     <ClCompile Include="source\stdlib\SDL_string.c" />
+    <ClCompile Include="source\stdlib\SDL_strtokr.c" />
     <ClCompile Include="source\test\SDL_test_assert.c" />
     <ClCompile Include="source\test\SDL_test_common.c" />
     <ClCompile Include="source\test\SDL_test_compare.c" />
@@ -231,6 +242,7 @@
     <ClInclude Include="source\render\software\SDL_drawpoint.h" />
     <ClInclude Include="source\render\software\SDL_render_sw_c.h" />
     <ClInclude Include="source\render\software\SDL_rotate.h" />
+    <ClInclude Include="source\render\software\SDL_triangle.h" />
     <ClInclude Include="source\SDL_assert_c.h" />
     <ClInclude Include="source\SDL_dataqueue.h" />
     <ClInclude Include="source\SDL_error_c.h" />
@@ -238,6 +250,7 @@
     <ClInclude Include="source\sensor\dummy\SDL_dummysensor.h" />
     <ClInclude Include="source\sensor\SDL_sensor_c.h" />
     <ClInclude Include="source\sensor\SDL_syssensor.h" />
+    <ClInclude Include="source\stdlib\SDL_vacopy.h" />
     <ClInclude Include="source\thread\SDL_systhread.h" />
     <ClInclude Include="source\thread\SDL_thread_c.h" />
     <ClInclude Include="source\thread\xbox\SDL_systhread_c.h" />
@@ -275,13 +288,13 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
     <ConfigurationType>StaticLibrary</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
-    <PlatformToolset>v142</PlatformToolset>
+    <PlatformToolset>v143</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
     <ConfigurationType>StaticLibrary</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
-    <PlatformToolset>v142</PlatformToolset>
+    <PlatformToolset>v143</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
@@ -305,7 +318,7 @@
     <ExcludePath>$(CommonExcludePath);$(VC_ExecutablePath_x86);$(RXDK_LIBS)lib</ExcludePath>
     <ReferencePath>$(RXDK_LIBS)lib</ReferencePath>
     <LibraryPath>$(RXDK_LIBS)lib</LibraryPath>
-    <OutDir>$(ProjectDir)$(Configuration)\</OutDir>
+    <OutDir>$(SolutionDir)$(Configuration)\</OutDir>
     <TargetExt>.lib</TargetExt>
     <LinkIncremental>false</LinkIncremental>
   </PropertyGroup>
@@ -317,7 +330,7 @@
     <ExcludePath>$(CommonExcludePath);$(VC_ExecutablePath_x86);$(RXDK_LIBS)lib</ExcludePath>
     <ReferencePath>$(RXDK_LIBS)lib</ReferencePath>
     <LibraryPath>$(RXDK_LIBS)lib</LibraryPath>
-    <OutDir>$(ProjectDir)$(Configuration)\</OutDir>
+    <OutDir>$(SolutionDir)$(Configuration)\</OutDir>
     <TargetExt>.lib</TargetExt>
     <LinkIncremental>false</LinkIncremental>
   </PropertyGroup>
@@ -325,10 +338,10 @@
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <SDLCheck>false</SDLCheck>
-      <PreprocessorDefinitions>XBOX;_XBOX;__XBOX__;_LIB;_DEBUG;XBOX_DEBUG_LOGGING;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>XBOX;_XBOX;__XBOX__;_LIB;_DEBUG;XBOX_DEBUG_LOGGING</PreprocessorDefinitions>
       <ConformanceMode>false</ConformanceMode>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
-      <AdditionalIncludeDirectories>include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)include</AdditionalIncludeDirectories>
       <BufferSecurityCheck>false</BufferSecurityCheck>
       <ExceptionHandling>Sync</ExceptionHandling>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
@@ -363,7 +376,7 @@
       <PreprocessorDefinitions>XBOX;_XBOX;__XBOX__;_LIB;NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>false</ConformanceMode>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
-      <AdditionalIncludeDirectories>include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)include</AdditionalIncludeDirectories>
       <BufferSecurityCheck>false</BufferSecurityCheck>
       <ExceptionHandling>Sync</ExceptionHandling>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
