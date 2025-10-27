@@ -2512,10 +2512,9 @@ static void FinalizeXboxMode(D3DPRESENT_PARAMETERS* p)
 }
 #endif
 
-SDL_Renderer*
-D3D_CreateRenderer(SDL_Window* window, Uint32 flags)
+int
+D3D_CreateRenderer(SDL_Renderer* renderer, SDL_Window* window, Uint32 flags)
 {
-	SDL_Renderer* renderer;
 	D3D_RenderData* data;
 	HRESULT result;
 	D3DPRESENT_PARAMETERS pparams;
@@ -2534,16 +2533,13 @@ D3D_CreateRenderer(SDL_Window* window, Uint32 flags)
 #endif
 	int i;
 
-	renderer = (SDL_Renderer*)SDL_calloc(1, sizeof(*renderer));
-	if (!renderer) { SDL_OutOfMemory(); return NULL; }
-
 	data = (D3D_RenderData*)SDL_calloc(1, sizeof(*data));
-	if (!data) { SDL_free(renderer); SDL_OutOfMemory(); return NULL; }
+	if (!data) { SDL_free(renderer); SDL_OutOfMemory(); return -1; }
 
 	if (!D3D_LoadDLL(/*&data->d3dDLL,*/ &data->d3d)) {
 		SDL_free(renderer); SDL_free(data);
 		SDL_SetError("Unable to create Direct3D interface\n");
-		return NULL;
+		return -1;
 	}
 
 	/* Hook renderer callbacks */
@@ -2699,7 +2695,7 @@ D3D_CreateRenderer(SDL_Window* window, Uint32 flags)
 	if (FAILED(result)) {
 		D3D_DestroyRenderer(renderer);
 		D3D_SetError("CreateDevice()", result);
-		return NULL;
+		return -1;
 	}
 
 #ifdef _XBOX
@@ -2710,10 +2706,10 @@ D3D_CreateRenderer(SDL_Window* window, Uint32 flags)
 #ifndef _XBOX
 	/* Fill some info from the actual present parameters. */
 	result = IDirect3DDevice9_GetSwapChain(data->device, 0, &chain);
-	if (FAILED(result)) { D3D_DestroyRenderer(renderer); D3D_SetError("GetSwapChain()", result); return NULL; }
+	if (FAILED(result)) { D3D_DestroyRenderer(renderer); D3D_SetError("GetSwapChain()", result); return -1; }
 	result = IDirect3DSwapChain9_GetPresentParameters(chain, &pparams);
 	IDirect3DSwapChain9_Release(chain);
-	if (FAILED(result)) { D3D_DestroyRenderer(renderer); D3D_SetError("GetPresentParameters()", result); return NULL; }
+	if (FAILED(result)) { D3D_DestroyRenderer(renderer); D3D_SetError("GetPresentParameters()", result); return -1; }
 	if (pparams.PresentationInterval == D3DPRESENT_INTERVAL_ONE) {
 		renderer->info.flags |= SDL_RENDERER_PRESENTVSYNC;
 	}
@@ -2762,7 +2758,7 @@ D3D_CreateRenderer(SDL_Window* window, Uint32 flags)
 	data->drawstate.blend = SDL_BLENDMODE_INVALID;
 	data->drawstate.is_copy_ex = SDL_FALSE;
 
-	return renderer;
+	return 0;
 }
 
 SDL_RenderDriver D3D_RenderDriver = {

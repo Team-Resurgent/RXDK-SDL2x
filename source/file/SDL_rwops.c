@@ -69,6 +69,12 @@
 #include "nacl_io/nacl_io.h"
 #endif
 
+/* ---- OG Xbox XDK: no fstat/fileno, but we still want stdio ---- */
+#if defined(HAVE_STDIO_H) && defined(SDL_PLATFORM_XBOXRXDK)
+static SDL_bool IsRegularFileOrPipe(FILE* f) { (void)f; return SDL_TRUE; }
+#endif
+
+
 #if (defined(__WIN32__) || defined(__GDK__)) && !defined(__XBOX__)
 
 /* Functions to read/write Win32 API file pointers */
@@ -523,7 +529,7 @@ static int SDLCALL mem_close(SDL_RWops *context)
 
 /* Functions to create SDL_RWops structures from various data sources */
 
-#if defined(HAVE_STDIO_H) && !(defined(__WIN32__) || defined(__GDK__))
+#if defined(HAVE_STDIO_H) && !(defined(__WIN32__) || defined(__GDK__) || defined(SDL_PLATFORM_XBOXRXDK))
 static SDL_bool IsRegularFileOrPipe(FILE *f)
 {
     #ifdef __WINRT__

@@ -75,6 +75,8 @@ typedef unsigned int      uintptr_t;
 #define HAVE_M_PI 1
 #endif
 
+#define HAVE_STDIO_H 1
+
 /* --- Disable dynamic loading on XDK --- */
 #define SDL_LOADSO_DISABLED 1
 

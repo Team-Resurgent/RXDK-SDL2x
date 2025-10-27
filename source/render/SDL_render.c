@@ -131,7 +131,8 @@ static const SDL_RenderDriver *render_drivers[] = {
 #if SDL_VIDEO_RENDER_VITA_GXM
     &VITA_GXM_RenderDriver,
 #endif
-#if SDL_VIDEO_RENDER_SW
+// TODO FIX this in the config
+#if SDL_VIDEO_RENDER_SW && !defined(__XBOX__)
     &SW_RenderDriver
 #endif
 };
@@ -999,11 +1000,7 @@ SDL_Renderer *SDL_CreateRenderer(SDL_Window *window, int index, Uint32 flags)
         }
     }
 
-    SDL_Log("SDL_render: requested %d\n", index);
     if (index < 0) {
-#ifdef _XBOX
-        return NULL;
-#endif
         hint = SDL_GetHint(SDL_HINT_RENDER_DRIVER);
         if (hint) {
             for (index = 0; index < n; ++index) {
@@ -1020,7 +1017,7 @@ SDL_Renderer *SDL_CreateRenderer(SDL_Window *window, int index, Uint32 flags)
                     }
                     break;
                 }
-            }
+            }        
         }
 
         if (rc == -1) {
@@ -1067,6 +1064,7 @@ SDL_Renderer *SDL_CreateRenderer(SDL_Window *window, int index, Uint32 flags)
             renderer->info.flags |= SDL_RENDERER_PRESENTVSYNC;
         }
     }
+
     SDL_CalculateSimulatedVSyncInterval(renderer, window);
 
     VerifyDrawQueueFunctions(renderer);
