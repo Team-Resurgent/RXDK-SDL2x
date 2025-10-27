@@ -2512,10 +2512,9 @@ static void FinalizeXboxMode(D3DPRESENT_PARAMETERS* p)
 }
 #endif
 
-SDL_Renderer*
-D3D_CreateRenderer(SDL_Window* window, Uint32 flags)
+int
+D3D_CreateRenderer(SDL_Renderer* renderer, SDL_Window* window, Uint32 flags)
 {
-	SDL_Renderer* renderer;
 	D3D_RenderData* data;
 	HRESULT result;
 	D3DPRESENT_PARAMETERS pparams;
@@ -2533,9 +2532,6 @@ D3D_CreateRenderer(SDL_Window* window, Uint32 flags)
 	DWORD vidflags;
 #endif
 	int i;
-
-	renderer = (SDL_Renderer*)SDL_calloc(1, sizeof(*renderer));
-	if (!renderer) { SDL_OutOfMemory(); return NULL; }
 
 	data = (D3D_RenderData*)SDL_calloc(1, sizeof(*data));
 	if (!data) { SDL_free(renderer); SDL_OutOfMemory(); return NULL; }
@@ -2762,7 +2758,7 @@ D3D_CreateRenderer(SDL_Window* window, Uint32 flags)
 	data->drawstate.blend = SDL_BLENDMODE_INVALID;
 	data->drawstate.is_copy_ex = SDL_FALSE;
 
-	return renderer;
+	return 0;
 }
 
 SDL_RenderDriver D3D_RenderDriver = {
