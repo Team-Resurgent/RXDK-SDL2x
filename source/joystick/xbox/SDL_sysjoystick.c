@@ -58,6 +58,8 @@ typedef struct {
 	/* Rumble Tracking */
 	Uint32 rumble_end_time;    /* Time when rumble should stop */
 	BOOL rumble_active;        /* Is rumble currently active? */
+	Uint16 usb_vendor_id;
+	Uint16 usb_product_id;
 } XboxControllerDevice;
 
 static XboxControllerDevice g_Controllers[XUSER_MAX_COUNT];
@@ -95,6 +97,18 @@ static int XBOX_JoystickInit(void) {
 			continue;
 		}
 
+		XINPUT_DEVICE_DESCRIPTION pDescription;
+		DWORD usb_desc = XInputGetDeviceDescription(h, &pDescription);
+		if (!usb_desc) {
+			g_Controllers[port].usb_product_id = 0xBEEF;
+			g_Controllers[port].usb_vendor_id = 0xDEAD;
+		}
+		else {
+			g_Controllers[port].usb_product_id = pDescription.wProductID;
+			g_Controllers[port].usb_vendor_id = pDescription.wVendorID;
+		}
+		SDL_Log("Controller connected in port %d, VID 0x%.4x PID 0x%.4x\n", port, g_Controllers[port].usb_vendor_id, g_Controllers[port].usb_product_id);
+
 		g_Controllers[port].device_handle = h;
 		g_Controllers[port].connected = TRUE;
 		g_Controllers[port].port = port;
@@ -125,7 +139,7 @@ static int XBOX_JoystickInit(void) {
 }
 
 static void XBOX_JoystickDetect(void) {
-	//SDL_Log("Detecting XBOX Joysticks\n");
+	SDL_Log("Detecting XBOX Joysticks\n");
 
 	DWORD dwDevices = XGetDevices(XDEVICE_TYPE_GAMEPAD);
 	//SDL_Log("Device mask: %08X\n", dwDevices);
@@ -153,6 +167,18 @@ static void XBOX_JoystickDetect(void) {
 				continue;
 			}
 
+			XINPUT_DEVICE_DESCRIPTION pDescription;
+			DWORD usb_desc = XInputGetDeviceDescription(h, &pDescription); // Seems this doesnt work
+			if (!usb_desc) {
+				g_Controllers[port].usb_product_id = 0xBEEF;
+				g_Controllers[port].usb_vendor_id = 0xDEAD;
+			}
+			else {
+				g_Controllers[port].usb_product_id = pDescription.wProductID;
+				g_Controllers[port].usb_vendor_id = pDescription.wVendorID;
+			}
+			SDL_Log("Controller connected in port %d, VID 0x%.4x PID 0x%.4x\n", port, g_Controllers[port].usb_vendor_id, g_Controllers[port].usb_product_id);
+
 			g_Controllers[port].device_handle = h;
 			g_Controllers[port].connected = TRUE;
 			g_Controllers[port].port = port;
@@ -178,7 +204,7 @@ static void XBOX_JoystickDetect(void) {
 static int
 XBOX_JoystickGetCount(void)
 {
-	//SDL_Log("XBOX_JoystickGetCount\n");
+	// SDL_Log("XBOX_JoystickGetCount\n");
 	return g_NumControllers;
 }
 
@@ -218,19 +244,33 @@ XBOX_JoystickGetDevicePlayerIndex(int device_index)
 static SDL_JoystickGUID
 XBOX_JoystickGetDeviceGUID(int device_index)
 {
-	//SDL_Log("XBOX_JoystickGetDeviceGUID called for device index %d\n", device_index);
+	// SDL_Log("XBOX_JoystickGetDeviceGUID called for device index %d\n", device_index);
 	SDL_JoystickGUID guid;
 	SDL_zero(guid);
-	// You can craft a stable GUID. For simplicity, leave it zeroed.
+	int count = 0;
+	for (int i = 0; i < XUSER_MAX_COUNT; i++) {
+		if (g_Controllers[i].connected) {
+			if (count == device_index) {
+				guid.data[0] = 7;
+				guid.data[1] = 7;
+				guid.data[2] = 7;
+				guid.data[3] = 7;
+				guid.data[4] = g_Controllers[i].port;
+				break;
+			}
+			count++;
+		}
+	}
+
 	return guid;
 }
 
 static SDL_JoystickID
 XBOX_JoystickGetDeviceInstanceID(int device_index)
 {
-	//SDL_Log("XBOX_JoystickGetDeviceInstanceID called for device index %d\n", device_index);
+	SDL_Log("XBOX_JoystickGetDeviceInstanceID called for device index %d\n", device_index);
 	// Instance ID can be the device_index itself or something stable.
-	return (SDL_JoystickID)device_index;
+	return (SDL_JoystickID) device_index;
 }
 
 static int
@@ -424,7 +464,7 @@ XBOX_JoystickClose(SDL_Joystick* joystick)
 static void
 XBOX_JoystickQuit(void)
 {
-	SDL_Log("XBOX_JoystickQuit\n");
+	// SDL_Log("XBOX_JoystickQuit\n");
 	// Close all open devices
 	for (int i = 0; i < XUSER_MAX_COUNT; i++) {
 		if (g_Controllers[i].connected && g_Controllers[i].device_handle) {
@@ -437,20 +477,129 @@ XBOX_JoystickQuit(void)
 	SDL_Log("All controllers have been closed and resources released.\n");
 }
 
+static const char*
+XBOX_JoystickGetDevicePath(int device_index) {
+	// SDL_Log("XBOX_JoystickGetDeviceName called for device index %d\n", device_index);
+	int count = 0;
+	for (int i = 0; i < XUSER_MAX_COUNT; i++) {
+		if (g_Controllers[i].connected) {
+			if (count == device_index) {
+				return "Xbox Controller";
+			}
+			count++;
+		}
+	}
+	return NULL;
+}
+
+static void
+XBOX_JoystickSetDevicePlayerIndex(int device_index, int player_index) {
+	// Do nothing
+}
+
+static int
+XBOX_RumbleTriggers(SDL_Joystick *joystick, Uint16 left_rumble, Uint16 right_rumble) {
+	return SDL_Unsupported();
+}
+
+static Uint32
+XBOX_GetCapabilities(SDL_Joystick *joystick){
+	return 0;
+}
+
+static int
+XBOX_SetLed(SDL_Joystick *joystick, Uint8 red, Uint8 green, Uint8 blue) {
+	return SDL_Unsupported();
+}
+
+static int
+XBOX_SendEffect(SDL_Joystick *joystick, const void *data, int size) {
+	return SDL_Unsupported();
+}
+
+static int
+XBOX_SetSensorsEnabled(SDL_Joystick *joystick, SDL_bool enabled) {
+	return SDL_Unsupported();
+}
+
+static SDL_bool
+XBOX_GetGamepadMapping(int device_index, SDL_GamepadMapping *out) {
+	// Map thumbstick axes
+	out->leftx.kind = EMappingKind_Axis;
+	out->lefty.kind = EMappingKind_Axis;
+	out->rightx.kind = EMappingKind_Axis;
+	out->righty.kind = EMappingKind_Axis;
+	// out->leftstick.target = XINPUT_GAMEPAD_LEFT_THUMB;
+	// out->rightstick.target = XINPUT_GAMEPAD_RIGHT_THUMB;
+
+	// Map face buttons
+	out->a.kind = EMappingKind_Button;
+	out->b.kind = EMappingKind_Button;
+	out->x.kind = EMappingKind_Button;
+	out->y.kind = EMappingKind_Button;
+	out->a.target = XINPUT_GAMEPAD_A;
+	out->b.target = XINPUT_GAMEPAD_B;
+	out->x.target = XINPUT_GAMEPAD_X;
+	out->y.target = XINPUT_GAMEPAD_Y;
+
+	// Map shoulder buttons
+	out->leftshoulder.kind = EMappingKind_Button;
+	out->rightshoulder.kind = EMappingKind_Button;
+	out->leftshoulder.target = XINPUT_GAMEPAD_WHITE;
+	out->rightshoulder.target = XINPUT_GAMEPAD_BLACK;
+
+	// Map triggers as buttons with threshold
+	out->lefttrigger.kind = EMappingKind_Axis;
+	out->righttrigger.kind = EMappingKind_Axis;
+	out->lefttrigger.target = XINPUT_GAMEPAD_LEFT_TRIGGER;
+	out->righttrigger.target = XINPUT_GAMEPAD_RIGHT_TRIGGER;
+
+	// Map start/back/thumbstick buttons
+	out->start.kind = EMappingKind_Button;
+	out->back.kind = EMappingKind_Button;
+	out->leftstick.kind = EMappingKind_Button;
+	out->rightstick.kind = EMappingKind_Button;
+	out->start.target = XINPUT_GAMEPAD_START;
+	out->back.target = XINPUT_GAMEPAD_BACK;
+	out->leftstick.target = XINPUT_GAMEPAD_LEFT_THUMB;
+	out->rightstick.target = XINPUT_GAMEPAD_RIGHT_THUMB;
+
+	// Map D-Pad as hat
+	out->dpup.kind = EMappingKind_Hat;
+	out->dpdown.kind = EMappingKind_Hat;
+	out->dpleft.kind = EMappingKind_Hat;
+	out->dpright.kind = EMappingKind_Hat;
+	out->dpup.target = XINPUT_GAMEPAD_DPAD_UP;
+	out->dpdown.target = XINPUT_GAMEPAD_DPAD_DOWN;
+	out->dpleft.target = XINPUT_GAMEPAD_DPAD_LEFT;
+	out->dpright.target = XINPUT_GAMEPAD_DPAD_RIGHT;
+
+	return SDL_TRUE;
+}
+
 SDL_JoystickDriver SDL_XBOX_JoystickDriver =
 {
 	XBOX_JoystickInit,
 	XBOX_JoystickGetCount,
 	XBOX_JoystickDetect,
 	XBOX_JoystickGetDeviceName,
+	XBOX_JoystickGetDevicePath,
 	XBOX_JoystickGetDevicePlayerIndex,
+	XBOX_JoystickGetDevicePlayerIndex,
+	XBOX_JoystickSetDevicePlayerIndex,
 	XBOX_JoystickGetDeviceGUID,
 	XBOX_JoystickGetDeviceInstanceID,
 	XBOX_JoystickOpen,
 	XBOX_JoystickRumble,
+	XBOX_RumbleTriggers,
+	XBOX_GetCapabilities,
+	XBOX_SetLed,
+	XBOX_SendEffect,
+	XBOX_SetSensorsEnabled,
 	XBOX_JoystickUpdate,
 	XBOX_JoystickClose,
 	XBOX_JoystickQuit,
+	XBOX_GetGamepadMapping,
 };
 
 #endif /* !SDL_JOYSTICK_DISABLED && __XBOX__ */
