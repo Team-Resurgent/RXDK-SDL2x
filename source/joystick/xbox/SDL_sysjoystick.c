@@ -125,7 +125,7 @@ static int XBOX_JoystickInit(void) {
 }
 
 static void XBOX_JoystickDetect(void) {
-	//SDL_Log("Detecting XBOX Joysticks\n");
+	SDL_Log("Detecting XBOX Joysticks\n");
 
 	DWORD dwDevices = XGetDevices(XDEVICE_TYPE_GAMEPAD);
 	//SDL_Log("Device mask: %08X\n", dwDevices);
@@ -178,7 +178,7 @@ static void XBOX_JoystickDetect(void) {
 static int
 XBOX_JoystickGetCount(void)
 {
-	//SDL_Log("XBOX_JoystickGetCount\n");
+	SDL_Log("XBOX_JoystickGetCount\n");
 	return g_NumControllers;
 }
 
@@ -218,7 +218,7 @@ XBOX_JoystickGetDevicePlayerIndex(int device_index)
 static SDL_JoystickGUID
 XBOX_JoystickGetDeviceGUID(int device_index)
 {
-	//SDL_Log("XBOX_JoystickGetDeviceGUID called for device index %d\n", device_index);
+	SDL_Log("XBOX_JoystickGetDeviceGUID called for device index %d\n", device_index);
 	SDL_JoystickGUID guid;
 	SDL_zero(guid);
 	// You can craft a stable GUID. For simplicity, leave it zeroed.
@@ -228,7 +228,7 @@ XBOX_JoystickGetDeviceGUID(int device_index)
 static SDL_JoystickID
 XBOX_JoystickGetDeviceInstanceID(int device_index)
 {
-	//SDL_Log("XBOX_JoystickGetDeviceInstanceID called for device index %d\n", device_index);
+	SDL_Log("XBOX_JoystickGetDeviceInstanceID called for device index %d\n", device_index);
 	// Instance ID can be the device_index itself or something stable.
 	return (SDL_JoystickID)device_index;
 }
@@ -325,6 +325,7 @@ XBOX_JoystickRumble(SDL_Joystick* joystick, Uint16 low_frequency_rumble, Uint16 
 }
 
 static void XBOX_JoystickUpdate(SDL_Joystick* joystick) {
+	SDL_Log("XBOX_JoystickUpdate\n");
 	XboxControllerDevice* dev = (XboxControllerDevice*)joystick->hwdata;
 
 	// Validate handle and connection status
@@ -437,20 +438,80 @@ XBOX_JoystickQuit(void)
 	SDL_Log("All controllers have been closed and resources released.\n");
 }
 
+static const char*
+XBOX_JoystickGetDevicePath(int device_index) {
+	SDL_Log("XBOX_JoystickGetDeviceName called for device index %d\n", device_index);
+	int count = 0;
+	for (int i = 0; i < XUSER_MAX_COUNT; i++) {
+		if (g_Controllers[i].connected) {
+			if (count == device_index) {
+				return "Xbox Controller";
+			}
+			count++;
+		}
+	}
+	return NULL;
+}
+
+static void
+XBOX_JoystickSetDevicePlayerIndex(int device_index, int player_index) {
+	// Do nothing
+}
+
+static int
+XBOX_RumbleTriggers(SDL_Joystick *joystick, Uint16 left_rumble, Uint16 right_rumble) {
+	return 0;
+}
+
+static Uint32
+XBOX_GetCapabilities(SDL_Joystick *joystick){
+	return 0;
+}
+
+static int
+XBOX_SetLed(SDL_Joystick *joystick, Uint8 red, Uint8 green, Uint8 blue) {
+	// Do nothing
+	return 0;
+}
+
+static int
+XBOX_SendEffect(SDL_Joystick *joystick, const void *data, int size) {
+	return 0;
+}
+
+static int
+XBOX_SetSensorsEnabled(SDL_Joystick *joystick, SDL_bool enabled) {
+	return 0;
+}
+
+static SDL_bool
+XBOX_GetGamepadMapping(int device_index, SDL_GamepadMapping *out) {
+	return SDL_FALSE;
+}
+
 SDL_JoystickDriver SDL_XBOX_JoystickDriver =
 {
 	XBOX_JoystickInit,
 	XBOX_JoystickGetCount,
 	XBOX_JoystickDetect,
 	XBOX_JoystickGetDeviceName,
+	XBOX_JoystickGetDevicePath,
 	XBOX_JoystickGetDevicePlayerIndex,
+	XBOX_JoystickGetDevicePlayerIndex,
+	XBOX_JoystickSetDevicePlayerIndex,
 	XBOX_JoystickGetDeviceGUID,
 	XBOX_JoystickGetDeviceInstanceID,
 	XBOX_JoystickOpen,
 	XBOX_JoystickRumble,
+	XBOX_RumbleTriggers,
+	XBOX_GetCapabilities,
+	XBOX_SetLed,
+	XBOX_SendEffect,
+	XBOX_SetSensorsEnabled,
 	XBOX_JoystickUpdate,
 	XBOX_JoystickClose,
 	XBOX_JoystickQuit,
+	XBOX_GetGamepadMapping,
 };
 
 #endif /* !SDL_JOYSTICK_DISABLED && __XBOX__ */
