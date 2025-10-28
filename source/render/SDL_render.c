@@ -1017,6 +1017,7 @@ SDL_Renderer *SDL_CreateRenderer(SDL_Window *window, int index, Uint32 flags)
                     }
                     break;
                 }
+            }        
         }
 
         if (rc == -1) {
@@ -1063,6 +1064,7 @@ SDL_Renderer *SDL_CreateRenderer(SDL_Window *window, int index, Uint32 flags)
             renderer->info.flags |= SDL_RENDERER_PRESENTVSYNC;
         }
     }
+
     SDL_CalculateSimulatedVSyncInterval(renderer, window);
 
     VerifyDrawQueueFunctions(renderer);
