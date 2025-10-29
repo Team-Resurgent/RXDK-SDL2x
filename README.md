@@ -1,6 +1,7 @@
+
 # SDL2 Port for the Original Xbox
 
-This project is a port of **SDL2** to the Original Xbox. It's based on 2.0.10
+This project is a port of **SDL2** to the Original Xbox. It's based on 2.32.10
 
 ---
 

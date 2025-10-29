@@ -14,9 +14,6 @@
     <Filter Include="Source Files\video\yuv2rgb">
       <UniqueIdentifier>{0c2493c5-4bd5-4002-95d5-885dca47b5d2}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files\dynapi">
-      <UniqueIdentifier>{b0237c49-9725-4dcf-8ef5-0b5a6ea3c203}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Source Files\stdlib">
       <UniqueIdentifier>{8dd4cbce-7152-422a-9adc-2e005f3c8868}</UniqueIdentifier>
     </Filter>
@@ -55,9 +52,6 @@
     </Filter>
     <Filter Include="Source Files\cpuinfo">
       <UniqueIdentifier>{aaa2ee14-3320-461e-8abb-bd2dffb60da9}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\libm">
-      <UniqueIdentifier>{21ddd599-bf96-447d-94d0-5366221d7722}</UniqueIdentifier>
     </Filter>
     <Filter Include="Source Files\events">
       <UniqueIdentifier>{2eaafed4-25de-4c94-a16a-311abbc4097d}</UniqueIdentifier>
@@ -107,6 +101,27 @@
     <Filter Include="Header Files">
       <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
       <Extensions>h;hpp;hxx;hm;inl;inc;xsd</Extensions>
+    </Filter>
+    <Filter Include="Source Files\locale">
+      <UniqueIdentifier>{f26172ef-e0f7-478c-aec9-b7c8d8066752}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\locale\dummy">
+      <UniqueIdentifier>{47044c8c-b25f-41bb-ba50-00ee6bb4b261}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\misc">
+      <UniqueIdentifier>{d4f71777-cc24-4a9c-b625-56a8dca4c297}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\misc\dummy">
+      <UniqueIdentifier>{cd09e49b-588e-4829-a189-8c7ba3deaf4d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\dynapi">
+      <UniqueIdentifier>{3cfc9263-f4a9-45e3-aa5f-b5888de738df}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\libm">
+      <UniqueIdentifier>{447e0b51-424b-4bcc-a0a0-96d54eec4020}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\test">
+      <UniqueIdentifier>{92d17a0c-e549-497c-9548-628b3e6ae4ad}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -193,12 +208,6 @@
     </ClCompile>
     <ClCompile Include="source\video\xbox\SDL_xboxwindow.c">
       <Filter>Source Files\video\xbox</Filter>
-    </ClCompile>
-    <ClCompile Include="source\video\yuv2rgb\yuv_rgb.c">
-      <Filter>Source Files\video\yuv2rgb</Filter>
-    </ClCompile>
-    <ClCompile Include="source\dynapi\SDL_dynapi.c">
-      <Filter>Source Files\dynapi</Filter>
     </ClCompile>
     <ClCompile Include="source\stdlib\SDL_getenv.c">
       <Filter>Source Files\stdlib</Filter>
@@ -287,66 +296,6 @@
     <ClCompile Include="source\cpuinfo\SDL_cpuinfo.c">
       <Filter>Source Files\cpuinfo</Filter>
     </ClCompile>
-    <ClCompile Include="source\libm\e_atan2.c">
-      <Filter>Source Files\libm</Filter>
-    </ClCompile>
-    <ClCompile Include="source\libm\e_exp.c">
-      <Filter>Source Files\libm</Filter>
-    </ClCompile>
-    <ClCompile Include="source\libm\e_fmod.c">
-      <Filter>Source Files\libm</Filter>
-    </ClCompile>
-    <ClCompile Include="source\libm\e_log.c">
-      <Filter>Source Files\libm</Filter>
-    </ClCompile>
-    <ClCompile Include="source\libm\e_log10.c">
-      <Filter>Source Files\libm</Filter>
-    </ClCompile>
-    <ClCompile Include="source\libm\e_pow.c">
-      <Filter>Source Files\libm</Filter>
-    </ClCompile>
-    <ClCompile Include="source\libm\e_rem_pio2.c">
-      <Filter>Source Files\libm</Filter>
-    </ClCompile>
-    <ClCompile Include="source\libm\e_sqrt.c">
-      <Filter>Source Files\libm</Filter>
-    </ClCompile>
-    <ClCompile Include="source\libm\k_cos.c">
-      <Filter>Source Files\libm</Filter>
-    </ClCompile>
-    <ClCompile Include="source\libm\k_rem_pio2.c">
-      <Filter>Source Files\libm</Filter>
-    </ClCompile>
-    <ClCompile Include="source\libm\k_sin.c">
-      <Filter>Source Files\libm</Filter>
-    </ClCompile>
-    <ClCompile Include="source\libm\k_tan.c">
-      <Filter>Source Files\libm</Filter>
-    </ClCompile>
-    <ClCompile Include="source\libm\s_atan.c">
-      <Filter>Source Files\libm</Filter>
-    </ClCompile>
-    <ClCompile Include="source\libm\s_copysign.c">
-      <Filter>Source Files\libm</Filter>
-    </ClCompile>
-    <ClCompile Include="source\libm\s_cos.c">
-      <Filter>Source Files\libm</Filter>
-    </ClCompile>
-    <ClCompile Include="source\libm\s_fabs.c">
-      <Filter>Source Files\libm</Filter>
-    </ClCompile>
-    <ClCompile Include="source\libm\s_floor.c">
-      <Filter>Source Files\libm</Filter>
-    </ClCompile>
-    <ClCompile Include="source\libm\s_scalbn.c">
-      <Filter>Source Files\libm</Filter>
-    </ClCompile>
-    <ClCompile Include="source\libm\s_sin.c">
-      <Filter>Source Files\libm</Filter>
-    </ClCompile>
-    <ClCompile Include="source\libm\s_tan.c">
-      <Filter>Source Files\libm</Filter>
-    </ClCompile>
     <ClCompile Include="source\events\SDL_events.c">
       <Filter>Source Files\events</Filter>
     </ClCompile>
@@ -419,53 +368,197 @@
     <ClCompile Include="source\haptic\dummy\SDL_syshaptic.c">
       <Filter>Source Files\haptic\dummy</Filter>
     </ClCompile>
-    <ClCompile Include="source\test\SDL_test_assert.c">
+    <ClCompile Include="source\events\imKStoUCS.c">
+      <Filter>Source Files\events</Filter>
+    </ClCompile>
+    <ClCompile Include="source\events\SDL_clipboardevents.c">
+      <Filter>Source Files\events</Filter>
+    </ClCompile>
+    <ClCompile Include="source\events\SDL_displayevents.c">
+      <Filter>Source Files\events</Filter>
+    </ClCompile>
+    <ClCompile Include="source\events\SDL_dropevents.c">
+      <Filter>Source Files\events</Filter>
+    </ClCompile>
+    <ClCompile Include="source\events\SDL_keysym_to_scancode.c">
+      <Filter>Source Files\events</Filter>
+    </ClCompile>
+    <ClCompile Include="source\events\SDL_scancode_tables.c">
+      <Filter>Source Files\events</Filter>
+    </ClCompile>
+    <ClCompile Include="source\events\SDL_windowevents.c">
+      <Filter>Source Files\events</Filter>
+    </ClCompile>
+    <ClCompile Include="source\joystick\controller_type.c">
+      <Filter>Source Files\joystick</Filter>
+    </ClCompile>
+    <ClCompile Include="source\locale\SDL_locale.c">
+      <Filter>Source Files\locale</Filter>
+    </ClCompile>
+    <ClCompile Include="source\locale\dummy\SDL_syslocale.c">
+      <Filter>Source Files\locale\dummy</Filter>
+    </ClCompile>
+    <ClCompile Include="source\misc\SDL_url.c">
+      <Filter>Source Files\misc</Filter>
+    </ClCompile>
+    <ClCompile Include="source\misc\dummy\SDL_sysurl.c">
+      <Filter>Source Files\misc\dummy</Filter>
+    </ClCompile>
+    <ClCompile Include="source\stdlib\SDL_crc16.c">
+      <Filter>Source Files\stdlib</Filter>
+    </ClCompile>
+    <ClCompile Include="source\stdlib\SDL_crc32.c">
+      <Filter>Source Files\stdlib</Filter>
+    </ClCompile>
+    <ClCompile Include="source\stdlib\SDL_strtokr.c">
+      <Filter>Source Files\stdlib</Filter>
+    </ClCompile>
+    <ClCompile Include="source\video\yuv2rgb\yuv_rgb_std.c">
+      <Filter>Source Files\video\yuv2rgb</Filter>
+    </ClCompile>
+    <ClCompile Include="source\video\yuv2rgb\yuv_rgb_sse.c">
+      <Filter>Source Files\video\yuv2rgb</Filter>
+    </ClCompile>
+    <ClCompile Include="source\video\yuv2rgb\yuv_rgb_lsx.c">
+      <Filter>Source Files\video\yuv2rgb</Filter>
+    </ClCompile>
+    <ClCompile Include="source\video\SDL_clipboard.c">
+      <Filter>Source Files\video</Filter>
+    </ClCompile>
+    <ClCompile Include="source\video\SDL_egl.c">
+      <Filter>Source Files\video</Filter>
+    </ClCompile>
+    <ClCompile Include="source\video\SDL_shape.c">
+      <Filter>Source Files\video</Filter>
+    </ClCompile>
+    <ClCompile Include="source\video\SDL_vulkan_utils.c">
+      <Filter>Source Files\video</Filter>
+    </ClCompile>
+    <ClCompile Include="source\SDL_guid.c">
       <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="source\SDL_list.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="source\SDL_utils.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="source\render\software\SDL_triangle.c">
+      <Filter>Source Files\render\software</Filter>
+    </ClCompile>
+    <ClCompile Include="source\dynapi\SDL_dynapi.c">
+      <Filter>Source Files\dynapi</Filter>
+    </ClCompile>
+    <ClCompile Include="source\joystick\SDL_steam_virtual_gamepad.c">
+      <Filter>Source Files\joystick</Filter>
+    </ClCompile>
+    <ClCompile Include="source\libm\e_atan2.c">
+      <Filter>Source Files\libm</Filter>
+    </ClCompile>
+    <ClCompile Include="source\libm\e_exp.c">
+      <Filter>Source Files\libm</Filter>
+    </ClCompile>
+    <ClCompile Include="source\libm\e_fmod.c">
+      <Filter>Source Files\libm</Filter>
+    </ClCompile>
+    <ClCompile Include="source\libm\e_log.c">
+      <Filter>Source Files\libm</Filter>
+    </ClCompile>
+    <ClCompile Include="source\libm\e_log10.c">
+      <Filter>Source Files\libm</Filter>
+    </ClCompile>
+    <ClCompile Include="source\libm\e_pow.c">
+      <Filter>Source Files\libm</Filter>
+    </ClCompile>
+    <ClCompile Include="source\libm\e_rem_pio2.c">
+      <Filter>Source Files\libm</Filter>
+    </ClCompile>
+    <ClCompile Include="source\libm\e_sqrt.c">
+      <Filter>Source Files\libm</Filter>
+    </ClCompile>
+    <ClCompile Include="source\libm\k_cos.c">
+      <Filter>Source Files\libm</Filter>
+    </ClCompile>
+    <ClCompile Include="source\libm\k_rem_pio2.c">
+      <Filter>Source Files\libm</Filter>
+    </ClCompile>
+    <ClCompile Include="source\libm\k_sin.c">
+      <Filter>Source Files\libm</Filter>
+    </ClCompile>
+    <ClCompile Include="source\libm\k_tan.c">
+      <Filter>Source Files\libm</Filter>
+    </ClCompile>
+    <ClCompile Include="source\libm\s_atan.c">
+      <Filter>Source Files\libm</Filter>
+    </ClCompile>
+    <ClCompile Include="source\libm\s_copysign.c">
+      <Filter>Source Files\libm</Filter>
+    </ClCompile>
+    <ClCompile Include="source\libm\s_cos.c">
+      <Filter>Source Files\libm</Filter>
+    </ClCompile>
+    <ClCompile Include="source\libm\s_fabs.c">
+      <Filter>Source Files\libm</Filter>
+    </ClCompile>
+    <ClCompile Include="source\libm\s_floor.c">
+      <Filter>Source Files\libm</Filter>
+    </ClCompile>
+    <ClCompile Include="source\libm\s_scalbn.c">
+      <Filter>Source Files\libm</Filter>
+    </ClCompile>
+    <ClCompile Include="source\libm\s_sin.c">
+      <Filter>Source Files\libm</Filter>
+    </ClCompile>
+    <ClCompile Include="source\libm\s_tan.c">
+      <Filter>Source Files\libm</Filter>
+    </ClCompile>
+    <ClCompile Include="source\test\SDL_test_assert.c">
+      <Filter>Source Files\test</Filter>
     </ClCompile>
     <ClCompile Include="source\test\SDL_test_common.c">
-      <Filter>Source Files</Filter>
+      <Filter>Source Files\test</Filter>
     </ClCompile>
     <ClCompile Include="source\test\SDL_test_compare.c">
-      <Filter>Source Files</Filter>
+      <Filter>Source Files\test</Filter>
     </ClCompile>
     <ClCompile Include="source\test\SDL_test_crc32.c">
-      <Filter>Source Files</Filter>
+      <Filter>Source Files\test</Filter>
     </ClCompile>
     <ClCompile Include="source\test\SDL_test_font.c">
-      <Filter>Source Files</Filter>
+      <Filter>Source Files\test</Filter>
     </ClCompile>
     <ClCompile Include="source\test\SDL_test_fuzzer.c">
-      <Filter>Source Files</Filter>
+      <Filter>Source Files\test</Filter>
     </ClCompile>
     <ClCompile Include="source\test\SDL_test_harness.c">
-      <Filter>Source Files</Filter>
+      <Filter>Source Files\test</Filter>
     </ClCompile>
     <ClCompile Include="source\test\SDL_test_imageBlit.c">
-      <Filter>Source Files</Filter>
+      <Filter>Source Files\test</Filter>
     </ClCompile>
     <ClCompile Include="source\test\SDL_test_imageBlitBlend.c">
-      <Filter>Source Files</Filter>
+      <Filter>Source Files\test</Filter>
     </ClCompile>
     <ClCompile Include="source\test\SDL_test_imageFace.c">
-      <Filter>Source Files</Filter>
+      <Filter>Source Files\test</Filter>
     </ClCompile>
     <ClCompile Include="source\test\SDL_test_imagePrimitives.c">
-      <Filter>Source Files</Filter>
+      <Filter>Source Files\test</Filter>
     </ClCompile>
     <ClCompile Include="source\test\SDL_test_imagePrimitivesBlend.c">
-      <Filter>Source Files</Filter>
+      <Filter>Source Files\test</Filter>
     </ClCompile>
     <ClCompile Include="source\test\SDL_test_log.c">
-      <Filter>Source Files</Filter>
+      <Filter>Source Files\test</Filter>
     </ClCompile>
     <ClCompile Include="source\test\SDL_test_md5.c">
-      <Filter>Source Files</Filter>
+      <Filter>Source Files\test</Filter>
     </ClCompile>
     <ClCompile Include="source\test\SDL_test_memory.c">
-      <Filter>Source Files</Filter>
+      <Filter>Source Files\test</Filter>
     </ClCompile>
     <ClCompile Include="source\test\SDL_test_random.c">
-      <Filter>Source Files</Filter>
+      <Filter>Source Files\test</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -523,24 +616,6 @@
     <ClInclude Include="source\video\xbox\SDL_xboxwindow.h">
       <Filter>Source Files\video\xbox</Filter>
     </ClInclude>
-    <ClInclude Include="source\video\yuv2rgb\yuv_rgb.h">
-      <Filter>Source Files\video\yuv2rgb</Filter>
-    </ClInclude>
-    <ClInclude Include="source\video\yuv2rgb\yuv_rgb_sse_func.h">
-      <Filter>Source Files\video\yuv2rgb</Filter>
-    </ClInclude>
-    <ClInclude Include="source\video\yuv2rgb\yuv_rgb_std_func.h">
-      <Filter>Source Files\video\yuv2rgb</Filter>
-    </ClInclude>
-    <ClInclude Include="source\dynapi\SDL_dynapi.h">
-      <Filter>Source Files\dynapi</Filter>
-    </ClInclude>
-    <ClInclude Include="source\dynapi\SDL_dynapi_overrides.h">
-      <Filter>Source Files\dynapi</Filter>
-    </ClInclude>
-    <ClInclude Include="source\dynapi\SDL_dynapi_procs.h">
-      <Filter>Source Files\dynapi</Filter>
-    </ClInclude>
     <ClInclude Include="source\timer\SDL_timer_c.h">
       <Filter>Source Files\timer</Filter>
     </ClInclude>
@@ -594,12 +669,6 @@
     </ClInclude>
     <ClInclude Include="source\core\xbox\SDL_xbox.h">
       <Filter>Source Files\core\xbox</Filter>
-    </ClInclude>
-    <ClInclude Include="source\libm\math_libm.h">
-      <Filter>Source Files\libm</Filter>
-    </ClInclude>
-    <ClInclude Include="source\libm\math_private.h">
-      <Filter>Source Files\libm</Filter>
     </ClInclude>
     <ClInclude Include="source\events\SDL_events_c.h">
       <Filter>Source Files\events</Filter>
@@ -689,9 +758,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="include\SDL_config.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="include\SDL_config_windows.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="include\SDL_config_xbox.h">
@@ -850,8 +916,157 @@
     <ClInclude Include="include\SDL_vulkan.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="source\audio\SDL_audio_channel_converters.h">
+      <Filter>Source Files\audio</Filter>
+    </ClInclude>
+    <ClInclude Include="source\audio\SDL_audio_resampler_filter.h">
+      <Filter>Source Files\audio</Filter>
+    </ClInclude>
+    <ClInclude Include="source\events\blank_cursor.h">
+      <Filter>Source Files\events</Filter>
+    </ClInclude>
+    <ClInclude Include="source\events\default_cursor.h">
+      <Filter>Source Files\events</Filter>
+    </ClInclude>
+    <ClInclude Include="source\events\imKStoUCS.h">
+      <Filter>Source Files\events</Filter>
+    </ClInclude>
+    <ClInclude Include="source\events\scancodes_ascii.h">
+      <Filter>Source Files\events</Filter>
+    </ClInclude>
+    <ClInclude Include="source\events\scancodes_darwin.h">
+      <Filter>Source Files\events</Filter>
+    </ClInclude>
+    <ClInclude Include="source\events\scancodes_linux.h">
+      <Filter>Source Files\events</Filter>
+    </ClInclude>
+    <ClInclude Include="source\events\scancodes_windows.h">
+      <Filter>Source Files\events</Filter>
+    </ClInclude>
+    <ClInclude Include="source\events\scancodes_xfree86.h">
+      <Filter>Source Files\events</Filter>
+    </ClInclude>
+    <ClInclude Include="source\events\SDL_clipboardevents_c.h">
+      <Filter>Source Files\events</Filter>
+    </ClInclude>
+    <ClInclude Include="source\events\SDL_displayevents_c.h">
+      <Filter>Source Files\events</Filter>
+    </ClInclude>
+    <ClInclude Include="source\events\SDL_dropevents_c.h">
+      <Filter>Source Files\events</Filter>
+    </ClInclude>
+    <ClInclude Include="source\events\SDL_keysym_to_scancode_c.h">
+      <Filter>Source Files\events</Filter>
+    </ClInclude>
+    <ClInclude Include="source\events\SDL_scancode_tables_c.h">
+      <Filter>Source Files\events</Filter>
+    </ClInclude>
+    <ClInclude Include="source\events\SDL_sysevents.h">
+      <Filter>Source Files\events</Filter>
+    </ClInclude>
+    <ClInclude Include="source\events\SDL_windowevents_c.h">
+      <Filter>Source Files\events</Filter>
+    </ClInclude>
+    <ClInclude Include="source\joystick\controller_list.h">
+      <Filter>Source Files\joystick</Filter>
+    </ClInclude>
+    <ClInclude Include="source\joystick\usb_ids.h">
+      <Filter>Source Files\joystick</Filter>
+    </ClInclude>
+    <ClInclude Include="source\locale\SDL_syslocale.h">
+      <Filter>Source Files\locale</Filter>
+    </ClInclude>
+    <ClInclude Include="source\misc\SDL_sysurl.h">
+      <Filter>Source Files\misc</Filter>
+    </ClInclude>
+    <ClInclude Include="source\stdlib\SDL_vacopy.h">
+      <Filter>Source Files\stdlib</Filter>
+    </ClInclude>
+    <ClInclude Include="source\video\yuv2rgb\yuv_rgb_std_func.h">
+      <Filter>Source Files\video\yuv2rgb</Filter>
+    </ClInclude>
+    <ClInclude Include="source\video\yuv2rgb\yuv_rgb_std.h">
+      <Filter>Source Files\video\yuv2rgb</Filter>
+    </ClInclude>
+    <ClInclude Include="source\video\yuv2rgb\yuv_rgb_sse_func.h">
+      <Filter>Source Files\video\yuv2rgb</Filter>
+    </ClInclude>
+    <ClInclude Include="source\video\yuv2rgb\yuv_rgb_sse.h">
+      <Filter>Source Files\video\yuv2rgb</Filter>
+    </ClInclude>
+    <ClInclude Include="source\video\yuv2rgb\yuv_rgb_lsx_func.h">
+      <Filter>Source Files\video\yuv2rgb</Filter>
+    </ClInclude>
+    <ClInclude Include="source\video\yuv2rgb\yuv_rgb_lsx.h">
+      <Filter>Source Files\video\yuv2rgb</Filter>
+    </ClInclude>
+    <ClInclude Include="source\video\yuv2rgb\yuv_rgb_internal.h">
+      <Filter>Source Files\video\yuv2rgb</Filter>
+    </ClInclude>
+    <ClInclude Include="source\video\yuv2rgb\yuv_rgb_common.h">
+      <Filter>Source Files\video\yuv2rgb</Filter>
+    </ClInclude>
+    <ClInclude Include="source\video\yuv2rgb\yuv_rgb.h">
+      <Filter>Source Files\video\yuv2rgb</Filter>
+    </ClInclude>
+    <ClInclude Include="source\video\SDL_egl_c.h">
+      <Filter>Source Files\video</Filter>
+    </ClInclude>
+    <ClInclude Include="source\video\SDL_rect_impl.h">
+      <Filter>Source Files\video</Filter>
+    </ClInclude>
+    <ClInclude Include="source\video\SDL_shape_internals.h">
+      <Filter>Source Files\video</Filter>
+    </ClInclude>
+    <ClInclude Include="source\video\SDL_vulkan_internal.h">
+      <Filter>Source Files\video</Filter>
+    </ClInclude>
+    <ClInclude Include="source\SDL_hints_c.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="source\SDL_list.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="source\SDL_log_c.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="source\SDL_utils_c.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="source\render\software\SDL_triangle.h">
+      <Filter>Source Files\render\software</Filter>
+    </ClInclude>
+    <ClInclude Include="source\dynapi\SDL_dynapi.h">
+      <Filter>Source Files\dynapi</Filter>
+    </ClInclude>
+    <ClInclude Include="source\dynapi\SDL_dynapi_overrides.h">
+      <Filter>Source Files\dynapi</Filter>
+    </ClInclude>
+    <ClInclude Include="source\dynapi\SDL_dynapi_procs.h">
+      <Filter>Source Files\dynapi</Filter>
+    </ClInclude>
+    <ClInclude Include="source\joystick\SDL_steam_virtual_gamepad.h">
+      <Filter>Source Files\joystick</Filter>
+    </ClInclude>
+    <ClInclude Include="source\libm\math_libm.h">
+      <Filter>Source Files\libm</Filter>
+    </ClInclude>
+    <ClInclude Include="source\libm\math_private.h">
+      <Filter>Source Files\libm</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="source\video\sdlgenblit.pl">
+      <Filter>Source Files\video</Filter>
+    </None>
+    <None Include="source\dynapi\gendynapi.pl">
+      <Filter>Source Files\dynapi</Filter>
+    </None>
+    <None Include="source\dynapi\SDL2.exports">
+      <Filter>Source Files\dynapi</Filter>
+    </None>
   </ItemGroup>
 </Project>

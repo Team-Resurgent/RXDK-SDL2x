@@ -14,7 +14,10 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="loopwave.cpp">
+    <ClCompile Include="loopwave.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="testutils.c">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -22,5 +25,10 @@
     <Media Include="Media\sample.wav">
       <Filter>Media</Filter>
     </Media>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="testutils.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

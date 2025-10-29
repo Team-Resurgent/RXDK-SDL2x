@@ -286,7 +286,7 @@ XBOX_InitMouse(_THIS)
 		pMouse->SetRelativeMouseMode = XBOX_SetRelativeMouseMode;
 		pMouse->CaptureMouse = XBOX_CaptureMouse;
 		pMouse->GetGlobalMouseState = XBOX_GetGlobalMouseState;
-		pMouse->UpdateMouseState = XBOX_UpdateMouseState;
+		//pMouse->UpdateMouseState = XBOX_UpdateMouseState;
 	}
 
 	SDL_SetDefaultCursor(XBOX_CreateDefaultCursor());

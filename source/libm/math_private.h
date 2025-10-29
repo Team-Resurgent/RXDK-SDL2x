@@ -9,15 +9,15 @@
  * ====================================================
  */
 
- /*
-  * from: @(#)fdlibm.h 5.1 93/09/24
-  * $Id: math_private.h,v 1.3 2004/02/09 07:10:38 andersen Exp $
-  */
+/*
+ * from: @(#)fdlibm.h 5.1 93/09/24
+ * $Id: math_private.h,v 1.3 2004/02/09 07:10:38 andersen Exp $
+ */
 
 #ifndef _MATH_PRIVATE_H_
 #define _MATH_PRIVATE_H_
 
-  /* #include <endian.h> */
+/* #include <endian.h> */
 #include "SDL_endian.h"
 /* #include <sys/types.h> */
 
@@ -27,7 +27,7 @@
 #define libm_hidden_def(x)
 #define strong_alias(x, y)
 
-#ifndef __HAIKU__ /* already defined in a system header. */
+#if !defined(__HAIKU__) && !defined(__PSP__) && !defined(__3DS__) && !defined(__PS2__) /* already defined in a system header. */
 typedef unsigned int u_int32_t;
 #endif
 
@@ -59,37 +59,38 @@ typedef unsigned int u_int32_t;
    time, not at run time; I don't see much benefit to selecting
    endianness at run time.  */
 
-   /* A union which permits us to convert between a double and two 32 bit
-	  ints.  */
+/* A union which permits us to convert between a double and two 32 bit
+   ints.  */
 
-	  /*
-	   * Math on arm is special:
-	   * For FPA, float words are always big-endian.
-	   * For VFP, floats words follow the memory system mode.
-	   */
+/*
+ * Math on arm is special:
+ * For FPA, float words are always big-endian.
+ * For VFP, floats words follow the memory system mode.
+ * For Maverick, float words are always little-endian.
+ */
 
-#if (SDL_BYTEORDER == SDL_BIG_ENDIAN)
+#if (SDL_FLOATWORDORDER == SDL_BIG_ENDIAN)
 
 typedef union
 {
-	double value;
-	struct
-	{
-		u_int32_t msw;
-		u_int32_t lsw;
-	} parts;
+    double value;
+    struct
+    {
+        u_int32_t msw;
+        u_int32_t lsw;
+    } parts;
 } ieee_double_shape_type;
 
 #else
 
 typedef union
 {
-	double value;
-	struct
-	{
-		u_int32_t lsw;
-		u_int32_t msw;
-	} parts;
+    double value;
+    struct
+    {
+        u_int32_t lsw;
+        u_int32_t msw;
+    } parts;
 } ieee_double_shape_type;
 
 #endif
@@ -157,8 +158,8 @@ do {								\
 
 typedef union
 {
-	float value;
-	u_int32_t word;
+    float value;
+    u_int32_t word;
 } ieee_float_shape_type;
 
 /* Get a 32 bit int from a float.  */
@@ -182,46 +183,46 @@ do {								\
 /* ieee style elementary functions */
 extern double
 __ieee754_sqrt(double)
-attribute_hidden;
-extern double __ieee754_acos(double) attribute_hidden;
-extern double __ieee754_acosh(double) attribute_hidden;
-extern double __ieee754_log(double) attribute_hidden;
-extern double __ieee754_atanh(double) attribute_hidden;
-extern double __ieee754_asin(double) attribute_hidden;
-extern double __ieee754_atan2(double, double) attribute_hidden;
-extern double __ieee754_exp(double) attribute_hidden;
-extern double __ieee754_cosh(double) attribute_hidden;
-extern double __ieee754_fmod(double, double) attribute_hidden;
-extern double __ieee754_pow(double, double) attribute_hidden;
-extern double __ieee754_lgamma_r(double, int*) attribute_hidden;
-extern double __ieee754_gamma_r(double, int*) attribute_hidden;
-extern double __ieee754_lgamma(double) attribute_hidden;
-extern double __ieee754_gamma(double) attribute_hidden;
-extern double __ieee754_log10(double) attribute_hidden;
-extern double __ieee754_sinh(double) attribute_hidden;
-extern double __ieee754_hypot(double, double) attribute_hidden;
-extern double __ieee754_j0(double) attribute_hidden;
-extern double __ieee754_j1(double) attribute_hidden;
-extern double __ieee754_y0(double) attribute_hidden;
-extern double __ieee754_y1(double) attribute_hidden;
-extern double __ieee754_jn(int, double) attribute_hidden;
-extern double __ieee754_yn(int, double) attribute_hidden;
-extern double __ieee754_remainder(double, double) attribute_hidden;
-extern int32_t __ieee754_rem_pio2(double, double*) attribute_hidden;
+    attribute_hidden;
+     extern double __ieee754_acos(double) attribute_hidden;
+     extern double __ieee754_acosh(double) attribute_hidden;
+     extern double __ieee754_log(double) attribute_hidden;
+     extern double __ieee754_atanh(double) attribute_hidden;
+     extern double __ieee754_asin(double) attribute_hidden;
+     extern double __ieee754_atan2(double, double) attribute_hidden;
+     extern double __ieee754_exp(double) attribute_hidden;
+     extern double __ieee754_cosh(double) attribute_hidden;
+     extern double __ieee754_fmod(double, double) attribute_hidden;
+     extern double __ieee754_pow(double, double) attribute_hidden;
+     extern double __ieee754_lgamma_r(double, int *) attribute_hidden;
+     extern double __ieee754_gamma_r(double, int *) attribute_hidden;
+     extern double __ieee754_lgamma(double) attribute_hidden;
+     extern double __ieee754_gamma(double) attribute_hidden;
+     extern double __ieee754_log10(double) attribute_hidden;
+     extern double __ieee754_sinh(double) attribute_hidden;
+     extern double __ieee754_hypot(double, double) attribute_hidden;
+     extern double __ieee754_j0(double) attribute_hidden;
+     extern double __ieee754_j1(double) attribute_hidden;
+     extern double __ieee754_y0(double) attribute_hidden;
+     extern double __ieee754_y1(double) attribute_hidden;
+     extern double __ieee754_jn(int, double) attribute_hidden;
+     extern double __ieee754_yn(int, double) attribute_hidden;
+     extern double __ieee754_remainder(double, double) attribute_hidden;
+     extern int32_t __ieee754_rem_pio2(double, double *) attribute_hidden;
 #if defined(_SCALB_INT)
-extern double __ieee754_scalb(double, int) attribute_hidden;
+     extern double __ieee754_scalb(double, int) attribute_hidden;
 #else
-extern double __ieee754_scalb(double, double) attribute_hidden;
+     extern double __ieee754_scalb(double, double) attribute_hidden;
 #endif
 
 /* fdlibm kernel function */
 #ifndef _IEEE_LIBM
-extern double __kernel_standard(double, double, int) attribute_hidden;
+     extern double __kernel_standard(double, double, int) attribute_hidden;
 #endif
-extern double __kernel_sin(double, double, int) attribute_hidden;
-extern double __kernel_cos(double, double) attribute_hidden;
-extern double __kernel_tan(double, double, int) attribute_hidden;
-extern int32_t __kernel_rem_pio2(double*, double*, int, int, const unsigned int,
-	const int32_t*) attribute_hidden;
+     extern double __kernel_sin(double, double, int) attribute_hidden;
+     extern double __kernel_cos(double, double) attribute_hidden;
+     extern double __kernel_tan(double, double, int) attribute_hidden;
+     extern int32_t __kernel_rem_pio2(const double *, double *, int, int, const unsigned int,
+                                  const int32_t *) attribute_hidden;
 
 #endif /* _MATH_PRIVATE_H_ */

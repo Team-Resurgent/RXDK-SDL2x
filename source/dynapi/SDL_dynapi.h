@@ -1,6 +1,6 @@
 /*
   Simple DirectMedia Layer
-  Copyright (C) 1997-2019 Sam Lantinga <slouken@libsdl.org>
+  Copyright (C) 1997-2025 Sam Lantinga <slouken@libsdl.org>
 
   This software is provided 'as-is', without any express or implied
   warranty.  In no event will the authors be held liable for any damages
@@ -11,11 +11,11 @@
   freely, subject to the following restrictions:
 
   1. The origin of this software must not be misrepresented; you must not
-	 claim that you wrote the original software. If you use this software
-	 in a product, an acknowledgment in the product documentation would be
-	 appreciated but is not required.
+     claim that you wrote the original software. If you use this software
+     in a product, an acknowledgment in the product documentation would be
+     appreciated but is not required.
   2. Altered source versions must be plainly marked as such, and must not be
-	 misrepresented as being the original software.
+     misrepresented as being the original software.
   3. This notice may not be removed or altered from any source distribution.
 */
 
@@ -35,7 +35,7 @@
    updated SDL can transparently take advantage of them, but your program will
    not without this feature. Think hard before turning it off.
 */
-#ifdef SDL_DYNAMIC_API  /* Tried to force it on the command line? */
+#ifdef SDL_DYNAMIC_API /* Tried to force it on the command line? */
 #error Nope, you have to edit this file to force this off.
 #endif
 
@@ -43,20 +43,34 @@
 #include "TargetConditionals.h"
 #endif
 
-#if defined(TARGET_OS_IPHONE) && TARGET_OS_IPHONE  /* probably not useful on iOS. */
+#if defined(TARGET_OS_IPHONE) && TARGET_OS_IPHONE /* probably not useful on iOS. */
+#define SDL_DYNAMIC_API 0
+#elif defined(__ANDROID__) /* probably not useful on Android. */
 #define SDL_DYNAMIC_API 0
 #elif defined(__native_client__) && __native_client__  /* probably not useful on NACL. */
 #define SDL_DYNAMIC_API 0
 #elif defined(__EMSCRIPTEN__) && __EMSCRIPTEN__  /* probably not useful on Emscripten. */
 #define SDL_DYNAMIC_API 0
-#elif defined(SDL_BUILDING_WINRT) && SDL_BUILDING_WINRT  /* probably not useful on WinRT, given current .dll loading restrictions */
+#elif defined(SDL_BUILDING_WINRT) && SDL_BUILDING_WINRT /* probably not useful on WinRT, given current .dll loading restrictions */
+#define SDL_DYNAMIC_API 0
+#elif defined(__PS2__)
 #define SDL_DYNAMIC_API 0
 #elif defined(__PSP__) && __PSP__
 #define SDL_DYNAMIC_API 0
-#elif defined(__clang_analyzer__)
-#define SDL_DYNAMIC_API 0  /* Turn off for static analysis, so reports are more clear. */
-#elif defined(__XBOX__)
+#elif defined(__XBOX__) && __XBOX__
 #define SDL_DYNAMIC_API 0
+#elif defined(__riscos__) && __riscos__ /* probably not useful on RISC OS, since dlopen() can't be used when using static linking. */
+#define SDL_DYNAMIC_API 0
+#elif defined(__clang_analyzer__) || defined(SDL_THREAD_SAFETY_ANALYSIS)
+#define SDL_DYNAMIC_API 0 /* Turn off for static analysis, so reports are more clear. */
+#elif defined(__VITA__)
+#define SDL_DYNAMIC_API 0 /* vitasdk doesn't support dynamic linking */
+#elif defined(__NGAGE__)
+#define SDL_DYNAMIC_API 0 /* The N-Gage doesn't support dynamic linking either */
+#elif defined(__3DS__)
+#define SDL_DYNAMIC_API 0 /* devkitARM doesn't support dynamic linking */
+#elif defined(DYNAPI_NEEDS_DLOPEN) && !defined(HAVE_DLOPEN)
+#define SDL_DYNAMIC_API 0 /* we need dlopen(), but don't have it.... */
 #endif
 
 /* everyone else. This is where we turn on the API if nothing forced it off. */
