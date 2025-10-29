@@ -1,6 +1,6 @@
 /*
   Simple DirectMedia Layer
-  Copyright (C) 1997-2019 Sam Lantinga <slouken@libsdl.org>
+  Copyright (C) 1997-2025 Sam Lantinga <slouken@libsdl.org>
 
   This software is provided 'as-is', without any express or implied
   warranty.  In no event will the authors be held liable for any damages
@@ -25,7 +25,7 @@
 
 #include "SDL_power.h"
 
-SDL_GetPowerInfo_Xbox(SDL_PowerState* state, int* seconds, int* percent)
+SDL_bool SDL_GetPowerInfo_Xbox(SDL_PowerState* state, int* seconds, int* percent)
 {
 	*seconds = -1;
 	*percent = -1;

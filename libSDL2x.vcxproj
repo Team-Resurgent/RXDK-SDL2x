@@ -23,18 +23,27 @@
     <ClCompile Include="source\core\xbox\SDL_xbox.c" />
     <ClCompile Include="source\cpuinfo\SDL_cpuinfo.c" />
     <ClCompile Include="source\dynapi\SDL_dynapi.c" />
+    <ClCompile Include="source\events\imKStoUCS.c" />
+    <ClCompile Include="source\events\SDL_clipboardevents.c" />
+    <ClCompile Include="source\events\SDL_displayevents.c" />
+    <ClCompile Include="source\events\SDL_dropevents.c" />
     <ClCompile Include="source\events\SDL_events.c" />
     <ClCompile Include="source\events\SDL_gesture.c" />
     <ClCompile Include="source\events\SDL_keyboard.c" />
+    <ClCompile Include="source\events\SDL_keysym_to_scancode.c" />
     <ClCompile Include="source\events\SDL_mouse.c" />
     <ClCompile Include="source\events\SDL_quit.c" />
+    <ClCompile Include="source\events\SDL_scancode_tables.c" />
     <ClCompile Include="source\events\SDL_touch.c" />
+    <ClCompile Include="source\events\SDL_windowevents.c" />
     <ClCompile Include="source\filesystem\xbox\SDL_sysfilesystem.c" />
     <ClCompile Include="source\file\SDL_rwops.c" />
     <ClCompile Include="source\haptic\dummy\SDL_syshaptic.c" />
     <ClCompile Include="source\haptic\SDL_haptic.c" />
+    <ClCompile Include="source\joystick\controller_type.c" />
     <ClCompile Include="source\joystick\SDL_gamecontroller.c" />
     <ClCompile Include="source\joystick\SDL_joystick.c" />
+    <ClCompile Include="source\joystick\SDL_steam_virtual_gamepad.c" />
     <ClCompile Include="source\joystick\xbox\SDL_sysjoystick.c" />
     <ClCompile Include="source\libm\e_atan2.c" />
     <ClCompile Include="source\libm\e_exp.c" />
@@ -57,6 +66,10 @@
     <ClCompile Include="source\libm\s_sin.c" />
     <ClCompile Include="source\libm\s_tan.c" />
     <ClCompile Include="source\loadso\dummy\SDL_sysloadso.c" />
+    <ClCompile Include="source\locale\dummy\SDL_syslocale.c" />
+    <ClCompile Include="source\locale\SDL_locale.c" />
+    <ClCompile Include="source\misc\dummy\SDL_sysurl.c" />
+    <ClCompile Include="source\misc\SDL_url.c" />
     <ClCompile Include="source\power\SDL_power.c" />
     <ClCompile Include="source\power\xbox\SDL_syspower.c" />
     <ClCompile Include="source\render\direct3d8\SDL_render_d3d.c" />
@@ -70,20 +83,27 @@
     <ClCompile Include="source\render\software\SDL_drawpoint.c" />
     <ClCompile Include="source\render\software\SDL_render_sw.c" />
     <ClCompile Include="source\render\software\SDL_rotate.c" />
+    <ClCompile Include="source\render\software\SDL_triangle.c" />
     <ClCompile Include="source\SDL.c" />
     <ClCompile Include="source\SDL_assert.c" />
     <ClCompile Include="source\SDL_dataqueue.c" />
     <ClCompile Include="source\SDL_error.c" />
+    <ClCompile Include="source\SDL_guid.c" />
     <ClCompile Include="source\SDL_hints.c" />
+    <ClCompile Include="source\SDL_list.c" />
     <ClCompile Include="source\SDL_log.c" />
+    <ClCompile Include="source\SDL_utils.c" />
     <ClCompile Include="source\sensor\dummy\SDL_dummysensor.c" />
     <ClCompile Include="source\sensor\SDL_sensor.c" />
+    <ClCompile Include="source\stdlib\SDL_crc16.c" />
+    <ClCompile Include="source\stdlib\SDL_crc32.c" />
     <ClCompile Include="source\stdlib\SDL_getenv.c" />
     <ClCompile Include="source\stdlib\SDL_iconv.c" />
     <ClCompile Include="source\stdlib\SDL_malloc.c" />
     <ClCompile Include="source\stdlib\SDL_qsort.c" />
     <ClCompile Include="source\stdlib\SDL_stdlib.c" />
     <ClCompile Include="source\stdlib\SDL_string.c" />
+    <ClCompile Include="source\stdlib\SDL_strtokr.c" />
     <ClCompile Include="source\test\SDL_test_assert.c" />
     <ClCompile Include="source\test\SDL_test_common.c" />
     <ClCompile Include="source\test\SDL_test_compare.c" />
@@ -116,20 +136,26 @@
     <ClCompile Include="source\video\SDL_blit_N.c" />
     <ClCompile Include="source\video\SDL_blit_slow.c" />
     <ClCompile Include="source\video\SDL_bmp.c" />
+    <ClCompile Include="source\video\SDL_clipboard.c" />
+    <ClCompile Include="source\video\SDL_egl.c" />
     <ClCompile Include="source\video\SDL_fillrect.c" />
     <ClCompile Include="source\video\SDL_pixels.c" />
     <ClCompile Include="source\video\SDL_rect.c" />
     <ClCompile Include="source\video\SDL_RLEaccel.c" />
+    <ClCompile Include="source\video\SDL_shape.c" />
     <ClCompile Include="source\video\SDL_stretch.c" />
     <ClCompile Include="source\video\SDL_surface.c" />
     <ClCompile Include="source\video\SDL_video.c" />
+    <ClCompile Include="source\video\SDL_vulkan_utils.c" />
     <ClCompile Include="source\video\SDL_yuv.c" />
     <ClCompile Include="source\video\xbox\SDL_xboxevents.c" />
     <ClCompile Include="source\video\xbox\SDL_xboxkeyboard.c" />
     <ClCompile Include="source\video\xbox\SDL_xboxmouse.c" />
     <ClCompile Include="source\video\xbox\SDL_xboxvideo.c" />
     <ClCompile Include="source\video\xbox\SDL_xboxwindow.c" />
-    <ClCompile Include="source\video\yuv2rgb\yuv_rgb.c" />
+    <ClCompile Include="source\video\yuv2rgb\yuv_rgb_lsx.c" />
+    <ClCompile Include="source\video\yuv2rgb\yuv_rgb_sse.c" />
+    <ClCompile Include="source\video\yuv2rgb\yuv_rgb_std.c" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\begin_code.h" />
@@ -142,7 +168,6 @@
     <ClInclude Include="include\SDL_blendmode.h" />
     <ClInclude Include="include\SDL_clipboard.h" />
     <ClInclude Include="include\SDL_config.h" />
-    <ClInclude Include="include\SDL_config_windows.h" />
     <ClInclude Include="include\SDL_config_xbox.h" />
     <ClInclude Include="include\SDL_copying.h" />
     <ClInclude Include="include\SDL_cpuinfo.h" />
@@ -198,6 +223,8 @@
     <ClInclude Include="source\audio\directsound\SDL_directsound.h" />
     <ClInclude Include="source\audio\SDL_audiodev_c.h" />
     <ClInclude Include="source\audio\SDL_audio_c.h" />
+    <ClInclude Include="source\audio\SDL_audio_channel_converters.h" />
+    <ClInclude Include="source\audio\SDL_audio_resampler_filter.h" />
     <ClInclude Include="source\audio\SDL_sysaudio.h" />
     <ClInclude Include="source\audio\SDL_wave.h" />
     <ClInclude Include="source\core\BaseTyps.h" />
@@ -206,19 +233,39 @@
     <ClInclude Include="source\dynapi\SDL_dynapi.h" />
     <ClInclude Include="source\dynapi\SDL_dynapi_overrides.h" />
     <ClInclude Include="source\dynapi\SDL_dynapi_procs.h" />
+    <ClInclude Include="source\events\blank_cursor.h" />
+    <ClInclude Include="source\events\default_cursor.h" />
+    <ClInclude Include="source\events\imKStoUCS.h" />
+    <ClInclude Include="source\events\scancodes_ascii.h" />
+    <ClInclude Include="source\events\scancodes_darwin.h" />
+    <ClInclude Include="source\events\scancodes_linux.h" />
+    <ClInclude Include="source\events\scancodes_windows.h" />
+    <ClInclude Include="source\events\scancodes_xfree86.h" />
+    <ClInclude Include="source\events\SDL_clipboardevents_c.h" />
+    <ClInclude Include="source\events\SDL_displayevents_c.h" />
+    <ClInclude Include="source\events\SDL_dropevents_c.h" />
     <ClInclude Include="source\events\SDL_events_c.h" />
     <ClInclude Include="source\events\SDL_gesture_c.h" />
     <ClInclude Include="source\events\SDL_keyboard_c.h" />
+    <ClInclude Include="source\events\SDL_keysym_to_scancode_c.h" />
     <ClInclude Include="source\events\SDL_mouse_c.h" />
+    <ClInclude Include="source\events\SDL_scancode_tables_c.h" />
+    <ClInclude Include="source\events\SDL_sysevents.h" />
     <ClInclude Include="source\events\SDL_touch_c.h" />
+    <ClInclude Include="source\events\SDL_windowevents_c.h" />
     <ClInclude Include="source\haptic\SDL_haptic_c.h" />
     <ClInclude Include="source\haptic\SDL_syshaptic.h" />
+    <ClInclude Include="source\joystick\controller_list.h" />
     <ClInclude Include="source\joystick\controller_type.h" />
     <ClInclude Include="source\joystick\SDL_gamecontrollerdb.h" />
     <ClInclude Include="source\joystick\SDL_joystick_c.h" />
+    <ClInclude Include="source\joystick\SDL_steam_virtual_gamepad.h" />
     <ClInclude Include="source\joystick\SDL_sysjoystick.h" />
+    <ClInclude Include="source\joystick\usb_ids.h" />
     <ClInclude Include="source\libm\math_libm.h" />
     <ClInclude Include="source\libm\math_private.h" />
+    <ClInclude Include="source\locale\SDL_syslocale.h" />
+    <ClInclude Include="source\misc\SDL_sysurl.h" />
     <ClInclude Include="source\power\SDL_syspower.h" />
     <ClInclude Include="source\render\SDL_d3dmath.h" />
     <ClInclude Include="source\render\SDL_sysrender.h" />
@@ -231,13 +278,19 @@
     <ClInclude Include="source\render\software\SDL_drawpoint.h" />
     <ClInclude Include="source\render\software\SDL_render_sw_c.h" />
     <ClInclude Include="source\render\software\SDL_rotate.h" />
+    <ClInclude Include="source\render\software\SDL_triangle.h" />
     <ClInclude Include="source\SDL_assert_c.h" />
     <ClInclude Include="source\SDL_dataqueue.h" />
     <ClInclude Include="source\SDL_error_c.h" />
+    <ClInclude Include="source\SDL_hints_c.h" />
     <ClInclude Include="source\SDL_internal.h" />
+    <ClInclude Include="source\SDL_list.h" />
+    <ClInclude Include="source\SDL_log_c.h" />
+    <ClInclude Include="source\SDL_utils_c.h" />
     <ClInclude Include="source\sensor\dummy\SDL_dummysensor.h" />
     <ClInclude Include="source\sensor\SDL_sensor_c.h" />
     <ClInclude Include="source\sensor\SDL_syssensor.h" />
+    <ClInclude Include="source\stdlib\SDL_vacopy.h" />
     <ClInclude Include="source\thread\SDL_systhread.h" />
     <ClInclude Include="source\thread\SDL_thread_c.h" />
     <ClInclude Include="source\thread\xbox\SDL_systhread_c.h" />
@@ -246,10 +299,14 @@
     <ClInclude Include="source\video\SDL_blit_auto.h" />
     <ClInclude Include="source\video\SDL_blit_copy.h" />
     <ClInclude Include="source\video\SDL_blit_slow.h" />
+    <ClInclude Include="source\video\SDL_egl_c.h" />
     <ClInclude Include="source\video\SDL_pixels_c.h" />
     <ClInclude Include="source\video\SDL_rect_c.h" />
+    <ClInclude Include="source\video\SDL_rect_impl.h" />
     <ClInclude Include="source\video\SDL_RLEaccel_c.h" />
+    <ClInclude Include="source\video\SDL_shape_internals.h" />
     <ClInclude Include="source\video\SDL_sysvideo.h" />
+    <ClInclude Include="source\video\SDL_vulkan_internal.h" />
     <ClInclude Include="source\video\SDL_yuv_c.h" />
     <ClInclude Include="source\video\xbox\SDL_xboxevents.h" />
     <ClInclude Include="source\video\xbox\SDL_xboxkeyboard.h" />
@@ -257,11 +314,22 @@
     <ClInclude Include="source\video\xbox\SDL_xboxvideo.h" />
     <ClInclude Include="source\video\xbox\SDL_xboxwindow.h" />
     <ClInclude Include="source\video\yuv2rgb\yuv_rgb.h" />
+    <ClInclude Include="source\video\yuv2rgb\yuv_rgb_common.h" />
+    <ClInclude Include="source\video\yuv2rgb\yuv_rgb_internal.h" />
+    <ClInclude Include="source\video\yuv2rgb\yuv_rgb_lsx.h" />
+    <ClInclude Include="source\video\yuv2rgb\yuv_rgb_lsx_func.h" />
+    <ClInclude Include="source\video\yuv2rgb\yuv_rgb_sse.h" />
     <ClInclude Include="source\video\yuv2rgb\yuv_rgb_sse_func.h" />
+    <ClInclude Include="source\video\yuv2rgb\yuv_rgb_std.h" />
     <ClInclude Include="source\video\yuv2rgb\yuv_rgb_std_func.h" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="source\dynapi\gendynapi.pl" />
+    <None Include="source\dynapi\SDL2.exports" />
+    <None Include="source\video\sdlgenblit.pl" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
@@ -275,13 +343,13 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
     <ConfigurationType>StaticLibrary</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
-    <PlatformToolset>v142</PlatformToolset>
+    <PlatformToolset>v143</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
     <ConfigurationType>StaticLibrary</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
-    <PlatformToolset>v142</PlatformToolset>
+    <PlatformToolset>v143</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
@@ -337,6 +405,7 @@
       <ControlFlowGuard>false</ControlFlowGuard>
       <LanguageStandard>stdcpp17</LanguageStandard>
       <EnableEnhancedInstructionSet>StreamingSIMDExtensions</EnableEnhancedInstructionSet>
+      <FloatingPointModel>Fast</FloatingPointModel>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -372,6 +441,7 @@
       <LanguageStandard>stdcpp17</LanguageStandard>
       <EnableEnhancedInstructionSet>StreamingSIMDExtensions</EnableEnhancedInstructionSet>
       <WholeProgramOptimization>false</WholeProgramOptimization>
+      <FloatingPointModel>Precise</FloatingPointModel>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
