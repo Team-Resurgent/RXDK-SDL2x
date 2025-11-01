@@ -1861,7 +1861,8 @@ D3D_RunCommandQueue(SDL_Renderer* renderer, SDL_RenderCommand* cmd, void* vertic
 			IDirect3DVertexBuffer8_Release(vbo);
 			vbo = NULL;
 		}
-		if (SUCCEEDED(IDirect3DDevice8_CreateVertexBuffer(data->device, (UINT)vertsize, usage, fvf, D3DPOOL_DEFAULT, &vbo))) {
+		// TODO: Figure out why vertsize is 0
+		if (vertsize > 0 && SUCCEEDED(IDirect3DDevice8_CreateVertexBuffer(data->device, (UINT)vertsize, usage, fvf, D3DPOOL_DEFAULT, &vbo))) {
 			data->vertexBuffers[vboidx] = vbo;
 			data->vertexBufferSize[vboidx] = vertsize;
 		}

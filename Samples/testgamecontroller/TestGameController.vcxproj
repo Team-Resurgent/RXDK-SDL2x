@@ -151,11 +151,16 @@ MKDIR "$(OutDir)XISO"
   </ItemDefinitionGroup>
   <ItemGroup Label="ProjectConfigurations">
     <ClCompile Include="testgamecontroller.cpp" />
+    <ClCompile Include="testutils.c" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="Media\axis.bmp" />
     <Image Include="Media\button.bmp" />
     <Image Include="Media\controllermap.bmp" />
+    <Image Include="Media\controllermap_back.bmp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="testutils.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
