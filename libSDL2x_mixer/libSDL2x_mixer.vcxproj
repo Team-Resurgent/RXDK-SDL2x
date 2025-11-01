@@ -12,28 +12,6 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\SDL_mixer.h" />
-    <ClInclude Include="source\codecs\load_aiff.h" />
-    <ClInclude Include="source\codecs\load_voc.h" />
-    <ClInclude Include="source\codecs\mp3utils.h" />
-    <ClInclude Include="source\codecs\music_cmd.h" />
-    <ClInclude Include="source\codecs\music_drflac.h" />
-    <ClInclude Include="source\codecs\music_flac.h" />
-    <ClInclude Include="source\codecs\music_fluidsynth.h" />
-    <ClInclude Include="source\codecs\music_gme.h" />
-    <ClInclude Include="source\codecs\music_minimp3.h" />
-    <ClInclude Include="source\codecs\music_modplug.h" />
-    <ClInclude Include="source\codecs\music_mpg123.h" />
-    <ClInclude Include="source\codecs\music_nativemidi.h" />
-    <ClInclude Include="source\codecs\music_ogg.h" />
-    <ClInclude Include="source\codecs\music_opus.h" />
-    <ClInclude Include="source\codecs\music_timidity.h" />
-    <ClInclude Include="source\codecs\music_wav.h" />
-    <ClInclude Include="source\codecs\music_wavpack.h" />
-    <ClInclude Include="source\codecs\music_xmp.h" />
-    <ClInclude Include="source\effects_internal.h" />
-    <ClInclude Include="source\mixer.h" />
-    <ClInclude Include="source\music.h" />
-    <ClInclude Include="source\utils.h" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
