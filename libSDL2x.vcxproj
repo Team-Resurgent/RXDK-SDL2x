@@ -154,7 +154,7 @@
     <ClInclude Include="include\SDL_clipboard.h" />
     <ClInclude Include="include\SDL_config.h" />
     <ClInclude Include="include\SDL_config_windows.h" />
-    <ClInclude Include="include\SDL_config_xbox.h" />
+    <ClInclude Include="include\SDL_config_xboxrxdk.h" />
     <ClInclude Include="include\SDL_copying.h" />
     <ClInclude Include="include\SDL_cpuinfo.h" />
     <ClInclude Include="include\SDL_egl.h" />

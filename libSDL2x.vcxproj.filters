@@ -721,9 +721,6 @@
     <ClInclude Include="include\SDL_config_windows.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\SDL_config_xbox.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="include\SDL_copying.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -882,6 +879,9 @@
     </ClInclude>
     <ClInclude Include="src\stdlib\SDL_vacopy.h">
       <Filter>Source Files\stdlib</Filter>
+    </ClInclude>
+    <ClInclude Include="include\SDL_config_xboxrxdk.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
