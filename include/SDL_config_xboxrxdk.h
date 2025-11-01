@@ -10,7 +10,6 @@
 #define SIZEOF_VOIDP 4
 
 /* --- No <stdint.h>/<inttypes.h> on OG XDK --- */
-#undef HAVE_STDINT_H
 #undef HAVE_INTTYPES_H
 #ifndef _SDL_XDK_STDINT_TYPES_
 #define _SDL_XDK_STDINT_TYPES_

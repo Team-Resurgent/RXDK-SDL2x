@@ -466,164 +466,7 @@ static void adjust_pressure(MidiSong *song)
 
 static void drop_sustain(MidiSong *song)
 {
-  int i = song->voices;
-  int c = song->current_event->channel;
-
-  while (i--)
-    if (song->voice[i].status == VOICE_SUSTAINED && song->voice[i].channel == c)
-      finish_note(song, i);
-}
-
-static void adjust_pitchbend(MidiSong *song)
-{
-  int c = song->current_event->channel;
-  int i = song->voices;
-  
-  while (i--)
-    if (song->voice[i].status != VOICE_FREE && song->voice[i].channel == c)
-      {
-	recompute_freq(song, i);
-      }
-}
-
-static void adjust_volume(MidiSong *song)
-{
-  int c = song->current_event->channel;
-  int i = song->voices;
-
-  while (i--)
-    if (song->voice[i].channel == c &&
-	(song->voice[i].status==VOICE_ON || song->voice[i].status==VOICE_SUSTAINED))
-      {
-	recompute_amp(song, i);
-	apply_envelope_to_amp(song, i);
-      }
-}
-
-static void seek_forward(MidiSong *song, Sint32 until_time)
-{
-  reset_voices(song);
-  while (song->current_event->time < until_time)
-    {
-      switch(song->current_event->type)
-	{
-	  /* All notes stay off. Just handle the parameter changes. */
-
-	case ME_PITCH_SENS:
-	  song->channel[song->current_event->channel].pitchsens =
-	    song->current_event->a;
-	  song->channel[song->current_event->channel].pitchfactor = 0;
-	  break;
-	  
-	case ME_PITCHWHEEL:
-	  song->channel[song->current_event->channel].pitchbend =
-	    song->current_event->a + song->current_event->b * 128;
-	  song->channel[song->current_event->channel].pitchfactor = 0;
-	  break;
-	  
-	case ME_MAINVOLUME:
-	  song->channel[song->current_event->channel].volume =
-	    song->current_event->a;
-	  break;
-	  
-	case ME_PAN:
-	  song->channel[song->current_event->channel].panning =
-	    song->current_event->a;
-	  break;
-	      
-	case ME_EXPRESSION:
-	  song->channel[song->current_event->channel].expression =
-	    song->current_event->a;
-	  break;
-	  
-	case ME_PROGRAM:
-	  if (ISDRUMCHANNEL(song, song->current_event->channel))
-	    /* Change drum set */
-	    song->channel[song->current_event->channel].bank =
-	      song->current_event->a;
-	  else
-	    song->channel[song->current_event->channel].program =
-	      song->current_event->a;
-	  break;
-
-	case ME_SUSTAIN:
-	  song->channel[song->current_event->channel].sustain =
-	    song->current_event->a;
-	  break;
-
-	case ME_RESET_CONTROLLERS:
-	  reset_controllers(song, song->current_event->channel);
-	  break;
-	      
-	case ME_TONE_BANK:
-	  song->channel[song->current_event->channel].bank =
-	    song->current_event->a;
-	  break;
-	  
-	case ME_EOT:
-	  song->current_sample = song->current_event->time;
-	  return;
-	}
-      song->current_event++;
-    }
-  /*song->current_sample=song->current_event->time;*/
-  if (song->current_event != song->events)
-    song->current_event--;
-  song->current_sample=until_time;
-}
-
-static void skip_to(MidiSong *song, Sint32 until_time)
-{
-  if (song->current_sample > until_time)
-    song->current_sample = 0;
-
-  reset_midi(song);
-  song->buffered_count = 0;
-  song->buffer_pointer = song->common_buffer;
-  song->current_event = song->events;
-  
-  if (until_time)
-    seek_forward(song, until_time);
-}
-
-static void do_compute_data(MidiSong *song, Sint32 count)
-{
-  int i;
-  memset(song->buffer_pointer, 0, 
-	 (song->encoding & PE_MONO) ? (count * 4) : (count * 8));
-  for (i = 0; i < song->voices; i++)
-    {
-      if(song->voice[i].status != VOICE_FREE)
-	mix_voice(song, song->buffer_pointer, i, count);
-    }
-  song->current_sample += count;
-}
-
-/* count=0 means flush remaining buffered data to output device, then
-   flush the device itself */
-static void compute_data(MidiSong *song, void *stream, Sint32 count)
-{
-  int channels;
-
-  if ( song->encoding & PE_MONO )
-    channels = 1;
-  else
-    channels = 2;
-
-  if (!count)
-    {
-      if (song->buffered_count)
-          song->write(stream, song->common_buffer, channels * song->buffered_count);
-      song->buffer_pointer = song->common_buffer;
-      song->buffered_count = 0;
-      return;
-    }
-
-  while ((count + song->buffered_count) >= song->buffer_size)
-    {
-      do_compute_data(song, song->buffer_size - song->buffered_count);
-      count -= song->buffer_size - song->buffered_count;
-      song->write(stream, song->common_buffer, channels * song->buffer_size);
+  inPÐ„                    ¬Ð„    Ñ„   E     E  I   ¸Ï„    ÿÿÿÿ           E  	   E                                         E     E  I                          ÔÑ„ŒÏ„>   ÜÏ„       _ALPHA         #define _ALPHA (0x0100|_UPPER|_LOWER)          l4„ÄÐ„                    F  	   xÑ„                    ÔÑ„    X$„   F     F  K   ÔÐ„    ÿÿÿÿ           F  	   F                                         F     F  K                          Ò„¬Ð„>   Ñ„       _CTYPE_DEFINED         _isctype           ¤Ó„ÔÑ„6   °Ö„                                                                                                |E„¬Ò„                       Ó„                         ÿÿ                                Ü„¤Ó„6   èÞ„       ¼Ó„|E„|E„                                   HÓ„                           M     M                                                                 ðÒ„Ò„6   ÀÚ„           |E„|E„                                   üÓ„                           M  #   M  %                                                                                                                                                       |E„ÔÔ„                       Õ„                         ÿÿ                                XÕ„|E„|E„                                   HÓ„               |E„|E„                                   üÓ„           x5„Ò„        àW„        M     TÖ„                   Ò„    ¨Ù„0Ò„                                                                                                              M     M     M  	   M     M     M  &       M  	   M  '   M  &                  M     àÖ„   ˜Õ„XÔ„                       M     M     M  	   M     M     M  &                                              isalpha                                                                                                 |E„È×„                       Ø„                         ÿÿ                                    |E„|E„                                   LØ„                           N     N                                                                                                                                                         |E„$Ù„                       hÙ„                         ÿÿ                                    |E„|E„                                   LØ„           h6„<×„        àW„        N     dÚ„                   ¤Ó„    ÐÝ„L×„                                                                                                              N     N     N  	   N     N     N          N  	   N  !   N                     N     ðÚ„   ¨Ù„¨Ø„                       N     N     N  	   N     N     N                                                 isupper                                                                                                 |E„ØÛ„                       4Ü„                         ÿÿ                                Dà„ðÒ„6   ã„           |E„|E„                                   tÜ„                           O     O                                                                                                                                                         |E„LÝ„                       Ý„                         ÿÿ                                    |E„|E„                                   tÜ„           X7„LÛ„        àW„        O     ŒÞ„                   ðÒ„    øá„\Û„                                                                                                              O     O     O  	   O     O     O          O  	   O  !   O                     O     ß„   ÐÝ„ÐÜ„                       O     O     O  	   O     O     O                                                 islower                                                                                                 |E„ à„                       annels * song->buffer_size);
       song->buffer_pointer = song->common_buffer;
       song->buffered_count = 0;
     }

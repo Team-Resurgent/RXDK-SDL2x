@@ -15,8 +15,6 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Waves", "Samples\waves\Wave
 		{7C481C7D-ECA7-4F9E-879C-105784F3543D} = {7C481C7D-ECA7-4F9E-879C-105784F3543D}
 	EndProjectSection
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "libSDL2x_mixer", "libSDL2x_mixer\libSDL2x_mixer.vcxproj", "{08806D45-83D0-45C3-AAEA-3B076B3D8CDA}"
-EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "CheckKeys", "Samples\checkkeys\CheckKeys.vcxproj", "{77283EFC-26FB-4798-A5DC-B2F8F32657A4}"
 	ProjectSection(ProjectDependencies) = postProject
 		{7C481C7D-ECA7-4F9E-879C-105784F3543D} = {7C481C7D-ECA7-4F9E-879C-105784F3543D}
@@ -92,6 +90,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "TTF_Sample", "Samples\ttf_s
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Raiders3D", "Samples\Raiders3D\Raiders3D.vcxproj", "{E8AD1139-F6AF-4770-B829-F81386100B7D}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "libSDL2x_mixer", "libSDL2x_mixer\libSDL2x_mixer.vcxproj", "{08806D45-83D0-45C3-AAEA-3B076B3D8CDA}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x86 = Debug|x86
@@ -106,10 +106,6 @@ Global
 		{1DE3DA07-A999-48CB-BC3A-F7111A23A9B7}.Debug|x86.Build.0 = Debug|Win32
 		{1DE3DA07-A999-48CB-BC3A-F7111A23A9B7}.Release|x86.ActiveCfg = Release|Win32
 		{1DE3DA07-A999-48CB-BC3A-F7111A23A9B7}.Release|x86.Build.0 = Release|Win32
-		{08806D45-83D0-45C3-AAEA-3B076B3D8CDA}.Debug|x86.ActiveCfg = Debug|Win32
-		{08806D45-83D0-45C3-AAEA-3B076B3D8CDA}.Debug|x86.Build.0 = Debug|Win32
-		{08806D45-83D0-45C3-AAEA-3B076B3D8CDA}.Release|x86.ActiveCfg = Release|Win32
-		{08806D45-83D0-45C3-AAEA-3B076B3D8CDA}.Release|x86.Build.0 = Release|Win32
 		{77283EFC-26FB-4798-A5DC-B2F8F32657A4}.Debug|x86.ActiveCfg = Debug|Win32
 		{77283EFC-26FB-4798-A5DC-B2F8F32657A4}.Debug|x86.Build.0 = Debug|Win32
 		{77283EFC-26FB-4798-A5DC-B2F8F32657A4}.Release|x86.ActiveCfg = Release|Win32
@@ -174,6 +170,10 @@ Global
 		{E8AD1139-F6AF-4770-B829-F81386100B7D}.Debug|x86.Build.0 = Debug|Win32
 		{E8AD1139-F6AF-4770-B829-F81386100B7D}.Release|x86.ActiveCfg = Release|Win32
 		{E8AD1139-F6AF-4770-B829-F81386100B7D}.Release|x86.Build.0 = Release|Win32
+		{08806D45-83D0-45C3-AAEA-3B076B3D8CDA}.Debug|x86.ActiveCfg = Debug|Win32
+		{08806D45-83D0-45C3-AAEA-3B076B3D8CDA}.Debug|x86.Build.0 = Debug|Win32
+		{08806D45-83D0-45C3-AAEA-3B076B3D8CDA}.Release|x86.ActiveCfg = Release|Win32
+		{08806D45-83D0-45C3-AAEA-3B076B3D8CDA}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
