@@ -27,12 +27,16 @@ int main(int argc, char* argv[]) {
 	Mix_Music* Music;
 
 	/* Init SDL */
-	if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO) < 0)
+	if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO) < 0) {
+		SDL_Log("SDL_Init failed\n");
 		return -1;
+	}
 
 	/* Init SDL_Mixer */
-	if (Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 2, 1024) == -1)
+	if (Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 2, 1024) == -1) {
+		SDL_Log("SDL_Mixer failed\n");
 		return -1;
+	}
 
 	/* Create Render and Window */
 	MainWindow = SDL_CreateWindow("xboxMixer", 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_SHOWN);

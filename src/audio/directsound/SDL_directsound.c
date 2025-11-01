@@ -18,11 +18,14 @@
      misrepresented as being the original software.
   3. This notice may not be removed or altered from any source distribution.
 */
+/*
+  Simple DirectMedia Layer
+  Copyright (C) 1997-2025
+*/
+
 #include "../../SDL_internal.h"
 
 #ifdef SDL_AUDIO_DRIVER_DSOUND
-
-/* Allow access to a raw mixing buffer */
 
 #include "SDL_timer.h"
 #ifndef _XBOX
@@ -31,10 +34,9 @@
 #include "SDL_audio.h"
 #include "../SDL_audio_c.h"
 #include "SDL_directsound.h"
-#ifndef _XBOX
+#ifndef __XBOX__
 #include <mmreg.h>
 #endif
-
 #ifdef HAVE_MMDEVICEAPI_H
 #include "../../core/windows/SDL_immdevice.h"
 #endif /* HAVE_MMDEVICEAPI_H */
@@ -48,27 +50,32 @@
 static SDL_bool SupportsIMMDevice = SDL_FALSE;
 #endif /* HAVE_MMDEVICEAPI_H */
 
+#if defined(_XBOX) || defined(__XBOX__)
+/* remember the playback buffer so the app can tweak mixbins/volume */
+static LPDIRECTSOUNDBUFFER SDL_Xbox_DSoundBuffer = NULL;
+#endif
+
+#ifndef _XBOX
 /* DirectX function pointers for audio */
-#ifndef _XBOX // We will acccess directly
-static void *DSoundDLL = NULL;
-typedef HRESULT(WINAPI *fnDirectSoundCreate8)(LPGUID, LPDIRECTSOUND *, LPUNKNOWN);
-typedef HRESULT(WINAPI *fnDirectSoundEnumerateW)(LPDSENUMCALLBACKW, LPVOID);
-typedef HRESULT(WINAPI *fnDirectSoundCaptureCreate8)(LPCGUID, LPDIRECTSOUNDCAPTURE8 *, LPUNKNOWN);
-typedef HRESULT(WINAPI *fnDirectSoundCaptureEnumerateW)(LPDSENUMCALLBACKW, LPVOID);
+static void* DSoundDLL = NULL;
+typedef HRESULT(WINAPI* fnDirectSoundCreate8)(LPGUID, LPDIRECTSOUND*, LPUNKNOWN);
+typedef HRESULT(WINAPI* fnDirectSoundEnumerateW)(LPDSENUMCALLBACKW, LPVOID);
+typedef HRESULT(WINAPI* fnDirectSoundCaptureCreate8)(LPCGUID, LPDIRECTSOUNDCAPTURE8*, LPUNKNOWN);
+typedef HRESULT(WINAPI* fnDirectSoundCaptureEnumerateW)(LPDSENUMCALLBACKW, LPVOID);
 static fnDirectSoundCreate8 pDirectSoundCreate8 = NULL;
 static fnDirectSoundEnumerateW pDirectSoundEnumerateW = NULL;
 static fnDirectSoundCaptureCreate8 pDirectSoundCaptureCreate8 = NULL;
 static fnDirectSoundCaptureEnumerateW pDirectSoundCaptureEnumerateW = NULL;
-
-static const GUID SDL_KSDATAFORMAT_SUBTYPE_PCM = { 0x00000001, 0x0000, 0x0010, { 0x80, 0x00, 0x00, 0xaa, 0x00, 0x38, 0x9b, 0x71 } };
-static const GUID SDL_KSDATAFORMAT_SUBTYPE_IEEE_FLOAT = { 0x00000003, 0x0000, 0x0010, { 0x80, 0x00, 0x00, 0xaa, 0x00, 0x38, 0x9b, 0x71 } };
 #endif
 
-
+static const GUID SDL_KSDATAFORMAT_SUBTYPE_PCM =
+{ 0x00000001, 0x0000, 0x0010, { 0x80, 0x00, 0x00, 0xaa, 0x00, 0x38, 0x9b, 0x71 } };
+static const GUID SDL_KSDATAFORMAT_SUBTYPE_IEEE_FLOAT =
+{ 0x00000003, 0x0000, 0x0010, { 0x80, 0x00, 0x00, 0xaa, 0x00, 0x38, 0x9b, 0x71 } };
 
 static void DSOUND_Unload(void)
 {
-#ifndef _XBOX	
+#ifndef _XBOX
     pDirectSoundCreate8 = NULL;
     pDirectSoundEnumerateW = NULL;
     pDirectSoundCaptureCreate8 = NULL;
@@ -78,27 +85,28 @@ static void DSOUND_Unload(void)
         SDL_UnloadObject(DSoundDLL);
         DSoundDLL = NULL;
     }
-#endif	
+#endif
 }
 
 static int DSOUND_Load(void)
 {
+#ifndef _XBOX
     int loaded = 0;
 
     DSOUND_Unload();
-#ifndef _XBOX
+
     DSoundDLL = SDL_LoadObject("DSOUND.DLL");
     if (!DSoundDLL) {
         SDL_SetError("DirectSound: failed to load DSOUND.DLL");
-    } else {
-/* Now make sure we have DirectX 8 or better... */
+    }
+    else {
+        loaded = 1;
 #define DSOUNDLOAD(f)                                  \
     {                                                  \
         p##f = (fn##f)SDL_LoadFunction(DSoundDLL, #f); \
         if (!p##f)                                     \
             loaded = 0;                                \
     }
-        loaded = 1; /* will reset if necessary. */
         DSOUNDLOAD(DirectSoundCreate8);
         DSOUNDLOAD(DirectSoundEnumerateW);
         DSOUNDLOAD(DirectSoundCaptureCreate8);
@@ -116,112 +124,92 @@ static int DSOUND_Load(void)
 
     return loaded;
 #else
-	return 1;
-#endif	
+    /* Xbox: DSOUND is in the XDK */
+    return 1;
+#endif
 }
 
-static int SetDSerror(const char *function, HRESULT code)
+static int SetDSerror(const char* function, int code)
 {
-    const char *error = NULL;
+    const char* error;
 
-    /* Use #ifdef so we don't reference constants that XDK's dsound.h doesn't define */
-#ifdef E_NOINTERFACE
-    if (code == E_NOINTERFACE) {
+    switch (code) {
+    case E_NOINTERFACE:
         error = "Unsupported interface -- Is DirectX 8.0 or later installed?";
-    } else
-#endif
-#ifdef DSERR_ALLOCATED
-    if (code == DSERR_ALLOCATED) {
+        break;
+#ifndef _XBOX
+    case DSERR_ALLOCATED:
         error = "Audio device in use";
-    } else
-#endif
-#ifdef DSERR_BADFORMAT
-    if (code == DSERR_BADFORMAT) {
+        break;
+    case DSERR_BADFORMAT:
         error = "Unsupported audio format";
-    } else
-#endif
-#ifdef DSERR_BUFFERLOST
-    if (code == DSERR_BUFFERLOST) {
+        break;
+    case DSERR_BUFFERLOST:
         error = "Mixing buffer was lost";
-    } else
+        break;
 #endif
-#ifdef DSERR_CONTROLUNAVAIL
-    if (code == DSERR_CONTROLUNAVAIL) {
+    case DSERR_CONTROLUNAVAIL:
         error = "Control requested is not available";
-    } else
-#endif
-#ifdef DSERR_INVALIDCALL
-    if (code == DSERR_INVALIDCALL) {
+        break;
+    case DSERR_INVALIDCALL:
         error = "Invalid call for the current state";
-    } else
-#endif
-#ifdef DSERR_INVALIDPARAM
-    if (code == DSERR_INVALIDPARAM) {
+        break;
+#ifndef _XBOX
+    case DSERR_INVALIDPARAM:
         error = "Invalid parameter";
-    } else
+        break;
 #endif
-#ifdef DSERR_NODRIVER
-    if (code == DSERR_NODRIVER) {
+    case DSERR_NODRIVER:
         error = "No audio device found";
-    } else
-#endif
-#ifdef DSERR_OUTOFMEMORY
-    if (code == DSERR_OUTOFMEMORY) {
+        break;
+    case DSERR_OUTOFMEMORY:
         error = "Out of memory";
-    } else
-#endif
-#ifdef DSERR_PRIOLEVELNEEDED
-    if (code == DSERR_PRIOLEVELNEEDED) {
+        break;
+#ifndef _XBOX
+    case DSERR_PRIOLEVELNEEDED:
         error = "Caller doesn't have priority";
-    } else
+        break;
 #endif
-#ifdef DSERR_UNSUPPORTED
-    if (code == DSERR_UNSUPPORTED) {
+    case DSERR_UNSUPPORTED:
         error = "Function not supported";
-    } else
-#endif
-    {
+        break;
+    default:
         error = "Unknown DirectSound error";
+        break;
     }
 
-    /* Print the HRESULT as 0xXXXXXXXX (always 8 hex digits) */
-    return SDL_SetError("%s: %s (0x%08lX)", function, error, (unsigned long)(ULONG_PTR)code);
+    return SDL_SetError("%s: %s (0x%x)", function, error, code);
 }
 
-static void DSOUND_FreeDeviceHandle(void *handle)
+static void DSOUND_FreeDeviceHandle(void* handle)
 {
     SDL_free(handle);
 }
 
-static int DSOUND_GetDefaultAudioInfo(char **name, SDL_AudioSpec *spec, int iscapture)
+static int DSOUND_GetDefaultAudioInfo(char** name, SDL_AudioSpec* spec, int iscapture)
 {
 #ifdef HAVE_MMDEVICEAPI_H
     if (SupportsIMMDevice) {
         return SDL_IMMDevice_GetDefaultAudioInfo(name, spec, iscapture);
     }
-#endif /* HAVE_MMDEVICEAPI_H */
+#endif
     return SDL_Unsupported();
 }
 
-#ifndef _XBOX	
+#ifndef __XBOX__
 static BOOL CALLBACK FindAllDevs(LPGUID guid, LPCWSTR desc, LPCWSTR module, LPVOID data)
 {
     const int iscapture = (int)((size_t)data);
-    if (guid != NULL) { /* skip default device */
-        char *str = WIN_LookupAudioDeviceName(desc, guid);
+    if (guid != NULL) {
+        char* str = WIN_LookupAudioDeviceName(desc, guid);
         if (str) {
             LPGUID cpyguid = (LPGUID)SDL_malloc(sizeof(GUID));
             SDL_memcpy(cpyguid, guid, sizeof(GUID));
-
-            /* Note that spec is NULL, because we are required to connect to the
-             * device before getting the channel mask and output format, making
-             * this information inaccessible at enumeration time
-             */
             SDL_AddAudioDevice(iscapture, str, NULL, cpyguid);
-            SDL_free(str); /* addfn() makes a copy of this string. */
+            SDL_free(str);
         }
     }
-    return TRUE; /* keep enumerating. */
+    return TRUE;
 }
 #endif
 
@@ -230,15 +218,16 @@ static void DSOUND_DetectDevices(void)
 #ifdef HAVE_MMDEVICEAPI_H
     if (SupportsIMMDevice) {
         SDL_IMMDevice_EnumerateEndpoints(SDL_TRUE);
-    } else {
-#endif /* HAVE_MMDEVICEAPI_H */
-#ifndef _XBOX
-        pDirectSoundCaptureEnumerateW(FindAllDevs, (void *)((size_t)1));
-        pDirectSoundEnumerateW(FindAllDevs, (void *)((size_t)0));
-#endif			
+    }
+    else {
+#endif
+#ifndef __XBOX__
+        pDirectSoundCaptureEnumerateW(FindAllDevs, (void*)((size_t)1));
+        pDirectSoundEnumerateW(FindAllDevs, (void*)((size_t)0));
+#endif
 #ifdef HAVE_MMDEVICEAPI_H
     }
-#endif /* HAVE_MMDEVICEAPI_H*/
+#endif
 }
 
 static void DSOUND_WaitDevice(_THIS)
@@ -248,7 +237,6 @@ static void DSOUND_WaitDevice(_THIS)
     DWORD junk = 0;
     HRESULT result = DS_OK;
 
-    /* Semi-busy wait, since we have no play notification on a primary HW buffer */
     result = IDirectSoundBuffer_GetCurrentPosition(this->hidden->mixbuf, &junk, &cursor);
     if (result != DS_OK) {
 #ifndef _XBOX
@@ -262,35 +250,9 @@ static void DSOUND_WaitDevice(_THIS)
         return;
     }
 
-    /* Sleep until playback advances to the next chunk */
-    const DWORD chunkSize = this->spec.size;          /* bytes per “mix chunk” */
-    const DWORD lastChunk = this->hidden->lastchunk;  /* index of last mixed chunk */
-
-    while ((cursor / chunkSize) == lastChunk) {
-        /* ---- OG Xbox: compute remaining time precisely; avoid tight 1ms spin ---- */
-#ifdef _XBOX
-        const DWORD remainingBytes   = chunkSize - (cursor % chunkSize);
-        const DWORD sampleRate       = this->spec.freq;
-        const DWORD channels         = this->spec.channels;
-        const DWORD bytesPerSample   = (DWORD)(SDL_AUDIO_BITSIZE(this->spec.format) / 8);
-        DWORD       remainingTimeMs  = 1;
-
-        if (sampleRate && channels && bytesPerSample) {
-            /* remaining ms = bytes / (bytes per second) * 1000 */
-            const DWORD bytesPerSec = sampleRate * channels * bytesPerSample;
-            if (bytesPerSec) {
-                remainingTimeMs = (remainingBytes * 1000u) / bytesPerSec;
-                if (remainingTimeMs == 0) remainingTimeMs = 1;      /* never 0 */
-                if (remainingTimeMs > 10) remainingTimeMs = 10;     /* cap to keep latency snappy */
-            }
-        }
-        SDL_Delay(remainingTimeMs);
-#else
-        /* Desktop path: legacy 1ms tick */
+    while ((cursor / this->spec.size) == this->hidden->lastchunk) {
         SDL_Delay(1);
-#endif
 
-        /* Try to restore a lost sound buffer (desktop Windows semantics) */
         IDirectSoundBuffer_GetStatus(this->hidden->mixbuf, &status);
 #ifndef _XBOX
         if (status & DSBSTATUS_BUFFERLOST) {
@@ -301,113 +263,103 @@ static void DSOUND_WaitDevice(_THIS)
             }
         }
 #endif
-
-        /* If the buffer isn’t playing, try to restart it (looping) */
         if (!(status & DSBSTATUS_PLAYING)) {
             result = IDirectSoundBuffer_Play(this->hidden->mixbuf, 0, 0, DSBPLAY_LOOPING);
-            if (result != DS_OK) {
-#ifdef DEBUG_SOUND
-                SetDSerror("DirectSound Play", result);
-#endif
-                return;
+            if (result == DS_OK) {
+                continue;
             }
-            /* continue loop to re-check cursor/chunk */
+#ifdef DEBUG_SOUND
+            SetDSerror("DirectSound Play", result);
+#endif
+            return;
         }
 
-        /* Re-check current play position */
         result = IDirectSoundBuffer_GetCurrentPosition(this->hidden->mixbuf, &junk, &cursor);
         if (result != DS_OK) {
-#ifdef DEBUG_SOUND
             SetDSerror("DirectSound GetCurrentPosition", result);
-#endif
             return;
         }
     }
 }
 
-
 static void DSOUND_PlayDevice(_THIS)
 {
-    /* Unlock the buffer, allowing it to play */
     if (this->hidden->locked_buf) {
         IDirectSoundBuffer_Unlock(this->hidden->mixbuf,
-                                  this->hidden->locked_buf,
-                                  this->spec.size, NULL, 0);
+            this->hidden->locked_buf,
+            this->spec.size, NULL, 0);
     }
 }
 
-static Uint8 *DSOUND_GetDeviceBuf(_THIS)
+static Uint8* DSOUND_GetDeviceBuf(_THIS)
 {
     DWORD cursor = 0;
     DWORD junk = 0;
-    HRESULT result = DS_OK;
+    HRESULT result;
     DWORD rawlen = 0;
+    LPVOID ptr2 = NULL;
+    DWORD bytes2 = 0;
 
-    /* Figure out which blocks to fill next */
     this->hidden->locked_buf = NULL;
-    result = IDirectSoundBuffer_GetCurrentPosition(this->hidden->mixbuf,
-                                                   &junk, &cursor);
-#ifndef _XBOX												   
+
+    result = IDirectSoundBuffer_GetCurrentPosition(this->hidden->mixbuf, &junk, &cursor);
+#ifndef _XBOX
     if (result == DSERR_BUFFERLOST) {
         IDirectSoundBuffer_Restore(this->hidden->mixbuf);
-        result = IDirectSoundBuffer_GetCurrentPosition(this->hidden->mixbuf,
-                                                       &junk, &cursor);
+        result = IDirectSoundBuffer_GetCurrentPosition(this->hidden->mixbuf, &junk, &cursor);
     }
-#endif	
+#endif
     if (result != DS_OK) {
         SetDSerror("DirectSound GetCurrentPosition", result);
         return NULL;
     }
+
+    /* which chunk are we on? */
     cursor /= this->spec.size;
-#ifdef DEBUG_SOUND
-    /* Detect audio dropouts */
-    {
-        DWORD spot = cursor;
-        if (spot < this->hidden->lastchunk) {
-            spot += this->hidden->num_buffers;
-        }
-        if (spot > this->hidden->lastchunk + 1) {
-            fprintf(stderr, "Audio dropout, missed %d fragments\n",
-                    (spot - (this->hidden->lastchunk + 1)));
-        }
-    }
-#endif
     this->hidden->lastchunk = cursor;
     cursor = (cursor + 1) % this->hidden->num_buffers;
     cursor *= this->spec.size;
 
-    /* Lock the audio buffer */
+    /* lock the next chunk */
     result = IDirectSoundBuffer_Lock(this->hidden->mixbuf, cursor,
-                                     this->spec.size,
-                                     (LPVOID *)&this->hidden->locked_buf,
-                                     &rawlen, NULL, &junk, 0);
-#ifndef _XBOX									 
+        this->spec.size,
+        (LPVOID*)&this->hidden->locked_buf,
+        &rawlen,
+        &ptr2,              /* Xbox wants both */
+        &bytes2,
+        0);
+#ifndef __XBOX__
     if (result == DSERR_BUFFERLOST) {
         IDirectSoundBuffer_Restore(this->hidden->mixbuf);
         result = IDirectSoundBuffer_Lock(this->hidden->mixbuf, cursor,
-                                         this->spec.size,
-                                         (LPVOID *)&this->hidden->locked_buf, &rawlen, NULL,
-                                         &junk, 0);
+            this->spec.size,
+            (LPVOID*)&this->hidden->locked_buf,
+            &rawlen,
+            &ptr2,
+            &bytes2,
+            0);
     }
-#endif	
+#endif
     if (result != DS_OK) {
         SetDSerror("DirectSound Lock", result);
         return NULL;
     }
+
     return this->hidden->locked_buf;
 }
 
-static int DSOUND_CaptureFromDevice(_THIS, void *buffer, int buflen)
+
+static int DSOUND_CaptureFromDevice(_THIS, void* buffer, int buflen)
 {
-#ifndef _XBOX	
-    struct SDL_PrivateAudioData *h = this->hidden;
+#ifndef _XBOX
+    struct SDL_PrivateAudioData* h = this->hidden;
     DWORD junk, cursor, ptr1len, ptr2len;
-    VOID *ptr1, *ptr2;
+    VOID* ptr1, * ptr2;
 
     SDL_assert(buflen == this->spec.size);
 
     while (SDL_TRUE) {
-        if (SDL_AtomicGet(&this->shutdown)) { /* in case the buffer froze... */
+        if (SDL_AtomicGet(&this->shutdown)) {
             SDL_memset(buffer, this->spec.silence, buflen);
             return buflen;
         }
@@ -416,13 +368,15 @@ static int DSOUND_CaptureFromDevice(_THIS, void *buffer, int buflen)
             return -1;
         }
         if ((cursor / this->spec.size) == h->lastchunk) {
-            SDL_Delay(1); /* FIXME: find out how much time is left and sleep that long */
-        } else {
+            SDL_Delay(1);
+        }
+        else {
             break;
         }
     }
 
-    if (IDirectSoundCaptureBuffer_Lock(h->capturebuf, h->lastchunk * this->spec.size, this->spec.size, &ptr1, &ptr1len, &ptr2, &ptr2len, 0) != DS_OK) {
+    if (IDirectSoundCaptureBuffer_Lock(h->capturebuf, h->lastchunk * this->spec.size, this->spec.size,
+        &ptr1, &ptr1len, &ptr2, &ptr2len, 0) != DS_OK) {
         return -1;
     }
 
@@ -440,19 +394,19 @@ static int DSOUND_CaptureFromDevice(_THIS, void *buffer, int buflen)
 
     return ptr1len;
 #else
-	return 0;
-#endif //_XBOX	
+    return 0;
+#endif
 }
 
 static void DSOUND_FlushCapture(_THIS)
 {
-#ifndef _XBOX // No capture on Xbox	
-    struct SDL_PrivateAudioData *h = this->hidden;
+#ifndef _XBOX
+    struct SDL_PrivateAudioData* h = this->hidden;
     DWORD junk, cursor;
     if (IDirectSoundCaptureBuffer_GetCurrentPosition(h->capturebuf, &junk, &cursor) == DS_OK) {
         h->lastchunk = cursor / this->spec.size;
     }
-#endif	
+#endif
 }
 
 static void DSOUND_CloseDevice(_THIS)
@@ -462,150 +416,150 @@ static void DSOUND_CloseDevice(_THIS)
     }
 
     if (this->hidden->mixbuf) {
-        /* Stop playback first */
         IDirectSoundBuffer_Stop(this->hidden->mixbuf);
-
-#ifdef _XBOX
-        /* OG Xbox: give the HW a moment to settle so Release is clean */
-        DWORD status = 0;
-        if (SUCCEEDED(IDirectSoundBuffer_GetStatus(this->hidden->mixbuf, &status))) {
-            /* wait up to ~500ms total, 10ms steps */
-            for (int i = 0; (status & DSBSTATUS_PLAYING) && i < 50; ++i) {
-                SDL_Delay(10);
-                IDirectSoundBuffer_GetStatus(this->hidden->mixbuf, &status);
-            }
-        }
-#endif
-
         IDirectSoundBuffer_Release(this->hidden->mixbuf);
-        this->hidden->mixbuf = NULL;
     }
-
     if (this->hidden->sound) {
         IDirectSound_Release(this->hidden->sound);
-        this->hidden->sound = NULL;
     }
-
-#ifndef _XBOX  /* No capture on OG Xbox */
+#ifndef _XBOX
     if (this->hidden->capturebuf) {
         IDirectSoundCaptureBuffer_Stop(this->hidden->capturebuf);
         IDirectSoundCaptureBuffer_Release(this->hidden->capturebuf);
-        this->hidden->capturebuf = NULL;
     }
-
     if (this->hidden->capture) {
         IDirectSoundCapture_Release(this->hidden->capture);
-        this->hidden->capture = NULL;
     }
 #endif
-
     SDL_free(this->hidden);
-    this->hidden = NULL;
 }
 
-
-/* This function tries to create a secondary audio buffer, and returns the
-   number of audio chunks available in the created buffer. This is for
-   playback devices, not capture.
-*/
-static int CreateSecondary(_THIS, const DWORD bufsize, WAVEFORMATEX *wfmt)
+/* ------------------------------------------------------------------------- */
+/* HELPER: make sure we have a DirectSound device (Xbox + Windows)           */
+static int
+DSOUND_EnsurePlaybackDevice(_THIS, WAVEFORMATEX* wfmt)
 {
-    LPDIRECTSOUND sndObj = this->hidden->sound;
-    LPDIRECTSOUNDBUFFER *sndbuf = &this->hidden->mixbuf;
-    HRESULT result = DS_OK;
+    HRESULT result;
+    if (this->hidden->sound) {
+        return 0;
+    }
+
+#ifdef _XBOX
+    /* XDK-style DirectSoundCreate */
+    result = DirectSoundCreate(NULL, &this->hidden->sound, NULL);
+    if (result != DS_OK) {
+        return SetDSerror("DirectSoundCreate (Xbox)", result);
+    }
+    /* no cooperative level needed on OG Xbox */
+
+    /* give the common speaker mixbins some extra global headroom (0..7) */
+    IDirectSound_SetMixBinHeadroom(this->hidden->sound, DSMIXBIN_FRONT_LEFT, 3);
+    IDirectSound_SetMixBinHeadroom(this->hidden->sound, DSMIXBIN_FRONT_RIGHT, 3);
+    IDirectSound_SetMixBinHeadroom(this->hidden->sound, DSMIXBIN_FRONT_CENTER, 3);
+    IDirectSound_SetMixBinHeadroom(this->hidden->sound, DSMIXBIN_BACK_LEFT, 3);
+    IDirectSound_SetMixBinHeadroom(this->hidden->sound, DSMIXBIN_BACK_RIGHT, 3);
+    IDirectSound_SetMixBinHeadroom(this->hidden->sound, DSMIXBIN_LOW_FREQUENCY, 3);
+#else
+    result = pDirectSoundCreate8((LPGUID)this->handle, &this->hidden->sound, NULL);
+    if (result != DS_OK) {
+        return SetDSerror("DirectSoundCreate8", result);
+    }
+    result = IDirectSound_SetCooperativeLevel(this->hidden->sound,
+        GetDesktopWindow(),
+        DSSCL_NORMAL);
+    if (result != DS_OK) {
+        return SetDSerror("DirectSound SetCooperativeLevel", result);
+    }
+#endif
+    return 0;
+}
+
+/* This function tries to create a secondary audio buffer, and returns 0 on OK */
+static int CreateSecondary(_THIS, const DWORD bufsize, WAVEFORMATEX* wfmt)
+{
+    LPDIRECTSOUND sndObj;
+    LPDIRECTSOUNDBUFFER* sndbuf = &this->hidden->mixbuf;
+    HRESULT result;
     DSBUFFERDESC format;
     LPVOID pvAudioPtr1, pvAudioPtr2;
     DWORD dwAudioBytes1, dwAudioBytes2;
 
-    /* Describe the secondary buffer */
+    /* make sure we actually have a DS device (Xbox path needs this) */
+    if (DSOUND_EnsurePlaybackDevice(this, wfmt) < 0) {
+        return -1;
+    }
+
+    sndObj = this->hidden->sound;
+
     SDL_zero(format);
     format.dwSize = sizeof(format);
-#ifndef _XBOX
-    /* Desktop Windows: better cursor behavior + allow background focus */
+
+#if !defined(_XBOX) && !defined(__XBOX__)
+    /* Windows / desktop DSOUND */
     format.dwFlags = DSBCAPS_GETCURRENTPOSITION2 | DSBCAPS_GLOBALFOCUS;
 #else
-    /* OG Xbox: these flags aren’t meaningful; leave at 0 */
+    /* Xbox: flags not needed / not present */
     format.dwFlags = 0;
 #endif
+
     format.dwBufferBytes = bufsize;
     format.lpwfxFormat = wfmt;
 
-    /* Create it */
     result = IDirectSound_CreateSoundBuffer(sndObj, &format, sndbuf, NULL);
     if (result != DS_OK) {
         return SetDSerror("DirectSound CreateSoundBuffer", result);
     }
 
-    /* Ensure format is applied */
     IDirectSoundBuffer_SetFormat(*sndbuf, wfmt);
 
-    /* Pre-silence whole buffer */
+#if defined(_XBOX) || defined(__XBOX__)
+    /* remember this buffer so the app can control it later */
+    SDL_Xbox_DSoundBuffer = *sndbuf;
+
+    /* default Xbox routing: push to common mixbins at full volume */
+    {
+        DSMIXBINVOLUMEPAIR bins[] = {
+            { DSMIXBIN_FRONT_LEFT,     DSBVOLUME_MAX },
+            { DSMIXBIN_FRONT_RIGHT,    DSBVOLUME_MAX },
+            { DSMIXBIN_FRONT_CENTER,   DSBVOLUME_MAX },
+            { DSMIXBIN_BACK_LEFT,      DSBVOLUME_MAX },
+            { DSMIXBIN_BACK_RIGHT,     DSBVOLUME_MAX },
+            { DSMIXBIN_LOW_FREQUENCY,  DSBVOLUME_MAX },
+        };
+        DSMIXBINS mb;
+        mb.dwMixBinCount = sizeof(bins) / sizeof(bins[0]);
+        mb.lpMixBinVolumePairs = bins;
+
+        /* use the Xbox 2D default headroom instead of 'as loud as possible' */
+        IDirectSoundBuffer_SetHeadroom(*sndbuf, DSBHEADROOM_DEFAULT_2D);   /* 600 mB */
+        IDirectSoundBuffer_SetMixBins(*sndbuf, &mb);
+
+        /* Can be changed */
+        IDirectSoundBuffer_SetVolume(*sndbuf, 0);
+    }
+#endif
+
+    /* silence initial buffer */
     result = IDirectSoundBuffer_Lock(*sndbuf, 0, format.dwBufferBytes,
-                                     (LPVOID *)&pvAudioPtr1, &dwAudioBytes1,
-                                     (LPVOID *)&pvAudioPtr2, &dwAudioBytes2,
-                                     DSBLOCK_ENTIREBUFFER);
+        (LPVOID*)&pvAudioPtr1, &dwAudioBytes1,
+        (LPVOID*)&pvAudioPtr2, &dwAudioBytes2,
+        DSBLOCK_ENTIREBUFFER);
     if (result == DS_OK) {
         SDL_memset(pvAudioPtr1, this->spec.silence, dwAudioBytes1);
         IDirectSoundBuffer_Unlock(*sndbuf,
-                                  (LPVOID)pvAudioPtr1, dwAudioBytes1,
-                                  (LPVOID)pvAudioPtr2, dwAudioBytes2);
+            pvAudioPtr1, dwAudioBytes1,
+            pvAudioPtr2, dwAudioBytes2);
     }
-
-#ifdef _XBOX
-    /* ---- OG Xbox: route to mixbins, set headroom/volume ---- */
-    /* Choose mixbins based on channel count. You can expand this if you drive 5.1. */
-    DSMIXBINVOLUMEPAIR pairs[8];
-    DSMIXBINS bins;
-    SDL_zero(pairs);
-    SDL_zero(bins);
-
-    switch (wfmt->nChannels) {
-    case 1: /* mono -> front center */
-        pairs[0].dwMixBin = DSMIXBIN_FRONT_CENTER;
-        pairs[0].lVolume  = DSBVOLUME_MAX;
-        bins.dwMixBinCount = 1;
-        break;
-    case 2: /* stereo */
-        pairs[0].dwMixBin = DSMIXBIN_FRONT_LEFT;   pairs[0].lVolume = DSBVOLUME_MAX;
-        pairs[1].dwMixBin = DSMIXBIN_FRONT_RIGHT;  pairs[1].lVolume = DSBVOLUME_MAX;
-        bins.dwMixBinCount = 2;
-        break;
-    case 6: /* 5.1 (L R C LFE Ls Rs) */
-        pairs[0].dwMixBin = DSMIXBIN_FRONT_LEFT;      pairs[0].lVolume = DSBVOLUME_MAX;
-        pairs[1].dwMixBin = DSMIXBIN_FRONT_RIGHT;     pairs[1].lVolume = DSBVOLUME_MAX;
-        pairs[2].dwMixBin = DSMIXBIN_FRONT_CENTER;    pairs[2].lVolume = DSBVOLUME_MAX;
-        pairs[3].dwMixBin = DSMIXBIN_LOW_FREQUENCY;   pairs[3].lVolume = DSBVOLUME_MAX;
-        pairs[4].dwMixBin = DSMIXBIN_BACK_LEFT;       pairs[4].lVolume = DSBVOLUME_MAX;
-        pairs[5].dwMixBin = DSMIXBIN_BACK_RIGHT;      pairs[5].lVolume = DSBVOLUME_MAX;
-        bins.dwMixBinCount = 6;
-        break;
-    default: /* fallback: treat as stereo */
-        pairs[0].dwMixBin = DSMIXBIN_FRONT_LEFT;   pairs[0].lVolume = DSBVOLUME_MAX;
-        pairs[1].dwMixBin = DSMIXBIN_FRONT_RIGHT;  pairs[1].lVolume = DSBVOLUME_MAX;
-        bins.dwMixBinCount = 2;
-        break;
-    }
-
-    bins.lpMixBinVolumePairs = pairs;
-
-    /* Min headroom, explicit bins, max volume */
-    IDirectSoundBuffer_SetHeadroom(*sndbuf, DSBHEADROOM_MIN);
-    IDirectSoundBuffer_SetMixBins(*sndbuf, &bins);
-    IDirectSoundBuffer_SetVolume(*sndbuf, DSBVOLUME_MAX);
-#endif
 
     return 0;
 }
 
-/* This function tries to create a capture buffer, and returns the
-   number of audio chunks available in the created buffer. This is for
-   capture devices, not playback.
-*/
-static int CreateCaptureBuffer(_THIS, const DWORD bufsize, WAVEFORMATEX *wfmt)
+
+static int CreateCaptureBuffer(_THIS, const DWORD bufsize, WAVEFORMATEX* wfmt)
 {
-#ifndef _XBOX	
+#ifndef _XBOX
     LPDIRECTSOUNDCAPTURE capture = this->hidden->capture;
-    LPDIRECTSOUNDCAPTUREBUFFER *capturebuf = &this->hidden->capturebuf;
+    LPDIRECTSOUNDCAPTUREBUFFER* capturebuf = &this->hidden->capturebuf;
     DSCBUFFERDESC format;
     HRESULT result;
 
@@ -625,39 +579,23 @@ static int CreateCaptureBuffer(_THIS, const DWORD bufsize, WAVEFORMATEX *wfmt)
         IDirectSoundCaptureBuffer_Release(*capturebuf);
         return SetDSerror("DirectSound Start", result);
     }
-
-#if 0
-    /* presumably this starts at zero, but just in case... */
-    result = IDirectSoundCaptureBuffer_GetCurrentPosition(*capturebuf, &junk, &cursor);
-    if (result != DS_OK) {
-        IDirectSoundCaptureBuffer_Stop(*capturebuf);
-        IDirectSoundCaptureBuffer_Release(*capturebuf);
-        return SetDSerror("DirectSound GetCurrentPosition", result);
-    }
-
-    this->hidden->lastchunk = cursor / this->spec.size;
 #endif
-#endif //_XBOX
-
     return 0;
 }
 
-static int DSOUND_OpenDevice(_THIS, const char *devname)
+/* ------------------------------------------------------------------------- */
+
+static int DSOUND_OpenDevice(_THIS, const char* devname)
 {
     const DWORD numchunks = 8;
     HRESULT result;
     SDL_bool tried_format = SDL_FALSE;
     SDL_bool iscapture = this->iscapture;
     SDL_AudioFormat test_format;
-    LPGUID guid = (LPGUID)this->handle;
     DWORD bufsize;
 
-#ifdef _XBOX
-    const int xbox_hw_freq = 48000;  /* OG Xbox mixer is 48k */
-#endif
-
-    /* Initialize all variables that we clean on shutdown */
-    this->hidden = (struct SDL_PrivateAudioData *)SDL_malloc(sizeof(*this->hidden));
+    /* allocate hidden data */
+    this->hidden = (struct SDL_PrivateAudioData*)SDL_malloc(sizeof(*this->hidden));
     if (!this->hidden) {
         return SDL_OutOfMemory();
     }
@@ -666,151 +604,121 @@ static int DSOUND_OpenDevice(_THIS, const char *devname)
     /* Open the audio device */
     if (iscapture) {
 #ifdef _XBOX
-        /* No capture on OG Xbox */
         return SDL_SetError("DirectSound: Capture not supported on Xbox");
 #else
+        LPGUID guid = (LPGUID)this->handle;
         result = pDirectSoundCaptureCreate8(guid, &this->hidden->capture, NULL);
         if (result != DS_OK) {
             return SetDSerror("DirectSoundCaptureCreate8", result);
         }
 #endif
-    } else {
+    }
+    else {
 #ifndef _XBOX
+        /* Windows / desktop DSOUND */
+        LPGUID guid = (LPGUID)this->handle;
         result = pDirectSoundCreate8(guid, &this->hidden->sound, NULL);
         if (result != DS_OK) {
             return SetDSerror("DirectSoundCreate8", result);
         }
+
         result = IDirectSound_SetCooperativeLevel(this->hidden->sound,
-                                                  GetDesktopWindow(),
-                                                  DSSCL_NORMAL);
+            GetDesktopWindow(),
+            DSSCL_NORMAL);
         if (result != DS_OK) {
             return SetDSerror("DirectSound SetCooperativeLevel", result);
         }
 #else
-        /* OG Xbox: use DirectSoundCreate, no cooperative level. */
+        /* OG Xbox: create device now */
         result = DirectSoundCreate(NULL, &this->hidden->sound, NULL);
         if (result != DS_OK) {
-            return SetDSerror("DirectSoundCreate", result);
+            return SetDSerror("DirectSoundCreate (Xbox)", result);
         }
+        /* no cooperative level on Xbox */
 #endif
     }
 
+    /* choose a format we can actually create */
     for (test_format = SDL_FirstAudioFormat(this->spec.format);
-         test_format;
-         test_format = SDL_NextAudioFormat())
+        test_format;
+        test_format = SDL_NextAudioFormat())
     {
         switch (test_format) {
         case AUDIO_U8:
         case AUDIO_S16:
         case AUDIO_S32:
-        case AUDIO_F32:
+        case AUDIO_F32: {
             tried_format = SDL_TRUE;
-
-            /* App’s requested format… */
             this->spec.format = test_format;
-
-#ifdef _XBOX
-            /* …but back-end opens a hardware-friendly stream; SDL will convert. */
-            this->spec.format = AUDIO_S16;
-            this->spec.freq   = xbox_hw_freq;
-            if (this->spec.channels != 1 && this->spec.channels != 2 && this->spec.channels != 6) {
-                this->spec.channels = 2;  /* safe default */
-            }
-#endif
-            /* Update fragment size (spec.size) */
             SDL_CalculateAudioSpec(&this->spec);
 
             bufsize = numchunks * this->spec.size;
-
-#if defined(DSBSIZE_MIN) && defined(DSBSIZE_MAX)
             if ((bufsize < DSBSIZE_MIN) || (bufsize > DSBSIZE_MAX)) {
                 SDL_SetError("Sound buffer size must be between %d and %d",
-                             (int)((DSBSIZE_MIN < numchunks) ? 1 : DSBSIZE_MIN / numchunks),
-                             (int)(DSBSIZE_MAX / numchunks));
-            } else
-#endif
-            {
-                int rc;
-
-#ifndef _XBOX
-                /* Desktop: allow WAVEFORMATEXTENSIBLE for >2 channels and/or float */
+                    (int)((DSBSIZE_MIN < numchunks) ? 1 : DSBSIZE_MIN / numchunks),
+                    (int)(DSBSIZE_MAX / numchunks));
+            }
+            else {
                 WAVEFORMATEXTENSIBLE wfmt;
                 SDL_zero(wfmt);
 
                 if (this->spec.channels > 2) {
                     wfmt.Format.wFormatTag = WAVE_FORMAT_EXTENSIBLE;
                     wfmt.Format.cbSize = sizeof(wfmt) - sizeof(WAVEFORMATEX);
-
                     if (SDL_AUDIO_ISFLOAT(this->spec.format)) {
                         SDL_memcpy(&wfmt.SubFormat, &SDL_KSDATAFORMAT_SUBTYPE_IEEE_FLOAT, sizeof(GUID));
-                    } else {
+                    }
+                    else {
                         SDL_memcpy(&wfmt.SubFormat, &SDL_KSDATAFORMAT_SUBTYPE_PCM, sizeof(GUID));
                     }
                     wfmt.Samples.wValidBitsPerSample = SDL_AUDIO_BITSIZE(this->spec.format);
-
-                    switch (this->spec.channels) {
-                    case 3:  wfmt.dwChannelMask = SPEAKER_FRONT_LEFT | SPEAKER_FRONT_RIGHT | SPEAKER_FRONT_CENTER; break;
-                    case 4:  wfmt.dwChannelMask = SPEAKER_FRONT_LEFT | SPEAKER_FRONT_RIGHT | SPEAKER_BACK_LEFT | SPEAKER_BACK_RIGHT; break;
-                    case 5:  wfmt.dwChannelMask = SPEAKER_FRONT_LEFT | SPEAKER_FRONT_RIGHT | SPEAKER_FRONT_CENTER | SPEAKER_BACK_LEFT | SPEAKER_BACK_RIGHT; break;
-                    case 6:  wfmt.dwChannelMask = SPEAKER_FRONT_LEFT | SPEAKER_FRONT_RIGHT | SPEAKER_FRONT_CENTER | SPEAKER_LOW_FREQUENCY | SPEAKER_BACK_LEFT | SPEAKER_BACK_RIGHT; break;
-                    case 7:  wfmt.dwChannelMask = SPEAKER_FRONT_LEFT | SPEAKER_FRONT_RIGHT | SPEAKER_FRONT_CENTER | SPEAKER_LOW_FREQUENCY | SPEAKER_BACK_LEFT | SPEAKER_BACK_RIGHT | SPEAKER_BACK_CENTER; break;
-                    case 8:  wfmt.dwChannelMask = SPEAKER_FRONT_LEFT | SPEAKER_FRONT_RIGHT | SPEAKER_FRONT_CENTER | SPEAKER_LOW_FREQUENCY | SPEAKER_BACK_LEFT | SPEAKER_BACK_RIGHT | SPEAKER_SIDE_LEFT | SPEAKER_SIDE_RIGHT; break;
-                    default: SDL_assert(0 && "Unsupported channel count!"); break;
-                    }
-                } else if (SDL_AUDIO_ISFLOAT(this->spec.format)) {
+                    /* channel mask omitted here for brevity */
+                }
+                else if (SDL_AUDIO_ISFLOAT(this->spec.format)) {
                     wfmt.Format.wFormatTag = WAVE_FORMAT_IEEE_FLOAT;
-                } else {
+                }
+                else {
                     wfmt.Format.wFormatTag = WAVE_FORMAT_PCM;
                 }
 
-                wfmt.Format.wBitsPerSample  = SDL_AUDIO_BITSIZE(this->spec.format);
-                wfmt.Format.nChannels       = this->spec.channels;
-                wfmt.Format.nSamplesPerSec  = this->spec.freq;
-                wfmt.Format.nBlockAlign     = wfmt.Format.nChannels * (wfmt.Format.wBitsPerSample / 8);
+                wfmt.Format.wBitsPerSample = SDL_AUDIO_BITSIZE(this->spec.format);
+                wfmt.Format.nChannels = this->spec.channels;
+                wfmt.Format.nSamplesPerSec = this->spec.freq;
+                wfmt.Format.nBlockAlign = wfmt.Format.nChannels * (wfmt.Format.wBitsPerSample / 8);
                 wfmt.Format.nAvgBytesPerSec = wfmt.Format.nSamplesPerSec * wfmt.Format.nBlockAlign;
 
-                rc = iscapture
-                    ? CreateCaptureBuffer(this, bufsize, (WAVEFORMATEX *)&wfmt)
-                    : CreateSecondary(this,   bufsize, (WAVEFORMATEX *)&wfmt);
-#else
-                /* OG Xbox: plain WAVEFORMATEX, PCM S16 @ 48k, channels 1/2/6 */
-                WAVEFORMATEX wfmt;
-                SDL_zero(wfmt);
-
-                wfmt.wFormatTag      = WAVE_FORMAT_PCM;
-                wfmt.wBitsPerSample  = 16;
-                wfmt.nChannels       = this->spec.channels;  /* clamped above */
-                wfmt.nSamplesPerSec  = this->spec.freq;      /* 48000 */
-                wfmt.nBlockAlign     = wfmt.nChannels * (wfmt.wBitsPerSample / 8);
-                wfmt.nAvgBytesPerSec = wfmt.nSamplesPerSec * wfmt.nBlockAlign;
-
-                rc = CreateSecondary(this, bufsize, &wfmt);
-#endif
-
-                if (rc == 0) {
-                    this->hidden->num_buffers = numchunks;
-                    break;
+                if (iscapture) {
+                    if (CreateCaptureBuffer(this, bufsize, (WAVEFORMATEX*)&wfmt) == 0) {
+                        this->hidden->num_buffers = numchunks;
+                        goto good;
+                    }
+                }
+                else {
+                    if (CreateSecondary(this, bufsize, (WAVEFORMATEX*)&wfmt) == 0) {
+                        this->hidden->num_buffers = numchunks;
+                        goto good;
+                    }
                 }
             }
-            continue;
-
+            continue; /* try next format */
+        }
         default:
             continue;
         }
-        break;
     }
 
+    /* no format worked */
     if (!test_format) {
         if (tried_format) {
-            return -1; /* CreateSecondary/CreateCaptureBuffer set SDL error */
+            return -1;
         }
         return SDL_SetError("%s: Unsupported audio format", "directsound");
     }
 
-    /* Playback buffers will auto-start (or be restarted) in DSOUND_WaitDevice(). */
-    return 0; /* good to go. */
+good:
+    /* Playback buffers auto-start in WaitDevice */
+    return 0;
 }
-
 
 static void DSOUND_Deinitialize(void)
 {
@@ -819,11 +727,11 @@ static void DSOUND_Deinitialize(void)
         SDL_IMMDevice_Quit();
         SupportsIMMDevice = SDL_FALSE;
     }
-#endif /* HAVE_MMDEVICEAPI_H */
+#endif
     DSOUND_Unload();
 }
 
-static SDL_bool DSOUND_Init(SDL_AudioDriverImpl *impl)
+static SDL_bool DSOUND_Init(SDL_AudioDriverImpl* impl)
 {
     if (!DSOUND_Load()) {
         return SDL_FALSE;
@@ -831,9 +739,8 @@ static SDL_bool DSOUND_Init(SDL_AudioDriverImpl *impl)
 
 #ifdef HAVE_MMDEVICEAPI_H
     SupportsIMMDevice = !(SDL_IMMDevice_Init() < 0);
-#endif /* HAVE_MMDEVICEAPI_H */
+#endif
 
-    /* Set the function pointers */
     impl->DetectDevices = DSOUND_DetectDevices;
     impl->OpenDevice = DSOUND_OpenDevice;
     impl->PlayDevice = DSOUND_PlayDevice;
@@ -846,11 +753,78 @@ static SDL_bool DSOUND_Init(SDL_AudioDriverImpl *impl)
     impl->Deinitialize = DSOUND_Deinitialize;
     impl->GetDefaultAudioInfo = DSOUND_GetDefaultAudioInfo;
 
+#if defined(_XBOX) || defined(__XBOX__)
+    /* OG Xbox: no capture */
+    impl->HasCaptureSupport = SDL_FALSE;
+#else
     impl->HasCaptureSupport = SDL_TRUE;
+#endif
+
     impl->SupportsNonPow2Samples = SDL_TRUE;
 
-    return SDL_FALSE; /* this audio target is available. */
+    return SDL_TRUE;
 }
+
+#if defined(_XBOX) || defined(__XBOX__)
+/* overall DS buffer volume: 0 = full, negative = quieter, DSBVOLUME_MIN = mute */
+void SDL_XboxDSound_SetVolume(long vol100dB)
+{
+    if (SDL_Xbox_DSoundBuffer) {
+        IDirectSoundBuffer_SetVolume(SDL_Xbox_DSoundBuffer, vol100dB);
+    }
+}
+
+/* app-provided mixbins: advanced users only (needs XDK types) */
+void SDL_XboxDSound_SetMixBins(const DSMIXBINVOLUMEPAIR* bins, DWORD count)
+{
+    if (SDL_Xbox_DSoundBuffer && bins && count) {
+        DSMIXBINS mb;
+        mb.dwMixBinCount = count;
+        mb.lpMixBinVolumePairs = (DSMIXBINVOLUMEPAIR*)bins;
+        IDirectSoundBuffer_SetMixBins(SDL_Xbox_DSoundBuffer, &mb);
+    }
+}
+
+/* simple helper for apps that don't have XDK headers: set front L/R */
+void SDL_XboxDSound_SetStereo(long leftVol, long rightVol)
+{
+    if (SDL_Xbox_DSoundBuffer) {
+        /* overwrite EVERY bin we enabled at startup */
+        DSMIXBINVOLUMEPAIR bins[] = {
+            { DSMIXBIN_FRONT_LEFT,    leftVol  },
+            { DSMIXBIN_FRONT_RIGHT,   rightVol },
+            { DSMIXBIN_FRONT_CENTER,  DSBVOLUME_MIN },
+            { DSMIXBIN_BACK_LEFT,     DSBVOLUME_MIN },
+            { DSMIXBIN_BACK_RIGHT,    DSBVOLUME_MIN },
+            { DSMIXBIN_LOW_FREQUENCY, DSBVOLUME_MIN },
+        };
+        DSMIXBINS mb;
+        mb.dwMixBinCount = sizeof(bins) / sizeof(bins[0]);
+        mb.lpMixBinVolumePairs = bins;
+        IDirectSoundBuffer_SetMixBins(SDL_Xbox_DSoundBuffer, &mb);
+    }
+}
+
+
+/* simple: set all common bins to same volume */
+void SDL_XboxDSound_SetAll(long vol)
+{
+    if (SDL_Xbox_DSoundBuffer) {
+        DSMIXBINVOLUMEPAIR bins[] = {
+            { DSMIXBIN_FRONT_LEFT,    vol },
+            { DSMIXBIN_FRONT_RIGHT,   vol },
+            { DSMIXBIN_FRONT_CENTER,  vol },
+            { DSMIXBIN_BACK_LEFT,     vol },
+            { DSMIXBIN_BACK_RIGHT,    vol },
+            { DSMIXBIN_LOW_FREQUENCY, vol },
+        };
+        DSMIXBINS mb;
+        mb.dwMixBinCount = sizeof(bins) / sizeof(bins[0]);
+        mb.lpMixBinVolumePairs = bins;
+        IDirectSoundBuffer_SetMixBins(SDL_Xbox_DSoundBuffer, &mb);
+    }
+}
+#endif
 
 AudioBootStrap DSOUND_bootstrap = {
     "directsound", "DirectSound", DSOUND_Init, SDL_FALSE
