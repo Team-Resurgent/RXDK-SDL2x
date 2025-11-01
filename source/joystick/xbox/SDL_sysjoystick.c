@@ -251,12 +251,11 @@ XBOX_JoystickGetDeviceGUID(int device_index)
 	for (int i = 0; i < XUSER_MAX_COUNT; i++) {
 		if (g_Controllers[i].connected) {
 			if (count == device_index) {
-				g_Controllers[i].port;
-				guid.data[0] = (Uint8) (g_Controllers[i].usb_vendor_id >> 8);
-				guid.data[1] = (Uint8) (g_Controllers[i].usb_vendor_id & 0xFF);
-				guid.data[2] = (Uint8) (g_Controllers[i].usb_product_id >> 8);
-				guid.data[3] = (Uint8) (g_Controllers[i].usb_product_id & 0xFF);
-				guid.data[4] = (Uint8) i;
+				guid.data[0] = 7;
+				guid.data[1] = 7;
+				guid.data[2] = 7;
+				guid.data[3] = 7;
+				guid.data[4] = g_Controllers[i].port;
 				break;
 			}
 			count++;
@@ -366,7 +365,6 @@ XBOX_JoystickRumble(SDL_Joystick* joystick, Uint16 low_frequency_rumble, Uint16 
 }
 
 static void XBOX_JoystickUpdate(SDL_Joystick* joystick) {
-	SDL_Log("XBOX_JoystickUpdate\n");
 	XboxControllerDevice* dev = (XboxControllerDevice*)joystick->hwdata;
 
 	// Validate handle and connection status
@@ -526,7 +524,57 @@ XBOX_SetSensorsEnabled(SDL_Joystick *joystick, SDL_bool enabled) {
 
 static SDL_bool
 XBOX_GetGamepadMapping(int device_index, SDL_GamepadMapping *out) {
-	return SDL_FALSE;
+	// Map thumbstick axes
+	out->leftx.kind = EMappingKind_Axis;
+	out->lefty.kind = EMappingKind_Axis;
+	out->rightx.kind = EMappingKind_Axis;
+	out->righty.kind = EMappingKind_Axis;
+	// out->leftstick.target = XINPUT_GAMEPAD_LEFT_THUMB;
+	// out->rightstick.target = XINPUT_GAMEPAD_RIGHT_THUMB;
+
+	// Map face buttons
+	out->a.kind = EMappingKind_Button;
+	out->b.kind = EMappingKind_Button;
+	out->x.kind = EMappingKind_Button;
+	out->y.kind = EMappingKind_Button;
+	out->a.target = XINPUT_GAMEPAD_A;
+	out->b.target = XINPUT_GAMEPAD_B;
+	out->x.target = XINPUT_GAMEPAD_X;
+	out->y.target = XINPUT_GAMEPAD_Y;
+
+	// Map shoulder buttons
+	out->leftshoulder.kind = EMappingKind_Button;
+	out->rightshoulder.kind = EMappingKind_Button;
+	out->leftshoulder.target = XINPUT_GAMEPAD_WHITE;
+	out->rightshoulder.target = XINPUT_GAMEPAD_BLACK;
+
+	// Map triggers as buttons with threshold
+	out->lefttrigger.kind = EMappingKind_Axis;
+	out->righttrigger.kind = EMappingKind_Axis;
+	out->lefttrigger.target = XINPUT_GAMEPAD_LEFT_TRIGGER;
+	out->righttrigger.target = XINPUT_GAMEPAD_RIGHT_TRIGGER;
+
+	// Map start/back/thumbstick buttons
+	out->start.kind = EMappingKind_Button;
+	out->back.kind = EMappingKind_Button;
+	out->leftstick.kind = EMappingKind_Button;
+	out->rightstick.kind = EMappingKind_Button;
+	out->start.target = XINPUT_GAMEPAD_START;
+	out->back.target = XINPUT_GAMEPAD_BACK;
+	out->leftstick.target = XINPUT_GAMEPAD_LEFT_THUMB;
+	out->rightstick.target = XINPUT_GAMEPAD_RIGHT_THUMB;
+
+	// Map D-Pad as hat
+	out->dpup.kind = EMappingKind_Hat;
+	out->dpdown.kind = EMappingKind_Hat;
+	out->dpleft.kind = EMappingKind_Hat;
+	out->dpright.kind = EMappingKind_Hat;
+	out->dpup.target = XINPUT_GAMEPAD_DPAD_UP;
+	out->dpdown.target = XINPUT_GAMEPAD_DPAD_DOWN;
+	out->dpleft.target = XINPUT_GAMEPAD_DPAD_LEFT;
+	out->dpright.target = XINPUT_GAMEPAD_DPAD_RIGHT;
+
+	return SDL_TRUE;
 }
 
 SDL_JoystickDriver SDL_XBOX_JoystickDriver =
