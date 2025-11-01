@@ -1,0 +1,11 @@
+#pragma once
+#include <xtl.h>
+#include <d3d8.h>
+#include <xgraphics.h> 
+#include <stdlib.h>
+#include <stdio.h>
+#include <time.h>
+#include <string>
+#include <vector>
+#include <map>
+#include <iostream>

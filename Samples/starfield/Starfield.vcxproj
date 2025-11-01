@@ -22,13 +22,13 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
-    <PlatformToolset>v142</PlatformToolset>
+    <PlatformToolset>v143</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
-    <PlatformToolset>v142</PlatformToolset>
+    <PlatformToolset>v143</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
@@ -51,7 +51,7 @@
     <SourcePath />
     <ExcludePath>$(CommonExcludePath);$(VC_ExecutablePath_x86);$(RXDK_LIBS)lib</ExcludePath>
     <ReferencePath>$(RXDK_LIBS)lib</ReferencePath>
-    <LibraryPath>$(RXDK_LIBS)lib;..\..\Debug</LibraryPath>
+    <LibraryPath>$(RXDK_LIBS)lib;$(SolutionDir)$(Configuration)</LibraryPath>
     <OutDir>$(ProjectDir)$(Configuration)\</OutDir>
     <LinkIncremental>false</LinkIncremental>
   </PropertyGroup>
@@ -62,7 +62,7 @@
     <SourcePath />
     <ExcludePath>$(CommonExcludePath);$(VC_ExecutablePath_x86);$(RXDK_LIBS)lib</ExcludePath>
     <ReferencePath>$(RXDK_LIBS)lib</ReferencePath>
-    <LibraryPath>$(RXDK_LIBS)lib;..\..\Release</LibraryPath>
+    <LibraryPath>$(RXDK_LIBS)lib;$(SolutionDir)$(Configuration)</LibraryPath>
     <OutDir>$(ProjectDir)$(Configuration)\</OutDir>
     <LinkIncremental>false</LinkIncremental>
   </PropertyGroup>
@@ -73,7 +73,7 @@
       <PreprocessorDefinitions>XBOX;_XBOX;_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>false</ConformanceMode>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
-      <AdditionalIncludeDirectories>..\..\include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)include</AdditionalIncludeDirectories>
       <BufferSecurityCheck>false</BufferSecurityCheck>
       <ExceptionHandling>Sync</ExceptionHandling>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
@@ -115,7 +115,7 @@ MKDIR "$(OutDir)XISO"
       <PreprocessorDefinitions>XBOX;_XBOX;NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>false</ConformanceMode>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
-      <AdditionalIncludeDirectories>..\..\include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)include</AdditionalIncludeDirectories>
       <BufferSecurityCheck>false</BufferSecurityCheck>
       <ExceptionHandling>Sync</ExceptionHandling>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>

@@ -9,8 +9,76 @@
       <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
       <Extensions>h;hpp;hxx;hm;inl;inc;xsd</Extensions>
     </Filter>
+    <Filter Include="Source Files\codecs">
+      <UniqueIdentifier>{29dc7989-ff46-4574-99e1-21475c32f146}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="include\SDL_mixer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="ReadMe.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="source\codecs\load_aiff.c">
+      <Filter>Source Files\codecs</Filter>
+    </ClCompile>
+    <ClCompile Include="source\codecs\load_voc.c">
+      <Filter>Source Files\codecs</Filter>
+    </ClCompile>
+    <ClCompile Include="source\codecs\mp3utils.c">
+      <Filter>Source Files\codecs</Filter>
+    </ClCompile>
+    <ClCompile Include="source\codecs\music_cmd.c">
+      <Filter>Source Files\codecs</Filter>
+    </ClCompile>
+    <ClCompile Include="source\codecs\music_drflac.c">
+      <Filter>Source Files\codecs</Filter>
+    </ClCompile>
+    <ClCompile Include="source\codecs\music_flac.c">
+      <Filter>Source Files\codecs</Filter>
+    </ClCompile>
+    <ClCompile Include="source\codecs\music_fluidsynth.c">
+      <Filter>Source Files\codecs</Filter>
+    </ClCompile>
+    <ClCompile Include="source\codecs\music_gme.c">
+      <Filter>Source Files\codecs</Filter>
+    </ClCompile>
+    <ClCompile Include="source\codecs\music_minimp3.c">
+      <Filter>Source Files\codecs</Filter>
+    </ClCompile>
+    <ClCompile Include="source\codecs\music_modplug.c">
+      <Filter>Source Files\codecs</Filter>
+    </ClCompile>
+    <ClCompile Include="source\codecs\music_mpg123.c">
+      <Filter>Source Files\codecs</Filter>
+    </ClCompile>
+    <ClCompile Include="source\codecs\music_nativemidi.c">
+      <Filter>Source Files\codecs</Filter>
+    </ClCompile>
+    <ClCompile Include="source\codecs\music_ogg.c">
+      <Filter>Source Files\codecs</Filter>
+    </ClCompile>
+    <ClCompile Include="source\codecs\music_ogg_stb.c">
+      <Filter>Source Files\codecs</Filter>
+    </ClCompile>
+    <ClCompile Include="source\codecs\music_opus.c">
+      <Filter>Source Files\codecs</Filter>
+    </ClCompile>
+    <ClCompile Include="source\codecs\music_timidity.c">
+      <Filter>Source Files\codecs</Filter>
+    </ClCompile>
+    <ClCompile Include="source\codecs\music_wav.c">
+      <Filter>Source Files\codecs</Filter>
+    </ClCompile>
+    <ClCompile Include="source\codecs\music_wavpack.c">
+      <Filter>Source Files\codecs</Filter>
+    </ClCompile>
+    <ClCompile Include="source\codecs\music_xmp.c">
+      <Filter>Source Files\codecs</Filter>
+    </ClCompile>
     <ClCompile Include="source\effect_position.c">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -20,118 +88,14 @@
     <ClCompile Include="source\effects_internal.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="source\load_aiff.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="source\load_voc.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="source\mixer.c">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="source\music.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="source\music_cmd.c">
+    <ClCompile Include="source\utils.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="source\music_flac.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="source\music_fluidsynth.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="source\music_mad.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="source\music_mikmod.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="source\music_modplug.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="source\music_mpg123.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="source\music_nativemidi.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="source\music_ogg.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="source\music_opus.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="source\music_timidity.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="source\music_wav.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="source\playmus.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="source\playwave.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="include\effects_internal.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="include\load_aiff.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="include\load_voc.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="include\mixer.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="include\music.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="include\music_cmd.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="include\music_flac.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="include\music_fluidsynth.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="include\music_mad.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="include\music_mikmod.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="include\music_modplug.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="include\music_mpg123.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="include\music_nativemidi.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="include\music_ogg.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="include\music_opus.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="include\music_timidity.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="include\music_wav.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="include\SDL_mixer.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-  </ItemGroup>
-  <ItemGroup>
-    <Text Include="ReadMe.txt" />
   </ItemGroup>
 </Project>
