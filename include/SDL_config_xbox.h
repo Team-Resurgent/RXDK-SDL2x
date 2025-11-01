@@ -230,7 +230,7 @@
 
 /* Enable filesystem support */
 /* #define SDL_FILESYSTEM_WINDOWS 1*/
-#define SDL_FILESYSTEM_XBOX 1
+#define SDL_FILESYSTEM_XBOX_RXDK 1
 
 /* Disable IME as not supported yet (TODO: Xbox IME?) */
 #define SDL_DISABLE_WINDOWS_IME 1

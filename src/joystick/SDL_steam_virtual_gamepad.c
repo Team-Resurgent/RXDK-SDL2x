@@ -32,10 +32,6 @@
 #include <sys/stat.h>
 #endif
 
-#ifdef __XBOX__
-#include <xtl.h>
-#endif
-
 #define SDL_HINT_STEAM_VIRTUAL_GAMEPAD_INFO_FILE    "SteamVirtualGamepadInfo"
 
 static char *SDL_steam_virtual_gamepad_info_file SDL_GUARDED_BY(SDL_joystick_lock) = NULL;
@@ -44,46 +40,15 @@ static Uint32 SDL_steam_virtual_gamepad_info_check_time SDL_GUARDED_BY(SDL_joyst
 static SDL_SteamVirtualGamepadInfo **SDL_steam_virtual_gamepad_info SDL_GUARDED_BY(SDL_joystick_lock) = NULL;
 static int SDL_steam_virtual_gamepad_info_count SDL_GUARDED_BY(SDL_joystick_lock) = 0;
 
-#ifdef _XBOX
-LPCSTR ConvertUTF8ToLPCSTR(const char* utf8Str) {
-    // Convert UTF-8 to UTF-16
-    int wideLen = MultiByteToWideChar(CP_UTF8, 0, utf8Str, -1, NULL, 0);
-    if (wideLen == 0) return NULL;
-
-    WCHAR* wideStr = (WCHAR*)malloc(wideLen * sizeof(WCHAR));
-    if (!wideStr) return NULL;
-
-    MultiByteToWideChar(CP_UTF8, 0, utf8Str, -1, wideStr, wideLen);
-
-    // Convert UTF-16 to ANSI
-    int ansiLen = WideCharToMultiByte(CP_ACP, 0, wideStr, -1, NULL, 0, NULL, NULL);
-    if (ansiLen == 0) {
-        free(wideStr);
-        return NULL;
-    }
-
-    char* ansiStr = (char*)malloc(ansiLen);
-    if (!ansiStr) {
-        free(wideStr);
-        return NULL;
-    }
-
-    WideCharToMultiByte(CP_ACP, 0, wideStr, -1, ansiStr, ansiLen, NULL, NULL);
-    free(wideStr);
-
-    return ansiStr; // Remember to free this when done
-}
-#endif
-
 
 static Uint64 GetFileModificationTime(const char *file)
 {
     Uint64 modification_time = 0;
 
-#ifdef _XBOX
-    LPCSTR*wFile = ConvertUTF8ToLPCSTR(file);
+#ifdef __WIN32__
+    WCHAR *wFile = WIN_UTF8ToStringW(file);
     if (wFile) {
-        HANDLE hFile = CreateFileA(wFile, GENERIC_READ, FILE_SHARE_READ, NULL, OPEN_EXISTING, 0, NULL);
+        HANDLE hFile = CreateFileW(wFile, GENERIC_READ, FILE_SHARE_READ, NULL, OPEN_EXISTING, 0, NULL);
         if (hFile != INVALID_HANDLE_VALUE) {
             FILETIME last_write_time;
             if (GetFileTime(hFile, NULL, NULL, &last_write_time)) {

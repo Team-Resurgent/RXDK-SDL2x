@@ -22,7 +22,7 @@
 
 #include "SDL_atomic.h"
 
-#if !defined(_XBOX) && defined(_MSC_VER) && (_MSC_VER >= 1500)
+#if !defined(__XBOX__) && defined(_MSC_VER) && (_MSC_VER >= 1500)
 #include <intrin.h>
 #define HAVE_MSC_ATOMICS 1
 #endif

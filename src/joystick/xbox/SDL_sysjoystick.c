@@ -54,7 +54,7 @@ typedef struct {
 	DWORD port;                /* Controller port number: 0-3 */
 	BOOL connected;            /* Is the device currently connected? */
 	XINPUT_CAPABILITIES caps;  /* Capabilities for this device */
-	XINPUT_FEEDBACK feedback; // Persistent feedback structure
+	XINPUT_FEEDBACK feedback;  /* Persistent feedback structure */
 	/* Rumble Tracking */
 	Uint32 rumble_end_time;    /* Time when rumble should stop */
 	BOOL rumble_active;        /* Is rumble currently active? */

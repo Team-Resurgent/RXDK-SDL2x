@@ -26,10 +26,7 @@
 #include "SDL_audio.h"
 #include "SDL_audio_c.h"
 
-#ifndef _XBOX
 #include "SDL_loadso.h"
-#endif
-
 #include "../SDL_dataqueue.h"
 #include "SDL_cpuinfo.h"
 

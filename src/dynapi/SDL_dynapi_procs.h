@@ -48,7 +48,7 @@ SDL_DYNAPI_PROC(int,SDL_snprintf,(SDL_OUT_Z_CAP(b) char *a, size_t b, SDL_PRINTF
 #undef SDL_CreateThread
 #endif
 
-#if (defined(__WIN32__) || defined(__GDK__)) && !defined(__XBOX__)
+#if defined(__WIN32__) || defined(__GDK__)
 SDL_DYNAPI_PROC(SDL_Thread*,SDL_CreateThread,(SDL_ThreadFunction a, const char *b, void *c, pfnSDL_CurrentBeginThread d, pfnSDL_CurrentEndThread e),(a,b,c,d,e),return)
 #elif defined(__OS2__)
 SDL_DYNAPI_PROC(SDL_Thread*,SDL_CreateThread,(SDL_ThreadFunction a, const char *b, void *c, pfnSDL_CurrentBeginThread d, pfnSDL_CurrentEndThread e),(a,b,c,d,e),return)
@@ -62,7 +62,7 @@ SDL_DYNAPI_PROC(SDL_RWops*,SDL_RWFromFP,(FILE *a, SDL_bool b),(a,b),return)
 SDL_DYNAPI_PROC(SDL_RWops*,SDL_RWFromFP,(void *a, SDL_bool b),(a,b),return)
 #endif
 
-#if (defined(__WIN32__) || defined(__GDK__)) && !defined(__XBOX__)
+#if defined(__WIN32__) || defined(__GDK__)
 SDL_DYNAPI_PROC(int,SDL_RegisterApp,(const char *a, Uint32 b, void *c),(a,b,c),return)
 SDL_DYNAPI_PROC(void,SDL_UnregisterApp,(void),(),)
 #endif
@@ -623,7 +623,7 @@ SDL_DYNAPI_PROC(int,SDL_QueueAudio,(SDL_AudioDeviceID a, const void *b, Uint32 c
 SDL_DYNAPI_PROC(Uint32,SDL_GetQueuedAudioSize,(SDL_AudioDeviceID a),(a),return)
 SDL_DYNAPI_PROC(void,SDL_ClearQueuedAudio,(SDL_AudioDeviceID a),(a),)
 SDL_DYNAPI_PROC(SDL_Window*,SDL_GetGrabbedWindow,(void),(),return)
-#if (defined(__WIN32__) || defined(__GDK__)) && !defined(__XBOX__)
+#if defined(__WIN32__) || defined(__GDK__)
 SDL_DYNAPI_PROC(void,SDL_SetWindowsMessageHook,(SDL_WindowsMessageHook a, void *b),(a,b),)
 #endif
 SDL_DYNAPI_PROC(int,SDL_GetDisplayDPI,(int a, float *b, float *c, float *d),(a,b,c,d),return)
@@ -747,7 +747,7 @@ SDL_DYNAPI_PROC(SDL_bool,SDL_HasColorKey,(SDL_Surface *a),(a),return)
 #undef SDL_CreateThreadWithStackSize
 #endif
 
-#if (defined(__WIN32__) || defined(__GDK__)) && !defined(__XBOX__)
+#if defined(__WIN32__) || defined(__GDK__)
 SDL_DYNAPI_PROC(SDL_Thread*,SDL_CreateThreadWithStackSize,(SDL_ThreadFunction a, const char *b, const size_t c, void *d, pfnSDL_CurrentBeginThread e, pfnSDL_CurrentEndThread f),(a,b,c,d,e,f),return)
 #elif defined(__OS2__)
 SDL_DYNAPI_PROC(SDL_Thread*,SDL_CreateThreadWithStackSize,(SDL_ThreadFunction a, const char *b, const size_t c, void *d, pfnSDL_CurrentBeginThread e, pfnSDL_CurrentEndThread f),(a,b,c,d,e,f),return)
@@ -951,7 +951,7 @@ SDL_DYNAPI_PROC(void,SDL_GUIDToString,(SDL_GUID a, char *b, int c),(a,b,c),)
 SDL_DYNAPI_PROC(SDL_GUID,SDL_GUIDFromString,(const char *a),(a),return)
 SDL_DYNAPI_PROC(SDL_bool,SDL_HasLSX,(void),(),return)
 SDL_DYNAPI_PROC(SDL_bool,SDL_HasLASX,(void),(),return)
-#if (defined(__WIN32__) || defined(__GDK__)) && !defined(__XBOX__)
+#if defined(__WIN32__) || defined(__GDK__)
 SDL_DYNAPI_PROC(ID3D12Device*,SDL_RenderGetD3D12Device,(SDL_Renderer *a),(a),return)
 #endif
 SDL_DYNAPI_PROC(size_t,SDL_utf8strnlen,(const char *a, size_t b),(a,b),return)

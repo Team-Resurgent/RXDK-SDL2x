@@ -49,13 +49,4 @@ int SDL_powerof2(int x)
     return value;
 }
 
-// Workaround for MSVC trying to use SSE2 ftol on our poor Pentium 3
-#ifdef _XBOX
-// Declare a regular _ftol() function that is present.
-long cdecl _ftol(double);
-// Define _ftol2_sse() to be the regular one.
-#undef _ftol2_sse
-long cdecl _ftol2_sse(double f) { return _ftol(f); }
-#endif
-
 /* vi: set ts=4 sw=4 expandtab: */

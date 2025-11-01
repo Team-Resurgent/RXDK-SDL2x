@@ -1702,7 +1702,6 @@ static SDL_bool SDL_PrivateJoystickShouldIgnoreEvent(void)
         return SDL_TRUE;
     }
     #endif
-
     return SDL_FALSE;
 }
 

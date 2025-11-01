@@ -60,12 +60,11 @@ static void SDL_snprintfcat(SDL_OUT_Z_CAP(maxlen) char *text, size_t maxlen, SDL
 
 SDLTest_CommonState *SDLTest_CommonCreateState(char **argv, Uint32 flags)
 {
-    int i;
     SDLTest_CommonState *state;
 
-#ifndef _XBOX
+#ifndef __XBOX__
     /* Do this first so we catch all allocations */
-    for (i = 1; argv[i]; ++i) {
+    for (int i = 1; argv[i]; ++i) {
         if (SDL_strcasecmp(argv[i], "--trackmem") == 0) {
             SDLTest_TrackAllocations();
             break;
@@ -82,11 +81,11 @@ SDLTest_CommonState *SDLTest_CommonCreateState(char **argv, Uint32 flags)
     /* Initialize some defaults */
     state->argv = argv;
     state->flags = flags;
-#ifdef _XBOX
+#ifdef __XBOX__
 	state->window_title = "";
 #else
 	state->window_title = argv[0];
-#endif	
+#endif
     state->window_flags = 0;
     state->window_x = SDL_WINDOWPOS_UNDEFINED;
     state->window_y = SDL_WINDOWPOS_UNDEFINED;
@@ -1418,7 +1417,6 @@ SDL_bool SDLTest_CommonInit(SDLTest_CommonState *state)
                         return SDL_FALSE;
                     }
                 }
-
                 state->renderers[i] = SDL_CreateRenderer(state->windows[i],
                                                          m, state->render_flags);
                 if (!state->renderers[i]) {
@@ -2061,13 +2059,13 @@ void SDLTest_CommonEvent(SDLTest_CommonState *state, SDL_Event *event, int *done
             break;
 
         case SDLK_c:
-#ifndef _XBOX
+#ifndef __XBOX__
             if (withControl) {
                 /* Ctrl-C copy awesome text! */
                 SDL_SetClipboardText("SDL rocks!\nYou know it!");
                 SDL_Log("Copied text to clipboard\n");
             }
-#endif			
+#endif
             if (withAlt) {
                 /* Alt-C toggle a render clip rectangle */
                 for (i = 0; i < state->num_windows; ++i) {
@@ -2098,7 +2096,7 @@ void SDLTest_CommonEvent(SDLTest_CommonState *state, SDL_Event *event, int *done
             }
             break;
         case SDLK_v:
-#ifndef _XBOX		
+#ifndef __XBOX__
             if (withControl) {
                 /* Ctrl-V paste awesome text! */
                 char *text = SDL_GetClipboardText();

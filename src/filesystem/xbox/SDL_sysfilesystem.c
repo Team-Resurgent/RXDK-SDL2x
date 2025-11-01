@@ -1,6 +1,6 @@
 /*
   Simple DirectMedia Layer
-  Copyright (C) 1997-2019 Sam Lantinga <slouken@libsdl.org>
+  Copyright (C) 1997-2025 Sam Lantinga <slouken@libsdl.org>
 
   This software is provided 'as-is', without any express or implied
   warranty.  In no event will the authors be held liable for any damages
@@ -20,7 +20,7 @@
 */
 #include "../../SDL_internal.h"
 
-#ifdef SDL_FILESYSTEM_XBOX
+#ifdef SDL_FILESYSTEM_XBOX_RXDK
 
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 /* System dependent filesystem routines                                */
@@ -32,9 +32,7 @@ char*
 SDL_GetBasePath(void)
 {
 	char strPath[MAX_PATH];
-
 	strcpy(strPath, "D:\\");
-
 	return &strPath[0];
 }
 
@@ -42,12 +40,10 @@ char*
 SDL_GetPrefPath(const char* org, const char* app)
 {
 	char strPath[MAX_PATH];
-
 	strcpy(strPath, "D:\\");
-
 	return &strPath[0];
 }
 
-#endif /* SDL_FILESYSTEM_XBOX */
+#endif /* SDL_FILESYSTEM_XBOX_RXDK */
 
 /* vi: set ts=4 sw=4 expandtab: */

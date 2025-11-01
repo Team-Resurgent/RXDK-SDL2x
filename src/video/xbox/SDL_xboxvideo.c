@@ -131,18 +131,10 @@ XBOX_DeleteDevice(SDL_VideoDevice* device)
 }
 
 
-static SDL_VideoDevice*
-XBOX_CreateDevice(int devindex)
+static SDL_VideoDevice* XBOX_CreateDevice(void)
 {
-    (void)devindex;  /* unused for single-display Xbox */
-
     SDL_VideoDevice* device = NULL;
     SDL_VideoData* data = NULL;
-
-#ifndef _XBOX
-    /* On Windows builds, register the app class once */
-    SDL_RegisterApp(NULL, 0, NULL);
-#endif
 
     /* Allocate the SDL_VideoDevice */
     device = (SDL_VideoDevice*)SDL_calloc(1, sizeof(SDL_VideoDevice));
@@ -158,27 +150,6 @@ XBOX_CreateDevice(int devindex)
         SDL_OutOfMemory();
         return NULL;
     }
-
-#ifndef _XBOX
-    /* Optional Win32 dynamic APIs; ignore if unavailable */
-    data->userDLL = SDL_LoadObject("USER32.DLL");
-    if (data->userDLL) {
-        data->CloseTouchInputHandle = (BOOL(WINAPI*)(HTOUCHINPUT))SDL_LoadFunction(data->userDLL, "CloseTouchInputHandle");
-        data->GetTouchInputInfo = (BOOL(WINAPI*)(HTOUCHINPUT, UINT, PTOUCHINPUT, int))SDL_LoadFunction(data->userDLL, "GetTouchInputInfo");
-        data->RegisterTouchWindow = (BOOL(WINAPI*)(HWND, ULONG))SDL_LoadFunction(data->userDLL, "RegisterTouchWindow");
-    }
-    else {
-        SDL_ClearError();
-    }
-
-    data->shcoreDLL = SDL_LoadObject("SHCORE.DLL");
-    if (data->shcoreDLL) {
-        data->GetDpiForMonitor = (HRESULT(WINAPI*)(HMONITOR, MONITOR_DPI_TYPE, UINT*, UINT*))SDL_LoadFunction(data->shcoreDLL, "GetDpiForMonitor");
-    }
-    else {
-        SDL_ClearError();
-    }
-#endif
 
     /* Link driverdata only after successful allocations above */
     device->driverdata = data;
@@ -279,20 +250,13 @@ XBOX_CreateDevice(int devindex)
     device->free = XBOX_DeleteDevice;
 
     return device;
-
-fail:
-    if (data)   SDL_free(data);
-    if (device) SDL_free(device);
-    return NULL;
 }
 
-
-//VideoBootStrap XBOX_bootstrap = {
-//    "Xbox", "SDL Xbox video driver", XBOX_Available, XBOX_CreateDevice
-//};
-
 VideoBootStrap XBOX_bootstrap = {
-    "Xbox", "SDL Xbox video driver", XBOX_CreateDevice, NULL
+    "Xbox",
+    "SDL Xbox video driver",
+    XBOX_CreateDevice,
+    NULL /* no ShowMessageBox implementation */
 };
 
 int

@@ -681,7 +681,7 @@ int SDL_AddVideoDisplay(const SDL_VideoDisplay *display, SDL_bool send_event)
         }
 
         if (send_event) {
-#ifndef _XBOX
+#ifndef __XBOX__
             SDL_SendDisplayEvent(&_this->displays[index], SDL_DISPLAYEVENT_CONNECTED, 0);
 #endif
         }
@@ -697,7 +697,7 @@ void SDL_DelVideoDisplay(int index)
         return;
     }
 
-#ifndef _XBOX
+#ifndef __XBOX__
     SDL_SendDisplayEvent(&_this->displays[index], SDL_DISPLAYEVENT_DISCONNECTED, 0);
 #endif
 
@@ -1312,8 +1312,7 @@ int SDL_SetWindowDisplayMode(SDL_Window *window, const SDL_DisplayMode *mode)
         SDL_DisplayMode fullscreen_mode;
         if (SDL_GetWindowDisplayMode(window, &fullscreen_mode) == 0) {
             if (SDL_SetDisplayModeForDisplay(SDL_GetDisplayForWindow(window), &fullscreen_mode) == 0) {
-// #ifndef __ANDROID__
-#ifndef _XBOX
+#if !defined(__ANDROID__) && !defined(__XBOX__)
                 /* Android may not resize the window to exactly what our fullscreen mode is, especially on
                  * windowed Android environments like the Chromebook or Samsung DeX.  Given this, we shouldn't
                  * use fullscreen_mode.w and fullscreen_mode.h, but rather get our current native size.  As such,
@@ -1533,10 +1532,7 @@ static int SDL_UpdateFullscreenMode(SDL_Window *window, SDL_bool fullscreen)
 
                 /* Generate a mode change event here */
                 if (resized) {
-				#ifdef _XBOX
-					/* Xbox: backend will handle sizing; don't synthesize a RESIZED event here */
-					/* no SDL_SendWindowEvent */
-				#else
+				#ifndef __XBOX__
                     if (SDL_strcmp(_this->name, "Android") != 0 && SDL_strcmp(_this->name, "windows") != 0) {
                         /* Android may not resize the window to exactly what our fullscreen mode is, especially on
                          * windowed Android environments like the Chromebook or Samsung DeX.  Given this, we shouldn't
@@ -1579,7 +1575,7 @@ static int SDL_UpdateFullscreenMode(SDL_Window *window, SDL_bool fullscreen)
         /* Generate a mode change event here */
         SDL_OnWindowResized(window);
     } else {
-#ifndef _XBOX
+#ifndef __XBOX__
         SDL_SendWindowEvent(window, SDL_WINDOWEVENT_RESIZED,
                             window->windowed.w, window->windowed.h);
 #endif
@@ -1705,7 +1701,7 @@ SDL_Window *SDL_CreateWindow(const char *title, int x, int y, int w, int h, Uint
     }
 
     /* Some platforms blow up if the windows are too large. Raise it later? */
-#ifdef _XBOX
+#ifdef __XBOX__
     if (w > 1920) { w = 1920; }
     if (h > 1080) { h = 1080; }
 #else
@@ -1721,42 +1717,35 @@ SDL_Window *SDL_CreateWindow(const char *title, int x, int y, int w, int h, Uint
     }
 
     /* Some platforms have certain graphics backends enabled by default */
-#if defined(_XBOX)
-    /* No default GL/Vulkan/Metal on OG Xbox */
-    (void)_this; /* silence unused warning */
-#else
     if (!graphics_flags && !SDL_IsVideoContextExternal()) {
         flags |= SDL_DefaultGraphicsBackends(_this);
     }
-#endif
 
     if (flags & SDL_WINDOW_OPENGL) {
-#ifdef _XBOX
-        SDL_ContextNotSupported("OpenGL");
-        return NULL;
-#else
-        if (!_this->GL_CreateContext) { SDL_ContextNotSupported("OpenGL"); return NULL; }
-        if (SDL_GL_LoadLibrary(NULL) < 0) { return NULL; }
-#endif
+        if (!_this->GL_CreateContext) {
+            SDL_ContextNotSupported("OpenGL");
+            return NULL;
+        }
+        if (SDL_GL_LoadLibrary(NULL) < 0) {
+            return NULL;
+        }
     }
 
     if (flags & SDL_WINDOW_VULKAN) {
-#ifdef _XBOX
-        SDL_ContextNotSupported("Vulkan");
-        return NULL;
-#else
-        if (!_this->Vulkan_CreateSurface) { SDL_ContextNotSupported("Vulkan"); return NULL; }
-        if (SDL_Vulkan_LoadLibrary(NULL) < 0) { return NULL; }
-#endif
+        if (!_this->Vulkan_CreateSurface) {
+            SDL_ContextNotSupported("Vulkan");
+            return NULL;
+        }
+        if (SDL_Vulkan_LoadLibrary(NULL) < 0) {
+            return NULL;
+        }
     }
 
     if (flags & SDL_WINDOW_METAL) {
-#ifdef _XBOX
-        SDL_ContextNotSupported("Metal");
-        return NULL;
-#else
-        if (!_this->Metal_CreateView) { SDL_ContextNotSupported("Metal"); return NULL; }
-#endif
+        if (!_this->Metal_CreateView) {
+            SDL_ContextNotSupported("Metal");
+            return NULL;
+        }
     }
 
     /* Unless the user has specified the high-DPI disabling hint, respect the
@@ -1798,7 +1787,7 @@ SDL_Window *SDL_CreateWindow(const char *title, int x, int y, int w, int h, Uint
     window->windowed.y = window->y;
     window->windowed.w = window->w;
     window->windowed.h = window->h;
-#if defined(_XBOX)
+#if defined(__XBOX__)
     /* Force fullscreen on OG Xbox, windowing isn’t supported */
     flags |= SDL_WINDOW_FULLSCREEN;
 #endif
@@ -2573,7 +2562,7 @@ void SDL_ShowWindow(SDL_Window *window)
         SDL_SetMouseFocus(window);
         SDL_SetKeyboardFocus(window);
     }
-#ifndef _XBOX
+#ifndef __XBOX__
     SDL_SendWindowEvent(window, SDL_WINDOWEVENT_SHOWN, 0, 0);
 #endif
 }
@@ -2596,7 +2585,7 @@ void SDL_HideWindow(SDL_Window *window)
         SDL_SetKeyboardFocus(NULL);
     }
     window->is_hiding = SDL_FALSE;
-#ifndef _XBOX
+#ifndef __XBOX__
     SDL_SendWindowEvent(window, SDL_WINDOWEVENT_HIDDEN, 0, 0);
 #endif
 }
@@ -3189,7 +3178,7 @@ void SDL_OnWindowHidden(SDL_Window *window)
 
 void SDL_OnWindowResized(SDL_Window *window)
 {
-#ifdef _XBOX
+#ifdef __XBOX__
     /* OG Xbox: single display, fullscreen-only. */
     const int display_index = 0;
 #else
@@ -3199,11 +3188,9 @@ void SDL_OnWindowResized(SDL_Window *window)
     window->surface_valid = SDL_FALSE;
 
     if (!window->is_destroying) {
-#ifndef _XBOX
-        /* Always tell SDL the drawable size changed. */
+#ifndef __XBOX__
         SDL_SendWindowEvent(window, SDL_WINDOWEVENT_SIZE_CHANGED, window->w, window->h);
 
-        /* On multi-display platforms, notify if the window moved displays. */
         if (display_index != window->display_index && display_index != -1) {
             window->display_index = display_index;
             SDL_SendWindowEvent(window, SDL_WINDOWEVENT_DISPLAY_CHANGED, window->display_index, 0);
@@ -3221,7 +3208,7 @@ void SDL_OnWindowMoved(SDL_Window *window)
 
     if (!window->is_destroying && display_index != window->display_index && display_index != -1) {
         window->display_index = display_index;
-#ifndef _XBOX
+#ifndef __XBOX__
         SDL_SendWindowEvent(window, SDL_WINDOWEVENT_DISPLAY_CHANGED, window->display_index, 0);
 #endif
     }
@@ -3230,7 +3217,7 @@ void SDL_OnWindowMoved(SDL_Window *window)
 void SDL_OnWindowLiveResizeUpdate(SDL_Window *window)
 {
     /* Send an expose event so the application can redraw */
-#ifndef _XBOX
+#ifndef __XBOX__
     SDL_SendWindowEvent(window, SDL_WINDOWEVENT_EXPOSED, 0, 0);
 #endif
 }
@@ -3252,7 +3239,7 @@ void SDL_OnWindowRestored(SDL_Window *window)
      */
     /*SDL_RaiseWindow(window);*/
 
-#ifndef _XBOX
+#ifndef __XBOX__
     if (FULLSCREEN_VISIBLE(window)) {
         SDL_UpdateFullscreenMode(window, SDL_TRUE);
     }
@@ -4153,7 +4140,7 @@ int SDL_GL_GetAttribute(SDL_GLattr attr, int *value)
 
 SDL_GLContext SDL_GL_CreateContext(SDL_Window *window)
 {
-#ifndef _XBOX
+#ifndef __XBOX__
     SDL_GLContext ctx = NULL;
     CHECK_WINDOW_MAGIC(window, NULL);
 
@@ -4180,7 +4167,7 @@ SDL_GLContext SDL_GL_CreateContext(SDL_Window *window)
 
 int SDL_GL_MakeCurrent(SDL_Window *window, SDL_GLContext context)
 {
-#ifdef _XBOX
+#ifdef __XBOX__
     /* OG Xbox has no OpenGL; always report unsupported. */
     (void)window; (void)context;
     return SDL_SetError("OpenGL is not available on this platform");
@@ -4380,7 +4367,7 @@ static void CreateMaskFromColorKeyOrAlpha(SDL_Surface * icon, Uint8 * mask, int 
  */
 void SDL_WM_SetIcon(SDL_Surface *icon, Uint8 *mask)
 {
-#ifdef _XBOX
+#ifdef __XBOX__
     /* No window icon support on original Xbox. */
     (void)icon; (void)mask;
     return;
@@ -4388,15 +4375,17 @@ void SDL_WM_SetIcon(SDL_Surface *icon, Uint8 *mask)
     if (icon && _this->SetIcon) {
         /* Generate a mask if necessary, and create the icon! */
         if (mask == NULL) {
-            const int mask_len = icon->h * (icon->w + 7) / 8;
+            int mask_len = icon->h * (icon->w + 7) / 8;
             int flags = 0;
-            mask = (Uint8 *)SDL_malloc(mask_len);
+            mask = (Uint8 *) SDL_malloc(mask_len);
             if (mask == NULL) {
                 return;
             }
             SDL_memset(mask, ~0, mask_len);
-            if (icon->flags & SDL_SRCCOLORKEY) { flags |= 1; }
-            if (icon->flags & SDL_SRCALPHA)    { flags |= 2; }
+            if (icon->flags & SDL_SRCCOLORKEY)
+                flags |= 1;
+            if (icon->flags & SDL_SRCALPHA)
+                flags |= 2;
             if (flags) {
                 CreateMaskFromColorKeyOrAlpha(icon, mask, flags);
             }
@@ -4715,7 +4704,7 @@ void SDL_OnApplicationDidReceiveMemoryWarning(void)
 
 void SDL_OnApplicationWillResignActive(void)
 {
-#ifndef _XBOX
+#ifndef __XBOX__
     if (_this) {
         SDL_Window *window;
         for (window = _this->windows; window; window = window->next) {
@@ -4729,21 +4718,21 @@ void SDL_OnApplicationWillResignActive(void)
 
 void SDL_OnApplicationDidEnterBackground(void)
 {
-#ifndef _XBOX
+#ifndef __XBOX__
     SDL_SendAppEvent(SDL_APP_DIDENTERBACKGROUND);
 #endif
 }
 
 void SDL_OnApplicationWillEnterForeground(void)
 {
-#ifndef _XBOX
+#ifndef __XBOX__
     SDL_SendAppEvent(SDL_APP_WILLENTERFOREGROUND);
 #endif
 }
 
 void SDL_OnApplicationDidBecomeActive(void)
 {
-#ifndef _XBOX
+#ifndef __XBOX__
     SDL_SendAppEvent(SDL_APP_DIDENTERFOREGROUND);
 
     if (_this) {
@@ -4760,8 +4749,8 @@ void SDL_OnApplicationDidBecomeActive(void)
 
 int SDL_Vulkan_LoadLibrary(const char *path)
 {
+#ifndef __XBOX__
     int retval;
-#ifndef _XBOX
     if (!_this) {
         SDL_UninitializedVideo();
         return -1;
@@ -4792,7 +4781,7 @@ void *SDL_Vulkan_GetVkGetInstanceProcAddr(void)
         SDL_UninitializedVideo();
         return NULL;
     }
-#ifndef _XBOX
+#ifndef __XBOX__
     if (!_this->vulkan_config.loader_loaded) {
         SDL_SetError("No Vulkan loader has been loaded");
         return NULL;

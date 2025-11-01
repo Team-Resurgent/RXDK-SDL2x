@@ -18,19 +18,54 @@
      misrepresented as being the original software.
   3. This notice may not be removed or altered from any source distribution.
 */
+#include "../SDL_internal.h"
 
-/* Do our best to make sure va_copy is working */
-#if defined(__NGAGE__)
-#undef va_copy
-#define va_copy(dst, src) dst = src
+#include "SDL_hints.h"
+#include "SDL_timer.h"
+#include "SDL_joystick_c.h"
+#include "SDL_steam_virtual_gamepad.h"
 
-#elif (defined(_MSC_VER) && _MSC_VER <= 1800) || defined(__XBOX__)
-/* Visual Studio 2013 tries to link with _vacopy in the C runtime. Newer versions do an inline assignment */
-#undef va_copy
-#define va_copy(dst, src) dst = src
-
-#elif defined(__GNUC__) && (__GNUC__ < 3)
-#define va_copy(dst, src) __va_copy(dst, src)
+#ifdef __WIN32__
+#include "../core/windows/SDL_windows.h"
+#else
+#include <sys/types.h>
+#include <sys/stat.h>
 #endif
 
-/* vi: set ts=4 sw=4 expandtab: */
+#define SDL_HINT_STEAM_VIRTUAL_GAMEPAD_INFO_FILE    "SteamVirtualGamepadInfo"
+
+static Uint64 GetFileModificationTime(const char *file)
+{
+    return 0;
+}
+
+static void SDL_FreeSteamVirtualGamepadInfo(void)
+{
+}
+
+static void AddVirtualGamepadInfo(int slot, SDL_SteamVirtualGamepadInfo *info)
+{
+}
+
+void SDL_InitSteamVirtualGamepadInfo(void)
+{
+}
+
+SDL_bool SDL_SteamVirtualGamepadEnabled(void)
+{
+    return SDL_FALSE;
+}
+
+SDL_bool SDL_UpdateSteamVirtualGamepadInfo(void)
+{
+    return SDL_FALSE;
+}
+
+const SDL_SteamVirtualGamepadInfo *SDL_GetSteamVirtualGamepadInfo(int slot)
+{
+    return NULL;
+}
+
+void SDL_QuitSteamVirtualGamepadInfo(void)
+{
+}

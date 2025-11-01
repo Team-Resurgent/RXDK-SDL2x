@@ -30,7 +30,7 @@
 
 #include "../SDL_internal.h"
 
-#if (defined(__WIN32__) || defined(__GDK__)) && !defined(__XBOX__)
+#if defined(__WIN32__) || defined(__GDK__)
 #include "../core/windows/SDL_windows.h"
 #elif defined(__XBOX__)
 #include "../core/xbox/SDL_xbox.h"
@@ -70,7 +70,7 @@
 #endif
 
 /* ---- OG Xbox XDK: no fstat/fileno, but we still want stdio ---- */
-#if defined(HAVE_STDIO_H) && defined(SDL_PLATFORM_XBOXRXDK)
+#if defined(HAVE_STDIO_H) && defined(SDL_PLATFORM_XBOX_RXDK)
 static SDL_bool IsRegularFileOrPipe(FILE* f) { (void)f; return SDL_TRUE; }
 #endif
 
@@ -146,9 +146,9 @@ static int SDLCALL windows_file_open(SDL_RWops *context, const char *filename, c
         SDL_SetError("Couldn't open %s", filename);
         return -2; /* failed (CreateFile) */
     }
-
     context->hidden.windowsio.h = h;
     context->hidden.windowsio.append = a_mode ? SDL_TRUE : SDL_FALSE;
+
     return 0; /* ok */
 }
 
@@ -198,7 +198,11 @@ static Sint64 SDLCALL windows_file_seek(SDL_RWops *context, Sint64 offset, int w
 
     windowsoffset.QuadPart = offset;
     if (!SetFilePointerEx(context->hidden.windowsio.h, windowsoffset, &windowsoffset, windowswhence)) {
+#ifdef __XBOX__
         return XBOX_SetError("windows_file_seek");
+#elif
+        return WIN_SetError("windows_file_seek");
+#endif
     }
     return windowsoffset.QuadPart;
 }
@@ -529,7 +533,7 @@ static int SDLCALL mem_close(SDL_RWops *context)
 
 /* Functions to create SDL_RWops structures from various data sources */
 
-#if defined(HAVE_STDIO_H) && !(defined(__WIN32__) || defined(__GDK__) || defined(SDL_PLATFORM_XBOXRXDK))
+#if defined(HAVE_STDIO_H) && !(defined(__WIN32__) || defined(__GDK__) || defined(SDL_PLATFORM_XBOX_RXDK))
 static SDL_bool IsRegularFileOrPipe(FILE *f)
 {
     #ifdef __WINRT__

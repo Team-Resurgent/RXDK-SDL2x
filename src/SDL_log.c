@@ -32,10 +32,9 @@
 #include "SDL_mutex.h"
 #include "SDL_log_c.h"
 
-#ifdef _XBOX
+#ifdef __XBOX__
 #include <xtl.h>
 #endif
-
 
 #ifdef HAVE_STDIO_H
 #include <stdio.h>
@@ -446,30 +445,12 @@ void SDL_LogMessageV(int category, SDL_LogPriority priority, const char *fmt, va
         }
     }
 	
-	#if defined(_XBOX) && defined(_DEBUG) && defined(XBOX_DEBUG_LOGGING)
+	#if defined(__XBOX__) && defined(XBOX_DEBUG_LOGGING)
 	/* Echo the final UTF-8 message to the Xbox debug output. 
 	   Keep it simple/robust: use ANSI path so we don’t depend on wchar helpers. */
-		OutputDebugStringA(message);
-		OutputDebugStringA("\r\n");
-
-/* If you prefer UTF-16 and your XDK has MultiByteToWideChar, you can use this instead:	*/
-    /*
-	{
-		int wlen = MultiByteToWideChar(CP_UTF8, 0, message, -1, NULL, 0);
-		if (wlen > 0) {
-			WCHAR *wmsg = (WCHAR*) _alloca((wlen + 2) * sizeof(WCHAR));
-			MultiByteToWideChar(CP_UTF8, 0, message, -1, wmsg, wlen);
-			wmsg[wlen - 1] = L'\0';              // ensure null term
-			OutputDebugStringW(wmsg);
-			OutputDebugStringW(L"\r\n");
-		} else {
-			OutputDebugStringA(message);
-			OutputDebugStringA("\r\n");
-		}
-	}*/
-
+	OutputDebugStringA(message);
+	OutputDebugStringA("\r\n");
 	#endif
-
 
     SDL_LockMutex(log_function_mutex);
     SDL_log_function(SDL_log_userdata, category, priority, message);
@@ -545,8 +526,11 @@ static void SDLCALL SDL_LogOutput(void *userdata, int category, SDL_LogPriority 
         length = SDL_strlen(SDL_priority_prefixes[priority]) + 2 + SDL_strlen(message) + 1 + 1 + 1;
         output = SDL_small_alloc(char, length, &isstack);
         (void)SDL_snprintf(output, length, "%s: %s\r\n", SDL_priority_prefixes[priority], message);
+#ifdef __XBOX__
         tstr = XBOX_UTF8ToString(output);
-
+#elif
+        tstr = WIN_UTF8ToString(output);
+#endif
         /* Output to debugger */
         OutputDebugString(tstr);
 

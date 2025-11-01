@@ -29,7 +29,7 @@
 
 #include <limits.h>
 /* Visual Studio 2008 doesn't have stdint.h */
-#if defined(_XBOX) || (defined(_MSC_VER) && _MSC_VER <= 1500)
+#if defined(__XBOX__) || (defined(_MSC_VER) && _MSC_VER <= 1500)
 #define UINT8_MAX   _UI8_MAX
 #define UINT16_MAX  _UI16_MAX
 #define UINT32_MAX  _UI32_MAX

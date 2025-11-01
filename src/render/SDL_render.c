@@ -131,8 +131,7 @@ static const SDL_RenderDriver *render_drivers[] = {
 #if SDL_VIDEO_RENDER_VITA_GXM
     &VITA_GXM_RenderDriver,
 #endif
-// TODO FIX this in the config
-#if SDL_VIDEO_RENDER_SW && !defined(__XBOX__)
+#if SDL_VIDEO_RENDER_SW
     &SW_RenderDriver
 #endif
 };
@@ -1017,7 +1016,7 @@ SDL_Renderer *SDL_CreateRenderer(SDL_Window *window, int index, Uint32 flags)
                     }
                     break;
                 }
-            }        
+            }
         }
 
         if (rc == -1) {
@@ -1047,7 +1046,6 @@ SDL_Renderer *SDL_CreateRenderer(SDL_Window *window, int index, Uint32 flags)
                          n - 1);
             goto error;
         }
-
         /* Create a new renderer instance */
         rc = render_drivers[index]->CreateRenderer(renderer, window, flags);
         batching = SDL_FALSE;
@@ -1064,21 +1062,19 @@ SDL_Renderer *SDL_CreateRenderer(SDL_Window *window, int index, Uint32 flags)
             renderer->info.flags |= SDL_RENDERER_PRESENTVSYNC;
         }
     }
-
     SDL_CalculateSimulatedVSyncInterval(renderer, window);
 
     VerifyDrawQueueFunctions(renderer);
 
     /* let app/user override batching decisions. */
-#ifdef _XBOX
+#ifdef __XBOX__
 	batching = SDL_TRUE;
 #else
-	if (renderer->always_batch) {
-		batching = SDL_TRUE;
-	}
-	else if (/*SDL_GetHint(SDL_HINT_RENDER_BATCHING)*/1) {
-		batching = SDL_GetHintBoolean(SDL_HINT_RENDER_BATCHING, SDL_TRUE);
-	}
+    if (renderer->always_batch) {
+        batching = SDL_TRUE;
+    } else if (SDL_GetHint(SDL_HINT_RENDER_BATCHING)) {
+        batching = SDL_GetHintBoolean(SDL_HINT_RENDER_BATCHING, SDL_TRUE);
+    }
 #endif
 
     renderer->batching = batching;
@@ -1417,7 +1413,7 @@ SDL_Texture *SDL_CreateTextureFromSurface(SDL_Renderer *renderer, SDL_Surface *s
     SDL_bool direct_update;
     int i;
     Uint32 format = SDL_PIXELFORMAT_UNKNOWN;
-    SDL_Texture *texture = NULL;
+    SDL_Texture *texture;
 
     CHECK_RENDERER_MAGIC(renderer, NULL);
 

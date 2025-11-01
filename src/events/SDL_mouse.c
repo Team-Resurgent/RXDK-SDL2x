@@ -28,7 +28,7 @@
 #include "SDL_events_c.h"
 #include "../SDL_hints_c.h"
 #include "../video/SDL_sysvideo.h"
-#if (defined(__WIN32__) || defined(__GDK__)) && !defined(__XBOX__)
+#if defined(__WIN32__) || defined(__GDK__)
 #include "../core/windows/SDL_windows.h" // For GetDoubleClickTime()
 #endif
 #if defined(__OS2__)
@@ -53,17 +53,15 @@ static void SDLCALL SDL_MouseDoubleClickTimeChanged(void *userdata, const char *
     if (hint && *hint) {
         mouse->double_click_time = SDL_atoi(hint);
     } else {
-#if (defined(__WIN32__) || defined(__WINGDK__)) && !defined(_XBOX)
+#if defined(__WIN32__) || defined(__WINGDK__)
         mouse->double_click_time = GetDoubleClickTime();
-#elif defined(__OS2__) && !defined(_XBOX)
+#elif defined(__OS2__)
         mouse->double_click_time = WinQuerySysValue(HWND_DESKTOP, SV_DBLCLKTIME);
 #else
-        /* Sensible default for non-Win32 (including OG Xbox) */
         mouse->double_click_time = 500;
 #endif
     }
 }
-
 
 static void SDLCALL SDL_MouseDoubleClickRadiusChanged(void *userdata, const char *name, const char *oldValue, const char *hint)
 {
@@ -236,7 +234,11 @@ void SDL_MousePostInit(void)
      * so that mouse grab and focus functionality will work.
      */
     if (!mouse->def_cursor) {
+#ifdef __XBOX__
         SDL_Surface *surface = SDL_CreateRGBSurface(0, 1, 1, 32, 0x00FF0000, 0x0000FF00, 0x000000FF, 0xFF000000);
+#elif
+        SDL_Surface *surface = SDL_CreateRGBSurface(0, 1, 1, 32, 0xFF, 0xFF, 0xFF, 0xFF);
+#endif
         if (surface) {
             SDL_memset(surface->pixels, 0, (size_t)surface->h * surface->pitch);
             SDL_SetDefaultCursor(SDL_CreateColorCursor(surface, 0, 0));
@@ -359,18 +361,14 @@ void SDL_SetMouseFocus(SDL_Window *window)
 
     /* See if the current window has lost focus */
     if (mouse->focus) {
-#ifndef _XBOX
         SDL_SendWindowEvent(mouse->focus, SDL_WINDOWEVENT_LEAVE, 0, 0);
-#endif
     }
 
     mouse->focus = window;
     mouse->has_position = SDL_FALSE;
 
     if (mouse->focus) {
-#ifndef _XBOX
         SDL_SendWindowEvent(mouse->focus, SDL_WINDOWEVENT_ENTER, 0, 0);
-#endif
     }
 
     /* Update cursor visibility */
@@ -1263,7 +1261,7 @@ int SDL_CaptureMouse(SDL_bool enabled)
         return SDL_Unsupported();
     }
 
-#if (defined(__WIN32__) || defined(__WINGDK__)) && !defined(_XBOX)
+#if defined(__WIN32__) || defined(__WINGDK__)
     /* Windows mouse capture is tied to the current thread, and must be called
      * from the thread that created the window being captured. Since we update
      * the mouse capture state from the event processing, any application state
@@ -1272,7 +1270,7 @@ int SDL_CaptureMouse(SDL_bool enabled)
     if (!SDL_OnVideoThread()) {
         return SDL_SetError("SDL_CaptureMouse() must be called on the main thread");
     }
-#endif //(defined(__WIN32__) || defined(__WINGDK__)) && !defined(_XBOX)*/
+#endif /* defined(__WIN32__) || defined(__WINGDK__) */
 
     if (enabled && SDL_GetKeyboardFocus() == NULL) {
         return SDL_SetError("No window has focus");

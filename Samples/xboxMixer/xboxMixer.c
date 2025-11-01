@@ -11,28 +11,6 @@ typedef int bool;
 #define SCREEN_WIDTH  640
 #define SCREEN_HEIGHT 480
 
-void LogSDLVersions(void)
-{
-    SDL_version compiled;
-    SDL_version linked;
-
-    SDL_VERSION(&compiled);
-    SDL_GetVersion(&linked);
-
-    SDL_Log("SDL compiled against: %u.%u.%u", compiled.major, compiled.minor, compiled.patch);
-    SDL_Log("SDL linked (runtime): %u.%u.%u", linked.major, linked.minor, linked.patch);
-    SDL_Log("SDL revision: %s", SDL_GetRevision());
-}
-
-void LogSDLMixerVersions(void)
-{
-    const SDL_version* linked = Mix_Linked_Version();
-    SDL_Log("SDL_mixer compiled against: %d.%d.%d",
-        SDL_MIXER_MAJOR_VERSION, SDL_MIXER_MINOR_VERSION, SDL_MIXER_PATCHLEVEL);
-    SDL_Log("SDL_mixer linked (runtime): %d.%d.%d",
-        linked->major, linked->minor, linked->patch);
-}
-
 SDL_Texture* LoadTextureFromFile(SDL_Renderer* renderer, const char* filepath)
 {
     SDL_Surface* surf = SDL_LoadBMP(filepath);
@@ -53,9 +31,6 @@ int main(int argc, char* argv[])
         return -1;
     }
 
-    LogSDLVersions();
-    LogSDLMixerVersions();
-
     /* ask SDL_mixer for MP3 support explicitly */
     int initted = Mix_Init(MIX_INIT_MP3);
     if ((initted & MIX_INIT_MP3) == 0) {
@@ -70,10 +45,8 @@ int main(int argc, char* argv[])
         return -1;
     }
 
-    SDL_Window* win = SDL_CreateWindow("xboxMixer", 0, 0,
-        SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_SHOWN);
+    SDL_Window* win = SDL_CreateWindow("xboxMixer", 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_SHOWN);
     SDL_Renderer* ren = SDL_CreateRenderer(win, -1, SDL_RENDERER_ACCELERATED);
-
     SDL_Texture* bg = LoadTextureFromFile(ren, "D:\\Lose_my_breath.bmp");
 
     /* try to load the music */
@@ -90,15 +63,6 @@ int main(int argc, char* argv[])
         }
         else {
             SDL_Log("Mix_PlayMusic: playing '%s'", music_path);
-        }
-    }
-
-    /* optional: see what decoders we actually have */
-    {
-        int i, n = Mix_GetNumMusicDecoders();
-        SDL_Log("music decoders:");
-        for (i = 0; i < n; ++i) {
-            SDL_Log("  %s", Mix_GetMusicDecoder(i));
         }
     }
 

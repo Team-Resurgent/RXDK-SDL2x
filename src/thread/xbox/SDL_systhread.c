@@ -42,30 +42,6 @@ void SDL_SYS_InitTLSData(void)
 	}
 }
 
-SDL_TLSData* SDL_SYS_GetTLSData(void)
-{
-	if (generic_local_storage) {
-		return SDL_Generic_GetTLSData();
-	}
-
-	if (thread_local_storage != TLS_OUT_OF_INDEXES) {
-		return (SDL_TLSData*)TlsGetValue(thread_local_storage);
-	}
-	return NULL;
-}
-
-int SDL_SYS_SetTLSData(SDL_TLSData* data)
-{
-	if (generic_local_storage) {
-		return SDL_Generic_SetTLSData(data);
-	}
-
-	if (!TlsSetValue(thread_local_storage, data)) {
-		return XBOX_SetError("TlsSetValue()");
-	}
-	return 0;
-}
-
 void SDL_SYS_QuitTLSData(void)
 {
 	if (generic_local_storage) {
@@ -87,12 +63,9 @@ static DWORD WINAPI RunThread(LPVOID data)
     return 0;
 }
 
-int SDL_SYS_CreateThread(SDL_Thread* thread, void* args)
+int SDL_SYS_CreateThread(SDL_Thread* thread)
 {
     DWORD threadnum;
-
-    /* store user args in the SDL_Thread object so SDL_RunThread can see it */
-    thread->data = args;
 
     /* ?? pass the SDL_Thread*, NOT args */
     thread->handle = CreateThread(NULL,

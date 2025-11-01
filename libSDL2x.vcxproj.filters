@@ -32,9 +32,6 @@
     <Filter Include="Source Files\render">
       <UniqueIdentifier>{37f3c751-ee79-4697-a202-aa511ba5c7a2}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files\render\direct3d8">
-      <UniqueIdentifier>{4c928841-22f8-4cab-9669-39656c8f0f23}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Source Files\render\software">
       <UniqueIdentifier>{3c697362-5db3-46ef-8989-09b592ea0fce}</UniqueIdentifier>
     </Filter>
@@ -71,9 +68,6 @@
     <Filter Include="Source Files\power">
       <UniqueIdentifier>{84d32c9e-b44e-4867-ab70-5fc89492296f}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files\power\xbox">
-      <UniqueIdentifier>{68fe7249-faa7-4f19-b9dd-a3f8bab4c94d}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Source Files\sensor">
       <UniqueIdentifier>{e228f8e6-383c-47e1-9291-d1cf33bcb84d}</UniqueIdentifier>
     </Filter>
@@ -107,6 +101,9 @@
     <Filter Include="Header Files">
       <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
       <Extensions>h;hpp;hxx;hm;inl;inc;xsd</Extensions>
+    </Filter>
+    <Filter Include="Source Files\render\xbox">
+      <UniqueIdentifier>{4c928841-22f8-4cab-9669-39656c8f0f23}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -194,9 +191,6 @@
     <ClCompile Include="src\video\xbox\SDL_xboxwindow.c">
       <Filter>Source Files\video\xbox</Filter>
     </ClCompile>
-    <ClCompile Include="src\video\yuv2rgb\yuv_rgb.c">
-      <Filter>Source Files\video\yuv2rgb</Filter>
-    </ClCompile>
     <ClCompile Include="src\dynapi\SDL_dynapi.c">
       <Filter>Source Files\dynapi</Filter>
     </ClCompile>
@@ -238,9 +232,6 @@
     </ClCompile>
     <ClCompile Include="src\render\SDL_yuv_sw.c">
       <Filter>Source Files\render</Filter>
-    </ClCompile>
-    <ClCompile Include="src\render\direct3d8\SDL_render_d3d.c">
-      <Filter>Source Files\render\direct3d8</Filter>
     </ClCompile>
     <ClCompile Include="src\render\software\SDL_blendfillrect.c">
       <Filter>Source Files\render\software</Filter>
@@ -389,9 +380,6 @@
     <ClCompile Include="src\power\SDL_power.c">
       <Filter>Source Files\power</Filter>
     </ClCompile>
-    <ClCompile Include="src\power\xbox\SDL_syspower.c">
-      <Filter>Source Files\power\xbox</Filter>
-    </ClCompile>
     <ClCompile Include="src\sensor\SDL_sensor.c">
       <Filter>Source Files\sensor</Filter>
     </ClCompile>
@@ -426,9 +414,6 @@
       <Filter>Source Files\render\software</Filter>
     </ClCompile>
     <ClCompile Include="src\joystick\controller_type.c">
-      <Filter>Source Files\joystick</Filter>
-    </ClCompile>
-    <ClCompile Include="src\joystick\SDL_steam_virtual_gamepad.c">
       <Filter>Source Files\joystick</Filter>
     </ClCompile>
     <ClCompile Include="src\SDL_guid.c">
@@ -493,6 +478,18 @@
     </ClCompile>
     <ClCompile Include="src\test\SDL_test_random.c">
       <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\events\SDL_windowevents.c">
+      <Filter>Source Files\events</Filter>
+    </ClCompile>
+    <ClCompile Include="src\joystick\SDL_steam_virtual_gamepad_dummy.c">
+      <Filter>Source Files\joystick</Filter>
+    </ClCompile>
+    <ClCompile Include="src\video\yuv2rgb\yuv_rgb_std.c">
+      <Filter>Source Files\video\yuv2rgb</Filter>
+    </ClCompile>
+    <ClCompile Include="src\render\xbox\SDL_render_xbox.c">
+      <Filter>Source Files\render\xbox</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -612,9 +609,6 @@
     </ClInclude>
     <ClInclude Include="src\thread\xbox\SDL_systhread_c.h">
       <Filter>Source Files\thread\xbox</Filter>
-    </ClInclude>
-    <ClInclude Include="src\core\BaseTyps.h">
-      <Filter>Source Files\core</Filter>
     </ClInclude>
     <ClInclude Include="src\core\xbox\SDL_directx.h">
       <Filter>Source Files\core\xbox</Filter>
@@ -880,8 +874,11 @@
     <ClInclude Include="src\stdlib\SDL_vacopy.h">
       <Filter>Source Files\stdlib</Filter>
     </ClInclude>
-    <ClInclude Include="include\SDL_config_xboxrxdk.h">
+    <ClInclude Include="include\SDL_config_xbox_rxdk.h">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\core\xbox\SDL_xbox_BaseTyps.h">
+      <Filter>Source Files\core\xbox</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

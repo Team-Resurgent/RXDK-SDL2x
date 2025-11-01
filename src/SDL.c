@@ -20,14 +20,13 @@
 */
 #include "./SDL_internal.h"
 
-#if (defined(__WIN32__) || defined(__GDK__)) && !defined(__XBOX__)
+#if defined(__WIN32__) || defined(__GDK__)
 #include "core/windows/SDL_windows.h"
 #elif defined(__XBOX__)
 #include "core/xbox/SDL_xbox.h"
-
 #elif defined(__OS2__)
 #include <stdlib.h> /* _exit() */
-#elif !defined(_WIN32) && !defined(_MSC_VER) && !defined(__WINRT__) && !defined(_XBOX)
+#elif !defined(__WINRT__)
 #include <unistd.h> /* _exit(), etc. */
 #endif
 #if defined(__OS2__)
@@ -90,7 +89,7 @@ SDL_COMPILE_TIME_ASSERT(SDL_PATCHLEVEL_max, SDL_PATCHLEVEL <= 99);
 extern SDL_NORETURN void SDL_ExitProcess(int exitcode);
 SDL_NORETURN void SDL_ExitProcess(int exitcode)
 {
-#if (defined(__WIN32__) || defined(__GDK__)) && !defined(__XBOX__)
+#if defined(__WIN32__) || defined(__GDK__)
     /* "if you do not know the state of all threads in your process, it is
        better to call TerminateProcess than ExitProcess"
        https://msdn.microsoft.com/en-us/library/windows/desktop/ms682658(v=vs.85).aspx */
@@ -98,7 +97,7 @@ SDL_NORETURN void SDL_ExitProcess(int exitcode)
     /* MingW doesn't have TerminateProcess marked as noreturn, so add an
        ExitProcess here that will never be reached but make MingW happy. */
     ExitProcess(exitcode);
-#elif defined(_XBOX)
+#elif defined(__XBOX__)
     /* Launch main dashboard; ignore exitcode. */
     LD_LAUNCH_DASHBOARD launch = { XLD_LAUNCH_DASHBOARD_MAIN_MENU };
     XLaunchNewImage(NULL, (LAUNCH_DATA*)&launch);
@@ -549,12 +548,11 @@ void SDL_Quit(void)
 
     SDL_bInMainQuit = SDL_FALSE;
 	
-	#ifdef XBOX
+	#ifdef __XBOX__
 	/* Xbox-specific behavior: Return to dashboard */
 	SDL_Log("SDL_Quit: Returning to Xbox dashboard...\n");
-	//HalWriteSMBusValue(0x20, 0x1B, FALSE, 0x08 | 0x04);
 	HalReturnToFirmware(2);
-#endif
+    #endif
 }
 
 /* Get the library version number */

@@ -120,8 +120,7 @@ typedef struct
 	float u, v;		/* Texture Coordinates */
 } Vertex;
 
-static int
-D3D_SetError(const char* prefix, HRESULT result)
+static int D3D_SetError(const char* prefix, HRESULT result)
 {
 	const char* error;
 
@@ -201,8 +200,7 @@ D3D_SetError(const char* prefix, HRESULT result)
 	return SDL_SetError("%s: %s", prefix, error);
 }
 
-static D3DFORMAT
-PixelFormatToD3DFMT(Uint32 format)
+static D3DFORMAT PixelFormatToD3DFMT(Uint32 format)
 {
 	switch (format) {
 	case SDL_PIXELFORMAT_RGB565:
@@ -221,8 +219,7 @@ PixelFormatToD3DFMT(Uint32 format)
 	}
 }
 
-static Uint32
-D3DFMTToPixelFormat(D3DFORMAT format)
+static Uint32 D3DFMTToPixelFormat(D3DFORMAT format)
 {
 	switch (format) {
 	case D3DFMT_LIN_R5G6B5:
@@ -236,8 +233,7 @@ D3DFMTToPixelFormat(D3DFORMAT format)
 	}
 }
 
-static void
-D3D_InitRenderState(D3D_RenderData* data)
+static void D3D_InitRenderState(D3D_RenderData* data)
 {
 	D3DMATRIX matrix;
 	IDirect3DDevice8* device = data->device;
@@ -286,11 +282,9 @@ D3D_InitRenderState(D3D_RenderData* data)
 	data->beginScene = SDL_TRUE;
 }
 
-
 static int D3D_Reset(SDL_Renderer* renderer);
 
-static int
-D3D_ActivateRenderer(SDL_Renderer* renderer)
+static int D3D_ActivateRenderer(SDL_Renderer* renderer)
 {
 	D3D_RenderData* data = (D3D_RenderData*)renderer->driverdata;
 	HRESULT result;
@@ -507,8 +501,6 @@ D3D_CreateStagingTexture(IDirect3DDevice8* device, D3D_TextureRep* texture)
 	return 0;
 }
 
-
-
 static int
 D3D_RecreateTextureRep(IDirect3DDevice8* device, D3D_TextureRep* texture)
 {
@@ -533,20 +525,12 @@ D3D_RecreateTextureRep(IDirect3DDevice8* device, D3D_TextureRep* texture)
 			IDirect3DTexture8_Release(texture->staging);
 			texture->staging = NULL;
 		}
-		else {
-#ifndef _XBOX
-			/* We are using our own UpdateTexture(), but keeping this here is harmless
-			   when the staging texture is retained. */
-			IDirect3DTexture8_AddDirtyRect(texture->staging, NULL);
-#endif
-		}
 	}
 
 	/* Force the next upload to refresh the GPU texture */
 	texture->dirty = SDL_TRUE;
 	return 0;
 }
-
 
 static int
 D3D_UpdateTextureRep(IDirect3DDevice8* device, D3D_TextureRep* texture,
@@ -725,7 +709,6 @@ D3D_CreateTexture(SDL_Renderer* renderer, SDL_Texture* texture)
 
 	return 0;
 }
-
 
 static int
 D3D_RecreateTexture(SDL_Renderer* renderer, SDL_Texture* texture)
@@ -1194,9 +1177,6 @@ static int D3D8_UpdateTexture(IDirect3DTexture8* srcTexture, IDirect3DTexture8* 
 	return D3D_OK;
 }
 
-
-
-
 static int
 D3D_SetRenderTargetInternal(SDL_Renderer* renderer, SDL_Texture* texture)
 {
@@ -1449,10 +1429,6 @@ D3D_QueueCopy(SDL_Renderer* renderer, SDL_RenderCommand* cmd, SDL_Texture* textu
 	return 0;
 }
 
-
-
-
-
 static int
 D3D_QueueCopyEx(SDL_Renderer* renderer, SDL_RenderCommand* cmd, SDL_Texture* texture,
 	const SDL_Rect* srcquad, const SDL_FRect* dstrect,
@@ -1595,7 +1571,6 @@ UpdateDirtyTexture(IDirect3DDevice8* device, D3D_TextureRep* texture)
 	return 0;
 }
 
-
 static int
 BindTextureRep(IDirect3DDevice8* device, D3D_TextureRep* texture, DWORD sampler)
 {
@@ -1624,7 +1599,6 @@ BindTextureRep(IDirect3DDevice8* device, D3D_TextureRep* texture, DWORD sampler)
 	return 0;
 }
 
-
 static void
 UpdateTextureScaleMode(D3D_RenderData* data, D3D_TextureData* texturedata, unsigned index)
 {
@@ -1648,9 +1622,8 @@ UpdateTextureScaleMode(D3D_RenderData* data, D3D_TextureData* texturedata, unsig
 		D3DTADDRESS_CLAMP);
 }
 
-
 static int
-SetupTextureState(D3D_RenderData* data, SDL_Texture* texture /*, LPDIRECT3DPIXELSHADER9 *shader*/)
+SetupTextureState(D3D_RenderData* data, SDL_Texture* texture)
 {
 	D3D_TextureData* texturedata = (D3D_TextureData*)texture->driverdata;
 
@@ -1721,7 +1694,6 @@ SetupTextureState(D3D_RenderData* data, SDL_Texture* texture /*, LPDIRECT3DPIXEL
 
 	return 0;
 }
-
 
 static int
 SetDrawState(D3D_RenderData* data, const SDL_RenderCommand* cmd)
@@ -1823,7 +1795,6 @@ SetDrawState(D3D_RenderData* data, const SDL_RenderCommand* cmd)
 
 	/* --- Scissor rect --- */
 	if (data->drawstate.cliprect_dirty) {
-#ifdef _XBOX
 		const SDL_Rect* vp = &data->drawstate.viewport;
 		const SDL_Rect* rect = &data->drawstate.cliprect;
 		const D3DRECT d3drect = { vp->x + rect->x, vp->y + rect->y,
@@ -1831,7 +1802,6 @@ SetDrawState(D3D_RenderData* data, const SDL_RenderCommand* cmd)
 		/* Enable = TRUE when width/height > 0, otherwise disable */
 		const BOOL enable = (rect->w > 0 && rect->h > 0) ? TRUE : FALSE;
 		IDirect3DDevice8_SetScissors(data->device, enable ? 1 : 0, FALSE, enable ? &d3drect : NULL);
-#endif
 		data->drawstate.cliprect_dirty = SDL_FALSE;
 	}
 
@@ -1925,6 +1895,7 @@ D3D_RunCommandQueue(SDL_Renderer* renderer, SDL_RenderCommand* cmd, void* vertic
 			if (SDL_memcmp(viewport, &cmd->data.viewport.rect, sizeof(SDL_Rect)) != 0) {
 				SDL_memcpy(viewport, &cmd->data.viewport.rect, sizeof(SDL_Rect));
 				data->drawstate.viewport_dirty = SDL_TRUE;
+				data->drawstate.cliprect_dirty = SDL_TRUE;
 			}
 			break;
 		}
@@ -1947,6 +1918,7 @@ D3D_RunCommandQueue(SDL_Renderer* renderer, SDL_RenderCommand* cmd, void* vertic
 			const SDL_Rect* viewport = &data->drawstate.viewport;
 			const int backw = istarget ? renderer->target->w : data->pparams.BackBufferWidth;
 			const int backh = istarget ? renderer->target->h : data->pparams.BackBufferHeight;
+			const SDL_bool viewport_equal = ((viewport->x == 0) && (viewport->y == 0) && (viewport->w == backw) && (viewport->h == backh)) ? SDL_TRUE : SDL_FALSE;
 
 			if (data->drawstate.cliprect_enabled) {
 				/* On Xbox, SetScissors state is reset by Present; we just mark dirty here. */
@@ -1954,7 +1926,7 @@ D3D_RunCommandQueue(SDL_Renderer* renderer, SDL_RenderCommand* cmd, void* vertic
 			}
 
 			/* Clear the entire RT unless the viewport already covers it */
-			if (!viewport->x && !viewport->y && (viewport->w == backw) && (viewport->h == backh)) {
+			if (!data->drawstate.viewport_dirty && viewport_equal) {
 				IDirect3DDevice8_Clear(data->device, 0, NULL, D3DCLEAR_TARGET, color, 0.0f, 0);
 			}
 			else {
@@ -2164,29 +2136,15 @@ D3D_RenderPresent(SDL_Renderer* renderer)
 		return;
 	}
 
-#ifndef _XBOX
-	/* PC D3D8/9 device-loss handling (not used on OG Xbox). */
-	hr = IDirect3DDevice8_TestCooperativeLevel(data->device);
-	if (hr == D3DERR_DEVICELOST) {
-		return;  /* will reset later */
-	}
-	if (hr == D3DERR_DEVICENOTRESET) {
-		D3D_Reset(renderer);
-	}
-#endif
-
 	hr = IDirect3DDevice8_Present(data->device, NULL, NULL, NULL, NULL);
 	if (FAILED(hr)) {
 		D3D_SetError("Present()", hr);
 	}
 
-#ifdef _XBOX
 	/* Present resets scissor; mark dirty so next frame reapplies it. */
 	data->drawstate.cliprect_enabled_dirty = SDL_TRUE;
 	data->drawstate.cliprect_dirty = SDL_TRUE;
-#endif
 }
-
 
 static void
 D3D_DestroyTexture(SDL_Renderer* renderer, SDL_Texture* texture)
@@ -2301,12 +2259,6 @@ D3D_DestroyRenderer(SDL_Renderer* renderer)
 		}
 		if (data->d3d) {
 			IDirect3D8_Release(data->d3d);
-#ifndef _XBOX
-			if (data->d3dDLL) {
-				SDL_UnloadObject(data->d3dDLL);
-				data->d3dDLL = NULL;
-			}
-#endif
 			data->d3d = NULL;
 		}
 
@@ -2413,7 +2365,6 @@ D3D_Reset(SDL_Renderer* renderer)
 	return 0;
 }
 
-#ifdef _XBOX
 /* -----------------------------------------------------------------------
    FinalizeXboxMode
    -----------------------------------------------------------------------
@@ -2506,32 +2457,20 @@ static void FinalizeXboxMode(D3DPRESENT_PARAMETERS* p)
 		p->Flags |= D3DPRESENTFLAG_INTERLACED;
 	}
 
-	SDL_Log("FINAL MODE: %ux%u flags=0x%08x @ %u Hz  (WS=%d 480p=%d 720p=%d 1080i=%d PAL=%d)\n",
+	SDL_Log("D3D Final mode: %ux%u flags=0x%08x @ %u Hz  (WS=%d 480p=%d 720p=%d 1080i=%d PAL=%d)\n",
 		(unsigned)p->BackBufferWidth, (unsigned)p->BackBufferHeight,
 		(unsigned)p->Flags, (unsigned)p->FullScreen_RefreshRateInHz,
 		(int)ws, (int)allow480p, (int)allow720p, (int)allow1080i, (int)pal);
 }
-#endif
 
-int
-D3D_CreateRenderer(SDL_Renderer* renderer, SDL_Window* window, Uint32 flags)
+int D3D_CreateRenderer(SDL_Renderer* renderer, SDL_Window* window, Uint32 flags)
 {
 	D3D_RenderData* data;
 	HRESULT result;
 	D3DPRESENT_PARAMETERS pparams;
 	D3DCAPS8 caps;
-#ifndef _XBOX
-	IDirect3DSwapChain9* chain;
-	SDL_SysWMinfo windowinfo;
-	int displayIndex;
-	SDL_DisplayMode fullscreen_mode;
-	Uint32 window_flags;
-#endif
 	DWORD device_flags;
-	int w, h;
-#ifdef _XBOX
 	DWORD vidflags;
-#endif
 	int i;
 
 	data = (D3D_RenderData*)SDL_calloc(1, sizeof(*data));
@@ -2572,13 +2511,7 @@ D3D_CreateRenderer(SDL_Renderer* renderer, SDL_Window* window, Uint32 flags)
 	renderer->driverdata = data;
 	renderer->window = window;
 
-#ifndef _XBOX
-	SDL_VERSION(&windowinfo.version);
-	SDL_GetWindowWMInfo(window, &windowinfo);
-	window_flags = SDL_GetWindowFlags(window);
-	SDL_GetWindowDisplayMode(window, &fullscreen_mode);
-#endif
-
+	int w = 0, h = 0;
 	SDL_GetWindowSize(window, &w, &h);
 
 	SDL_zero(pparams);
@@ -2587,41 +2520,6 @@ D3D_CreateRenderer(SDL_Renderer* renderer, SDL_Window* window, Uint32 flags)
 	pparams.BackBufferCount = 1;
 	pparams.SwapEffect = D3DSWAPEFFECT_DISCARD;
 
-#ifndef _XBOX
-	pparams.hDeviceWindow = windowinfo.info.win.window;
-
-	if (window_flags & SDL_WINDOW_FULLSCREEN &&
-		(window_flags & SDL_WINDOW_FULLSCREEN_DESKTOP) != SDL_WINDOW_FULLSCREEN_DESKTOP) {
-		pparams.Windowed = FALSE;
-		pparams.BackBufferFormat = PixelFormatToD3DFMT(fullscreen_mode.format);
-		pparams.FullScreen_RefreshRateInHz = fullscreen_mode.refresh_rate;
-	}
-	else {
-		pparams.Windowed = TRUE;
-		pparams.BackBufferFormat = D3DFMT_UNKNOWN;
-		pparams.FullScreen_RefreshRateInHz = 0;
-	}
-	pparams.PresentationInterval = (flags & SDL_RENDERER_PRESENTVSYNC) ?
-		D3DPRESENT_INTERVAL_ONE : D3DPRESENT_INTERVAL_IMMEDIATE;
-
-	/* Choose adapter for window's display */
-	displayIndex = SDL_GetWindowDisplayIndex(window);
-	data->adapter = SDL_Direct3D9GetAdapterIndex(displayIndex);
-
-	IDirect3D9_GetDeviceCaps(data->d3d, data->adapter, D3DDEVTYPE_HAL, &caps);
-
-	device_flags = D3DCREATE_FPU_PRESERVE;
-	if (caps.DevCaps & D3DDEVCAPS_HWTRANSFORMANDLIGHT) {
-		device_flags |= D3DCREATE_HARDWARE_VERTEXPROCESSING;
-	}
-	else {
-		device_flags |= D3DCREATE_SOFTWARE_VERTEXPROCESSING;
-	}
-	if (SDL_GetHintBoolean(SDL_HINT_RENDER_DIRECT3D_THREADSAFE, SDL_FALSE)) {
-		device_flags |= D3DCREATE_MULTITHREADED;
-	}
-
-#else  /* _XBOX */
 	device_flags = D3DCREATE_HARDWARE_VERTEXPROCESSING;
 
 	/* Xbox defaults */
@@ -2686,8 +2584,6 @@ D3D_CreateRenderer(SDL_Renderer* renderer, SDL_Window* window, Uint32 flags)
 	/* Finalize flags/rate/format per XDK rules (single source of truth) */
 	FinalizeXboxMode(&pparams);
 
-#endif /* _XBOX */
-
 	result = IDirect3D8_CreateDevice(data->d3d, 0,
 		D3DDEVTYPE_HAL,
 		NULL /* pparams.hDeviceWindow */,
@@ -2699,27 +2595,13 @@ D3D_CreateRenderer(SDL_Renderer* renderer, SDL_Window* window, Uint32 flags)
 		return -1;
 	}
 
-#ifdef _XBOX
 	/* Keep SDL's window size consistent with the actual backbuffer */
 	SDL_SetWindowSize(window, (int)pparams.BackBufferWidth, (int)pparams.BackBufferHeight);
-#endif
 
-#ifndef _XBOX
-	/* Fill some info from the actual present parameters. */
-	result = IDirect3DDevice9_GetSwapChain(data->device, 0, &chain);
-	if (FAILED(result)) { D3D_DestroyRenderer(renderer); D3D_SetError("GetSwapChain()", result); return -1; }
-	result = IDirect3DSwapChain9_GetPresentParameters(chain, &pparams);
-	IDirect3DSwapChain9_Release(chain);
-	if (FAILED(result)) { D3D_DestroyRenderer(renderer); D3D_SetError("GetPresentParameters()", result); return -1; }
-	if (pparams.PresentationInterval == D3DPRESENT_INTERVAL_ONE) {
-		renderer->info.flags |= SDL_RENDERER_PRESENTVSYNC;
-	}
-#else
 	/* Xbox: reflect vsync choice back to info */
 	if (pparams.FullScreen_PresentationInterval == D3DPRESENT_INTERVAL_ONE) {
 		renderer->info.flags |= SDL_RENDERER_PRESENTVSYNC;
 	}
-#endif
 
 	data->pparams = pparams;
 
@@ -2727,15 +2609,6 @@ D3D_CreateRenderer(SDL_Renderer* renderer, SDL_Window* window, Uint32 flags)
 	IDirect3DDevice8_GetDeviceCaps(data->device, &caps);
 	renderer->info.max_texture_width = caps.MaxTextureWidth;
 	renderer->info.max_texture_height = caps.MaxTextureHeight;
-
-#ifndef _XBOX
-	if (caps.NumSimultaneousRTs >= 2) {
-		renderer->info.flags |= SDL_RENDERER_TARGETTEXTURE;
-	}
-	if (caps.PrimitiveMiscCaps & D3DPMISCCAPS_SEPARATEALPHABLEND) {
-		data->enableSeparateAlphaBlend = SDL_TRUE;
-	}
-#endif
 
 	/* Start with no cached VB state. */
 	for (i = 0; i < (int)SDL_arraysize(data->vertexBuffers); ++i) {
@@ -2774,7 +2647,6 @@ SDL_RenderDriver D3D_RenderDriver = {
 };
 #endif /* SDL_VIDEO_RENDER_D3D && !SDL_RENDER_DISABLED */
 
-#ifdef __XBOX__
 /* This function needs to always exist on Windows, for the Dynamic API. */
 IDirect3DDevice8*
 SDL_RenderGetD3D9Device(SDL_Renderer* renderer)
@@ -2798,6 +2670,5 @@ SDL_RenderGetD3D9Device(SDL_Renderer* renderer)
 
 	return device;
 }
-#endif /* __XBOX__ */
 
 /* vi: set ts=4 sw=4 expandtab: */

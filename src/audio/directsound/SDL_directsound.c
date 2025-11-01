@@ -18,17 +18,12 @@
      misrepresented as being the original software.
   3. This notice may not be removed or altered from any source distribution.
 */
-/*
-  Simple DirectMedia Layer
-  Copyright (C) 1997-2025
-*/
-
 #include "../../SDL_internal.h"
 
 #ifdef SDL_AUDIO_DRIVER_DSOUND
 
 #include "SDL_timer.h"
-#ifndef _XBOX
+#ifndef __XBOX__
 #include "SDL_loadso.h"
 #endif
 #include "SDL_audio.h"
@@ -50,32 +45,30 @@
 static SDL_bool SupportsIMMDevice = SDL_FALSE;
 #endif /* HAVE_MMDEVICEAPI_H */
 
-#if defined(_XBOX) || defined(__XBOX__)
+#if defined(__XBOX__)
 /* remember the playback buffer so the app can tweak mixbins/volume */
 static LPDIRECTSOUNDBUFFER SDL_Xbox_DSoundBuffer = NULL;
 #endif
 
-#ifndef _XBOX
+#ifndef __XBOX__
 /* DirectX function pointers for audio */
-static void* DSoundDLL = NULL;
-typedef HRESULT(WINAPI* fnDirectSoundCreate8)(LPGUID, LPDIRECTSOUND*, LPUNKNOWN);
-typedef HRESULT(WINAPI* fnDirectSoundEnumerateW)(LPDSENUMCALLBACKW, LPVOID);
-typedef HRESULT(WINAPI* fnDirectSoundCaptureCreate8)(LPCGUID, LPDIRECTSOUNDCAPTURE8*, LPUNKNOWN);
-typedef HRESULT(WINAPI* fnDirectSoundCaptureEnumerateW)(LPDSENUMCALLBACKW, LPVOID);
+static void *DSoundDLL = NULL;
+typedef HRESULT(WINAPI *fnDirectSoundCreate8)(LPGUID, LPDIRECTSOUND *, LPUNKNOWN);
+typedef HRESULT(WINAPI *fnDirectSoundEnumerateW)(LPDSENUMCALLBACKW, LPVOID);
+typedef HRESULT(WINAPI *fnDirectSoundCaptureCreate8)(LPCGUID, LPDIRECTSOUNDCAPTURE8 *, LPUNKNOWN);
+typedef HRESULT(WINAPI *fnDirectSoundCaptureEnumerateW)(LPDSENUMCALLBACKW, LPVOID);
 static fnDirectSoundCreate8 pDirectSoundCreate8 = NULL;
 static fnDirectSoundEnumerateW pDirectSoundEnumerateW = NULL;
 static fnDirectSoundCaptureCreate8 pDirectSoundCaptureCreate8 = NULL;
 static fnDirectSoundCaptureEnumerateW pDirectSoundCaptureEnumerateW = NULL;
 #endif
 
-static const GUID SDL_KSDATAFORMAT_SUBTYPE_PCM =
-{ 0x00000001, 0x0000, 0x0010, { 0x80, 0x00, 0x00, 0xaa, 0x00, 0x38, 0x9b, 0x71 } };
-static const GUID SDL_KSDATAFORMAT_SUBTYPE_IEEE_FLOAT =
-{ 0x00000003, 0x0000, 0x0010, { 0x80, 0x00, 0x00, 0xaa, 0x00, 0x38, 0x9b, 0x71 } };
+static const GUID SDL_KSDATAFORMAT_SUBTYPE_PCM = { 0x00000001, 0x0000, 0x0010, { 0x80, 0x00, 0x00, 0xaa, 0x00, 0x38, 0x9b, 0x71 } };
+static const GUID SDL_KSDATAFORMAT_SUBTYPE_IEEE_FLOAT = { 0x00000003, 0x0000, 0x0010, { 0x80, 0x00, 0x00, 0xaa, 0x00, 0x38, 0x9b, 0x71 } };
 
 static void DSOUND_Unload(void)
 {
-#ifndef _XBOX
+#ifndef __XBOX__
     pDirectSoundCreate8 = NULL;
     pDirectSoundEnumerateW = NULL;
     pDirectSoundCaptureCreate8 = NULL;
@@ -90,7 +83,7 @@ static void DSOUND_Unload(void)
 
 static int DSOUND_Load(void)
 {
-#ifndef _XBOX
+#ifndef __XBOX__
     int loaded = 0;
 
     DSOUND_Unload();
@@ -98,15 +91,15 @@ static int DSOUND_Load(void)
     DSoundDLL = SDL_LoadObject("DSOUND.DLL");
     if (!DSoundDLL) {
         SDL_SetError("DirectSound: failed to load DSOUND.DLL");
-    }
-    else {
-        loaded = 1;
+    } else {
+/* Now make sure we have DirectX 8 or better... */
 #define DSOUNDLOAD(f)                                  \
     {                                                  \
         p##f = (fn##f)SDL_LoadFunction(DSoundDLL, #f); \
         if (!p##f)                                     \
             loaded = 0;                                \
     }
+        loaded = 1; /* will reset if necessary. */
         DSOUNDLOAD(DirectSoundCreate8);
         DSOUNDLOAD(DirectSoundEnumerateW);
         DSOUNDLOAD(DirectSoundCaptureCreate8);
@@ -137,7 +130,7 @@ static int SetDSerror(const char* function, int code)
     case E_NOINTERFACE:
         error = "Unsupported interface -- Is DirectX 8.0 or later installed?";
         break;
-#ifndef _XBOX
+#ifndef __XBOX__
     case DSERR_ALLOCATED:
         error = "Audio device in use";
         break;
@@ -154,7 +147,7 @@ static int SetDSerror(const char* function, int code)
     case DSERR_INVALIDCALL:
         error = "Invalid call for the current state";
         break;
-#ifndef _XBOX
+#ifndef __XBOX__
     case DSERR_INVALIDPARAM:
         error = "Invalid parameter";
         break;
@@ -165,7 +158,7 @@ static int SetDSerror(const char* function, int code)
     case DSERR_OUTOFMEMORY:
         error = "Out of memory";
         break;
-#ifndef _XBOX
+#ifndef __XBOX__
     case DSERR_PRIOLEVELNEEDED:
         error = "Caller doesn't have priority";
         break;
@@ -181,18 +174,18 @@ static int SetDSerror(const char* function, int code)
     return SDL_SetError("%s: %s (0x%x)", function, error, code);
 }
 
-static void DSOUND_FreeDeviceHandle(void* handle)
+static void DSOUND_FreeDeviceHandle(void *handle)
 {
     SDL_free(handle);
 }
 
-static int DSOUND_GetDefaultAudioInfo(char** name, SDL_AudioSpec* spec, int iscapture)
+static int DSOUND_GetDefaultAudioInfo(char **name, SDL_AudioSpec *spec, int iscapture)
 {
 #ifdef HAVE_MMDEVICEAPI_H
     if (SupportsIMMDevice) {
         return SDL_IMMDevice_GetDefaultAudioInfo(name, spec, iscapture);
     }
-#endif
+#endif /* HAVE_MMDEVICEAPI_H */
     return SDL_Unsupported();
 }
 
@@ -200,16 +193,21 @@ static int DSOUND_GetDefaultAudioInfo(char** name, SDL_AudioSpec* spec, int isca
 static BOOL CALLBACK FindAllDevs(LPGUID guid, LPCWSTR desc, LPCWSTR module, LPVOID data)
 {
     const int iscapture = (int)((size_t)data);
-    if (guid != NULL) {
-        char* str = WIN_LookupAudioDeviceName(desc, guid);
+    if (guid != NULL) { /* skip default device */
+        char *str = WIN_LookupAudioDeviceName(desc, guid);
         if (str) {
             LPGUID cpyguid = (LPGUID)SDL_malloc(sizeof(GUID));
             SDL_memcpy(cpyguid, guid, sizeof(GUID));
+
+            /* Note that spec is NULL, because we are required to connect to the
+             * device before getting the channel mask and output format, making
+             * this information inaccessible at enumeration time
+             */
             SDL_AddAudioDevice(iscapture, str, NULL, cpyguid);
-            SDL_free(str);
+            SDL_free(str); /* addfn() makes a copy of this string. */
         }
     }
-    return TRUE;
+    return TRUE; /* keep enumerating. */
 }
 #endif
 
@@ -218,16 +216,15 @@ static void DSOUND_DetectDevices(void)
 #ifdef HAVE_MMDEVICEAPI_H
     if (SupportsIMMDevice) {
         SDL_IMMDevice_EnumerateEndpoints(SDL_TRUE);
-    }
-    else {
-#endif
+    } else {
+#endif /* HAVE_MMDEVICEAPI_H */
 #ifndef __XBOX__
         pDirectSoundCaptureEnumerateW(FindAllDevs, (void*)((size_t)1));
         pDirectSoundEnumerateW(FindAllDevs, (void*)((size_t)0));
 #endif
 #ifdef HAVE_MMDEVICEAPI_H
     }
-#endif
+#endif /* HAVE_MMDEVICEAPI_H*/
 }
 
 static void DSOUND_WaitDevice(_THIS)
@@ -237,9 +234,13 @@ static void DSOUND_WaitDevice(_THIS)
     DWORD junk = 0;
     HRESULT result = DS_OK;
 
-    result = IDirectSoundBuffer_GetCurrentPosition(this->hidden->mixbuf, &junk, &cursor);
+    /* Semi-busy wait, since we have no way of getting play notification
+       on a primary mixing buffer located in hardware (DirectX 5.0)
+     */
+    result = IDirectSoundBuffer_GetCurrentPosition(this->hidden->mixbuf,
+                                                   &junk, &cursor);
     if (result != DS_OK) {
-#ifndef _XBOX
+#ifndef __XBOX__
         if (result == DSERR_BUFFERLOST) {
             IDirectSoundBuffer_Restore(this->hidden->mixbuf);
         }
@@ -251,10 +252,12 @@ static void DSOUND_WaitDevice(_THIS)
     }
 
     while ((cursor / this->spec.size) == this->hidden->lastchunk) {
+        /* FIXME: find out how much time is left and sleep that long */
         SDL_Delay(1);
 
+        /* Try to restore a lost sound buffer */
         IDirectSoundBuffer_GetStatus(this->hidden->mixbuf, &status);
-#ifndef _XBOX
+#ifndef __XBOX__
         if (status & DSBSTATUS_BUFFERLOST) {
             IDirectSoundBuffer_Restore(this->hidden->mixbuf);
             IDirectSoundBuffer_GetStatus(this->hidden->mixbuf, &status);
@@ -264,7 +267,8 @@ static void DSOUND_WaitDevice(_THIS)
         }
 #endif
         if (!(status & DSBSTATUS_PLAYING)) {
-            result = IDirectSoundBuffer_Play(this->hidden->mixbuf, 0, 0, DSBPLAY_LOOPING);
+            result = IDirectSoundBuffer_Play(this->hidden->mixbuf, 0, 0,
+                                             DSBPLAY_LOOPING);
             if (result == DS_OK) {
                 continue;
             }
@@ -274,7 +278,9 @@ static void DSOUND_WaitDevice(_THIS)
             return;
         }
 
-        result = IDirectSoundBuffer_GetCurrentPosition(this->hidden->mixbuf, &junk, &cursor);
+        /* Find out where we are playing */
+        result = IDirectSoundBuffer_GetCurrentPosition(this->hidden->mixbuf,
+                                                       &junk, &cursor);
         if (result != DS_OK) {
             SetDSerror("DirectSound GetCurrentPosition", result);
             return;
@@ -284,43 +290,58 @@ static void DSOUND_WaitDevice(_THIS)
 
 static void DSOUND_PlayDevice(_THIS)
 {
+    /* Unlock the buffer, allowing it to play */
     if (this->hidden->locked_buf) {
         IDirectSoundBuffer_Unlock(this->hidden->mixbuf,
-            this->hidden->locked_buf,
-            this->spec.size, NULL, 0);
+                                  this->hidden->locked_buf,
+                                  this->spec.size, NULL, 0);
     }
 }
 
-static Uint8* DSOUND_GetDeviceBuf(_THIS)
+static Uint8 *DSOUND_GetDeviceBuf(_THIS)
 {
     DWORD cursor = 0;
     DWORD junk = 0;
-    HRESULT result;
+    HRESULT result = DS_OK;
     DWORD rawlen = 0;
-    LPVOID ptr2 = NULL;
-    DWORD bytes2 = 0;
 
+    /* Figure out which blocks to fill next */
     this->hidden->locked_buf = NULL;
-
-    result = IDirectSoundBuffer_GetCurrentPosition(this->hidden->mixbuf, &junk, &cursor);
-#ifndef _XBOX
+#ifndef __XBOX__
+    result = IDirectSoundBuffer_GetCurrentPosition(this->hidden->mixbuf,
+                                                   &junk, &cursor);
     if (result == DSERR_BUFFERLOST) {
         IDirectSoundBuffer_Restore(this->hidden->mixbuf);
-        result = IDirectSoundBuffer_GetCurrentPosition(this->hidden->mixbuf, &junk, &cursor);
+        result = IDirectSoundBuffer_GetCurrentPosition(this->hidden->mixbuf,
+                                                       &junk, &cursor);
     }
 #endif
     if (result != DS_OK) {
         SetDSerror("DirectSound GetCurrentPosition", result);
         return NULL;
     }
-
-    /* which chunk are we on? */
     cursor /= this->spec.size;
+#ifdef DEBUG_SOUND
+    /* Detect audio dropouts */
+    {
+        DWORD spot = cursor;
+        if (spot < this->hidden->lastchunk) {
+            spot += this->hidden->num_buffers;
+        }
+        if (spot > this->hidden->lastchunk + 1) {
+            fprintf(stderr, "Audio dropout, missed %d fragments\n",
+                    (spot - (this->hidden->lastchunk + 1)));
+        }
+    }
+#endif
     this->hidden->lastchunk = cursor;
     cursor = (cursor + 1) % this->hidden->num_buffers;
     cursor *= this->spec.size;
 
-    /* lock the next chunk */
+    LPVOID ptr2 = NULL;
+    DWORD bytes2 = 0;
+
+    /* Lock the next chunk */
     result = IDirectSoundBuffer_Lock(this->hidden->mixbuf, cursor,
         this->spec.size,
         (LPVOID*)&this->hidden->locked_buf,
@@ -344,22 +365,20 @@ static Uint8* DSOUND_GetDeviceBuf(_THIS)
         SetDSerror("DirectSound Lock", result);
         return NULL;
     }
-
     return this->hidden->locked_buf;
 }
 
-
-static int DSOUND_CaptureFromDevice(_THIS, void* buffer, int buflen)
+static int DSOUND_CaptureFromDevice(_THIS, void *buffer, int buflen)
 {
-#ifndef _XBOX
-    struct SDL_PrivateAudioData* h = this->hidden;
+#ifndef __XBOX__
+    struct SDL_PrivateAudioData *h = this->hidden;
     DWORD junk, cursor, ptr1len, ptr2len;
-    VOID* ptr1, * ptr2;
+    VOID *ptr1, *ptr2;
 
     SDL_assert(buflen == this->spec.size);
 
     while (SDL_TRUE) {
-        if (SDL_AtomicGet(&this->shutdown)) {
+        if (SDL_AtomicGet(&this->shutdown)) { /* in case the buffer froze... */
             SDL_memset(buffer, this->spec.silence, buflen);
             return buflen;
         }
@@ -368,15 +387,13 @@ static int DSOUND_CaptureFromDevice(_THIS, void* buffer, int buflen)
             return -1;
         }
         if ((cursor / this->spec.size) == h->lastchunk) {
-            SDL_Delay(1);
-        }
-        else {
+            SDL_Delay(1); /* FIXME: find out how much time is left and sleep that long */
+        } else {
             break;
         }
     }
 
-    if (IDirectSoundCaptureBuffer_Lock(h->capturebuf, h->lastchunk * this->spec.size, this->spec.size,
-        &ptr1, &ptr1len, &ptr2, &ptr2len, 0) != DS_OK) {
+    if (IDirectSoundCaptureBuffer_Lock(h->capturebuf, h->lastchunk * this->spec.size, this->spec.size, &ptr1, &ptr1len, &ptr2, &ptr2len, 0) != DS_OK) {
         return -1;
     }
 
@@ -400,8 +417,8 @@ static int DSOUND_CaptureFromDevice(_THIS, void* buffer, int buflen)
 
 static void DSOUND_FlushCapture(_THIS)
 {
-#ifndef _XBOX
-    struct SDL_PrivateAudioData* h = this->hidden;
+#ifndef __XBOX__
+    struct SDL_PrivateAudioData *h = this->hidden;
     DWORD junk, cursor;
     if (IDirectSoundCaptureBuffer_GetCurrentPosition(h->capturebuf, &junk, &cursor) == DS_OK) {
         h->lastchunk = cursor / this->spec.size;
@@ -414,7 +431,6 @@ static void DSOUND_CloseDevice(_THIS)
     if (!this->hidden) {
         return;
     }
-
     if (this->hidden->mixbuf) {
         IDirectSoundBuffer_Stop(this->hidden->mixbuf);
         IDirectSoundBuffer_Release(this->hidden->mixbuf);
@@ -422,7 +438,7 @@ static void DSOUND_CloseDevice(_THIS)
     if (this->hidden->sound) {
         IDirectSound_Release(this->hidden->sound);
     }
-#ifndef _XBOX
+#ifndef __XBOX__
     if (this->hidden->capturebuf) {
         IDirectSoundCaptureBuffer_Stop(this->hidden->capturebuf);
         IDirectSoundCaptureBuffer_Release(this->hidden->capturebuf);
@@ -707,10 +723,9 @@ static int DSOUND_OpenDevice(_THIS, const char* devname)
         }
     }
 
-    /* no format worked */
     if (!test_format) {
         if (tried_format) {
-            return -1;
+            return -1; /* CreateSecondary() should have called SDL_SetError(). */
         }
         return SDL_SetError("%s: Unsupported audio format", "directsound");
     }
@@ -739,8 +754,9 @@ static SDL_bool DSOUND_Init(SDL_AudioDriverImpl* impl)
 
 #ifdef HAVE_MMDEVICEAPI_H
     SupportsIMMDevice = !(SDL_IMMDevice_Init() < 0);
-#endif
+#endif /* HAVE_MMDEVICEAPI_H */
 
+    /* Set the function pointers */
     impl->DetectDevices = DSOUND_DetectDevices;
     impl->OpenDevice = DSOUND_OpenDevice;
     impl->PlayDevice = DSOUND_PlayDevice;
@@ -753,19 +769,18 @@ static SDL_bool DSOUND_Init(SDL_AudioDriverImpl* impl)
     impl->Deinitialize = DSOUND_Deinitialize;
     impl->GetDefaultAudioInfo = DSOUND_GetDefaultAudioInfo;
 
-#if defined(_XBOX) || defined(__XBOX__)
+#if defined(__XBOX__)
     /* OG Xbox: no capture */
     impl->HasCaptureSupport = SDL_FALSE;
 #else
     impl->HasCaptureSupport = SDL_TRUE;
 #endif
-
     impl->SupportsNonPow2Samples = SDL_TRUE;
 
-    return SDL_TRUE;
+    return SDL_TRUE; /* this audio target is available. */
 }
 
-#if defined(_XBOX) || defined(__XBOX__)
+#if defined(__XBOX__)
 /* overall DS buffer volume: 0 = full, negative = quieter, DSBVOLUME_MIN = mute */
 void SDL_XboxDSound_SetVolume(long vol100dB)
 {

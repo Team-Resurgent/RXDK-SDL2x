@@ -20,9 +20,10 @@
 */
 #include "./SDL_internal.h"
 
-#if (defined(__WIN32__) || defined(__GDK__)) && !defined(__XBOX__)
-#include "../core/windows/SDL_windows.h"
-#elif defined(__XBOX__)
+#if defined(__WIN32__) || defined(__GDK__)
+#include "core/windows/SDL_windows.h"
+#endif
+#if defined(__XBOX__)
 #include "core/xbox/SDL_xbox.h"
 #endif
 
@@ -34,7 +35,7 @@
 #include "SDL_assert_c.h"
 #include "video/SDL_sysvideo.h"
 
-#if (defined(__WIN32__) || defined(__GDK__)) && !defined(__XBOX__)
+#if defined(__WIN32__) || defined(__GDK__)
 #ifndef WS_OVERLAPPEDWINDOW
 #define WS_OVERLAPPEDWINDOW 0
 #endif
@@ -88,7 +89,7 @@ static void SDL_AddAssertionToReport(SDL_assert_data *data)
     }
 }
 
-#if (defined(__WIN32__) || defined(__GDK__)) && !defined(__XBOX__)
+#if defined(__WIN32__) || defined(__GDK__)
 #define ENDLINE "\r\n"
 #else
 #define ENDLINE "\n"

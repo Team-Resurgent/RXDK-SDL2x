@@ -353,7 +353,7 @@ typedef uint64_t Uint64;
 #define SDL_SCANF_VARARG_FUNC( fmtargnumber )
 #define SDL_SCANF_VARARG_FUNCV( fmtargnumber )
 #else
-#if !defined(_XBOX) &&(_MSC_VER) && (_MSC_VER >= 1600) /* VS 2010 and above */
+#if !defined(__XBOX__) &&(_MSC_VER) && (_MSC_VER >= 1600) /* VS 2010 and above */
 #include <sal.h>
 
 #define SDL_IN_BYTECAP(x) _In_bytecount_(x)

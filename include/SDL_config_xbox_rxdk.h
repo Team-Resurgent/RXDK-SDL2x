@@ -1,6 +1,6 @@
 #pragma once
 
-#define SDL_PLATFORM_XBOXRXDK 1
+#define SDL_PLATFORM_XBOX_RXDK 1
 
 /* --- Core/CRT --- */
 #define STDC_HEADERS 1
@@ -96,7 +96,7 @@ typedef unsigned int      uintptr_t;
 #define SDL_AUDIO_DRIVER_DSOUND     1
 #define SDL_VIDEO_RENDER_D3D        1   /* renderer support flag */
 
-#define SDL_FILESYSTEM_XBOX  1
+#define SDL_FILESYSTEM_XBOX_RXDK  1
 
 #define SDL_THREAD_XBOX  1
 
@@ -114,5 +114,3 @@ typedef unsigned int      uintptr_t;
 #ifndef _WIN64
 #define SDL_ASSEMBLY_ROUTINES 1
 #endif
-
-#pragma message("** Using SDL_config_xboxrxdk.h (Original Xbox XDK) **")

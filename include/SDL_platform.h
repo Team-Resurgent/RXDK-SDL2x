@@ -149,7 +149,7 @@
 #define __SOLARIS__ 1
 #endif
 
-#if defined(WIN32) || defined(_WIN32) || defined(__CYGWIN__) || defined(__MINGW32__) 
+#if defined(WIN32) || defined(_WIN32) || defined(__CYGWIN__) || defined(__MINGW32__)
 /* Try to find out if we're compiling for WinRT, GDK or non-WinRT/GDK */
 #if defined(_MSC_VER) && defined(__has_include)
 #if __has_include(<winapifamily.h>)
@@ -196,12 +196,7 @@
 #endif
 #endif /* defined(WIN32) || defined(_WIN32) || defined(__CYGWIN__) */
 
-#if defined(XBOX) || defined(_XBOX)
-#undef __XBOX__
-#define __XBOX__ 1
-#endif
-
-#if 0 //defined(__WINDOWS__)
+#if defined(__WINDOWS__) && !defined(__XBOX__)
 #undef __WIN32__
 #define __WIN32__ 1
 #endif

@@ -3102,7 +3102,7 @@ SDL_RenderDriver D3D12_RenderDriver = {
 
 #endif /* SDL_VIDEO_RENDER_D3D12 */
 
-#if (defined(__WIN32__) || defined(__GDK__)) && !defined(__XBOX__)
+#if defined(__WIN32__) || defined(__GDK__)
 #ifdef __cplusplus
 extern "C"
 #endif

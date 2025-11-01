@@ -35,7 +35,7 @@
 
 #ifndef __FLTUSED__
 #define __FLTUSED__
-//__declspec(selectany) int _fltused = 1;
+__declspec(selectany) int _fltused = 1;
 #endif
 
 /* The optimizer on Visual Studio 2005 and later generates memcpy() and memset() calls.
@@ -245,7 +245,6 @@ L8:
     /* *INDENT-ON* */
 }
 
-#if !defined(_XBOX)
 void __declspec(naked) _aulldiv()
 {
     /* *INDENT-OFF* */
@@ -301,7 +300,6 @@ L2:
     }
     /* *INDENT-ON* */
 }
-#endif
 
 void __declspec(naked) _allrem()
 {
@@ -388,7 +386,6 @@ L8:
     /* *INDENT-ON* */
 }
 
-#if !defined(_XBOX)
 void __declspec(naked) _aullrem()
 {
     /* *INDENT-OFF* */
@@ -445,7 +442,6 @@ L2:
     }
     /* *INDENT-ON* */
 }
-#endif
 
 void __declspec(naked) _alldvrm()
 {

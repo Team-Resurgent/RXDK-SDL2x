@@ -29,7 +29,11 @@
 
 #include "SDL_stdinc.h"
 #include "../libm/math_libm.h"
-#include <math.h>
+
+#ifdef __XBOX__
+#include <Math.h>
+#include <Memory.h>
+#endif
 
 double
 SDL_atan(double x)

@@ -50,6 +50,17 @@ XBOX_SetError(const char* prefix)
 	return XBOX_SetErrorFromHRESULT(prefix, GetLastError());
 }
 
+// Workaround for MSVC trying to use SSE2 ftol on our poor Pentium 3
+// Declare a regular _ftol() function that is present.
+long cdecl _ftol(double);
+
+// Define _ftol2_sse() to be the regular one.
+#undef _ftol2_sse
+
+long cdecl _ftol2_sse(double f) {
+	return _ftol(f);
+}
+
 #endif /* __WIN32__ || __WINRT__  || __XBOX__*/
 
 /* vi: set ts=4 sw=4 expandtab: */

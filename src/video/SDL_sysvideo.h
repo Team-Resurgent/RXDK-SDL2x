@@ -28,14 +28,8 @@
 #include "SDL_shape.h"
 #include "SDL_thread.h"
 #include "SDL_metal.h"
-#include "SDL_rect.h"
-#include "SDL_video.h"
-#include "SDL_vulkan.h"
 
-#ifndef _XBOX
 #include "SDL_vulkan_internal.h"
-#endif
-
 
 /* The SDL video driver */
 
@@ -112,9 +106,7 @@ struct SDL_Window
 
     SDL_Rect mouse_rect;
 
-#ifndef _XBOX
     SDL_WindowShaper *shaper;
-#endif
 
     SDL_HitTest hit_test;
     void *hit_test_data;
@@ -430,10 +422,8 @@ struct SDL_VideoDevice
     /* Data used by the Vulkan drivers */
     struct
     {
-#ifndef _XBOX		
         PFN_vkGetInstanceProcAddr vkGetInstanceProcAddr;
         PFN_vkEnumerateInstanceExtensionProperties vkEnumerateInstanceExtensionProperties;
-#endif
         int loader_loaded;
         char loader_path[256];
         void *loader_handle;

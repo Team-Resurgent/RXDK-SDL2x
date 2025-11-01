@@ -343,7 +343,7 @@ BOOL WIN_IsRectEmpty(const RECT *rect)
  */
 #if !defined(SDL_VIDEO_DRIVER_WINDOWS)
 
-#if (defined(__WIN32__) || defined(__GDK__)) && !defined(__XBOX__)
+#if defined(__WIN32__) || defined(__GDK__)
 int SDL_RegisterApp(const char *name, Uint32 style, void *hInst)
 {
     (void)name;

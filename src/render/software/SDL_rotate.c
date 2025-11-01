@@ -32,10 +32,8 @@ Andreas Schiffler -- aschiffler at ferzkopp dot net
 
 #if SDL_VIDEO_RENDER_SW
 
-#if (defined(__WIN32__) || defined(__GDK__)) && !defined(__XBOX__)
-#include "../core/windows/SDL_windows.h"
-#elif defined(__XBOX__)
-#include "../../core/xbox/SDL_xbox.h"
+#if defined(__WIN32__) || defined(__GDK__)
+#include "../../core/windows/SDL_windows.h"
 #endif
 
 #include <stdlib.h>

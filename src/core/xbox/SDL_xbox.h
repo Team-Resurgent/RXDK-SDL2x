@@ -25,7 +25,7 @@
 #define _INCLUDED_XBOX_H
 
 #include <xtl.h>
-#include "..\\basetyps.h" /* for REFIID with broken mingw.org headers */
+#include "SDL_xbox_BaseTyps.h" /* for REFIID with broken mingw.org headers */
 
 /* Routines to convert from UTF8 to native Windows text */
 #if UNICODE
