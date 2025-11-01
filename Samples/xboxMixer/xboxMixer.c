@@ -11,28 +11,6 @@ typedef int bool;
 #define SCREEN_WIDTH  640
 #define SCREEN_HEIGHT 480
 
-void LogSDLVersions(void)
-{
-    SDL_version compiled;
-    SDL_version linked;
-
-    SDL_VERSION(&compiled);
-    SDL_GetVersion(&linked);
-
-    SDL_Log("SDL compiled against: %u.%u.%u", compiled.major, compiled.minor, compiled.patch);
-    SDL_Log("SDL linked (runtime): %u.%u.%u", linked.major, linked.minor, linked.patch);
-    SDL_Log("SDL revision: %s", SDL_GetRevision());
-}
-
-void LogSDLMixerVersions(void)
-{
-    const SDL_version* linked = Mix_Linked_Version();
-    SDL_Log("SDL_mixer compiled against: %d.%d.%d",
-        SDL_MIXER_MAJOR_VERSION, SDL_MIXER_MINOR_VERSION, SDL_MIXER_PATCHLEVEL);
-    SDL_Log("SDL_mixer linked (runtime): %d.%d.%d",
-        linked->major, linked->minor, linked->patch);
-}
-
 SDL_Texture* LoadTextureFromFile(SDL_Renderer* renderer, const char* filepath)
 {
     SDL_Surface* surf = SDL_LoadBMP(filepath);
@@ -52,9 +30,6 @@ int main(int argc, char* argv[])
         SDL_LogError(SDL_LOG_CATEGORY_APPLICATION, "SDL_Init failed: %s", SDL_GetError());
         return -1;
     }
-
-    LogSDLVersions();
-    LogSDLMixerVersions();
 
     /* ask SDL_mixer for MP3 support explicitly */
     int initted = Mix_Init(MIX_INIT_MP3);
