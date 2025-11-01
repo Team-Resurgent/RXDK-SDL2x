@@ -81,7 +81,7 @@ SDLTest_CommonState *SDLTest_CommonCreateState(char **argv, Uint32 flags)
     /* Initialize some defaults */
     state->argv = argv;
     state->flags = flags;
-#ifndef __XBOX__
+#ifdef __XBOX__
     state->window_title = "";
 #else
     state->window_title = argv[0];

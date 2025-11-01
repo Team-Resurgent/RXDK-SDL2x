@@ -127,7 +127,7 @@
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <SDLCheck>false</SDLCheck>
-      <PreprocessorDefinitions>XBOX;_XBOX;__XBOX__;_LIB;_DEBUG;MUSIC_WAV;MUSIC_MP3_DRMP3;MUSIC_OGG;OGG_USE_STB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>XBOX;_XBOX;__XBOX__;_LIB;_DEBUG;MUSIC_WAV;MUSIC_MP3_MINIMP3;MUSIC_OGG;OGG_USE_STB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>false</ConformanceMode>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <AdditionalIncludeDirectories>include;source;source\codecs;..\include</AdditionalIncludeDirectories>

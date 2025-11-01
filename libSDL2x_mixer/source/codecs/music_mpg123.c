@@ -33,7 +33,7 @@
 #ifdef MPG123_HEADER
 #include MPG123_HEADER
 #else
-#include <mpg123.h>
+#include <external/include/mpg123.h>
 #endif
 #ifdef _MSC_VER
 typedef ptrdiff_t MIX_SSIZE_T;

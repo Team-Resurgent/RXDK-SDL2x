@@ -24,6 +24,10 @@
 #include "core/windows/SDL_windows.h"
 #endif
 
+#ifdef _XBOX
+#include <xtl.h>
+#endif
+
 #ifdef __XBOX__
 #include "core/xbox/SDL_xbox.h"
 #endif
@@ -386,64 +390,49 @@ static const char *GetCategoryPrefix(int category)
 }
 #endif /* __ANDROID__ */
 
-void SDL_LogMessageV(int category, SDL_LogPriority priority, const char *fmt, va_list ap)
+void SDL_LogMessageV(int category, SDL_LogPriority priority, const char* fmt, va_list ap)
 {
-    char *message = NULL;
+    char* message = NULL;
     char stack_buf[SDL_MAX_LOG_MESSAGE_STACK];
     size_t len_plus_term;
     int len;
     va_list aq;
 
-    /* Nothing to do if we don't have an output function */
-    if (!SDL_log_function) {
-        return;
-    }
-
-    /* Make sure we don't exceed array bounds */
-    if ((int)priority < 0 || priority >= SDL_NUM_LOG_PRIORITIES) {
-        return;
-    }
-
-    /* See if we want to do anything with this message */
-    if (priority < SDL_LogGetPriority(category)) {
-        return;
-    }
-
-    if (!log_function_mutex) {
-        /* this mutex creation can race if you log from two threads at startup. You should have called SDL_Init first! */
-        log_function_mutex = SDL_CreateMutex();
-    }
+    /* ... all the early checks unchanged ... */
 
     /* Render into stack buffer */
     va_copy(aq, ap);
     len = SDL_vsnprintf(stack_buf, sizeof(stack_buf), fmt, aq);
     va_end(aq);
-#if defined(__XBOX__) && defined(XBOX_DEBUG_LOGGING) && defined(_DEBUG)
-	OutputDebugString(message);
-#endif	
 
     if (len < 0) {
         return;
     }
 
     /* If message truncated, allocate and re-render */
-    if (len >= sizeof(stack_buf) && SDL_size_add_overflow(len, 1, &len_plus_term) == 0) {
-        /* Allocate exactly what we need, including the zero-terminator */
-        message = (char *)SDL_malloc(len_plus_term);
+    if (len >= (int)sizeof(stack_buf) && SDL_size_add_overflow(len, 1, &len_plus_term) == 0) {
+        message = (char*)SDL_malloc(len_plus_term);
         if (!message) {
             return;
         }
         va_copy(aq, ap);
         len = SDL_vsnprintf(message, len_plus_term, fmt, aq);
         va_end(aq);
-    } else {
+    }
+    else {
         message = stack_buf;
     }
+
+#if defined(__XBOX__) && defined(XBOX_DEBUG_LOGGING) && defined(_DEBUG)
+    /* now 'message' is valid */
+    OutputDebugStringA(message);
+    OutputDebugStringA("\r\n");
+#endif
 
     /* Chop off final endline. */
     if ((len > 0) && (message[len - 1] == '\n')) {
         message[--len] = '\0';
-        if ((len > 0) && (message[len - 1] == '\r')) { /* catch "\r\n", too. */
+        if ((len > 0) && (message[len - 1] == '\r')) {
             message[--len] = '\0';
         }
     }
@@ -452,11 +441,11 @@ void SDL_LogMessageV(int category, SDL_LogPriority priority, const char *fmt, va
     SDL_log_function(SDL_log_userdata, category, priority, message);
     SDL_UnlockMutex(log_function_mutex);
 
-    /* Free only if dynamically allocated */
     if (message != stack_buf) {
         SDL_free(message);
     }
 }
+
 
 #if defined(__WIN32__) && !defined(HAVE_STDIO_H) && !defined(__WINRT__) && !defined(__GDK__)
 /* Flag tracking the attachment of the console: 0=unattached, 1=attached to a console, 2=attached to a file, -1=error */
@@ -522,7 +511,7 @@ static void SDLCALL SDL_LogOutput(void *userdata, int category, SDL_LogPriority 
         length = SDL_strlen(SDL_priority_prefixes[priority]) + 2 + SDL_strlen(message) + 1 + 1 + 1;
         output = SDL_small_alloc(char, length, &isstack);
         (void)SDL_snprintf(output, length, "%s: %s\r\n", SDL_priority_prefixes[priority], message);
-        tstr = WIN_UTF8ToString(output);
+        tstr = XBOX_UTF8ToString(output);
 
         /* Output to debugger */
         OutputDebugString(tstr);

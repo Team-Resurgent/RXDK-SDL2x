@@ -202,14 +202,33 @@ static int MINIMP3_GetAudio(void *context, void *data, int bytes)
     return music_pcm_getaudio(context, data, bytes, music->volume, MINIMP3_GetSome);
 }
 
-static int MINIMP3_Seek(void *context, double position)
+static int MINIMP3_Seek(void* context, double position)
 {
-    MiniMP3_Music *music = (MiniMP3_Music *)context;
-    uint64_t destpos = (uint64_t)(position * music->second_length);
-    if (destpos % music->channels != 0) {
-        destpos -= destpos % music->channels;
+    MiniMP3_Music* music = (MiniMP3_Music*)context;
+
+    /* position is in seconds, second_length = channels * sample_rate */
+    /* do the math in double, but convert through *signed* 64-bit so
+       the Xbox CRT doesn’t need __ftoul2_legacy */
+    double target = position * (double)music->second_length;
+
+    /* clamp to >= 0 */
+    if (target < 0.0)
+        target = 0.0;
+
+    /* go through int64_t, then to uint64_t */
+    {
+        /* +0.5 if you want rounding, remove if you want floor */
+        int64_t s = (int64_t)(target + 0.5);
+        uint64_t destpos = (uint64_t)s;
+
+        /* keep the channel alignment like the original code */
+        if (destpos % music->channels != 0) {
+            destpos -= destpos % music->channels;
+        }
+
+        mp3dec_ex_seek(&music->dec, destpos);
     }
-    mp3dec_ex_seek(&music->dec, destpos);
+
     return 0;
 }
 

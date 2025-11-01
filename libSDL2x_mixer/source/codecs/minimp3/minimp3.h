@@ -8,6 +8,14 @@
 */
 #include <stdint.h>
 
+/* --- Xbox: disable SIMD / intrinsics -------------------------------- */
+#if defined(_XBOX) || defined(__XBOX__) || defined(XBOX)
+#ifndef MINIMP3_NO_SIMD
+#define MINIMP3_NO_SIMD 1
+#endif
+#endif
+/* -------------------------------------------------------------------- */
+
 #define MINIMP3_MAX_SAMPLES_PER_FRAME (1152*2)
 
 typedef struct
