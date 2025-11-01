@@ -68,17 +68,17 @@ const int XBOX_JOYSTICK_X = 2;
 const int XBOX_JOYSTICK_Y = 3;
 const int XBOX_JOYSTICK_BLACK = 4;
 const int XBOX_JOYSTICK_WHITE = 5;
-const int XBOX_JOYSTICK_LEFT_TRIGGER = 6;
-const int XBOX_JOYSTICK_RIGHT_TRIGGER = 7;
-const int XBOX_JOYSTICK_START = 8;
-const int XBOX_JOYSTICK_BACK = 9;
-const int XBOX_JOYSTICK_LEFT_THUMB = 10;
-const int XBOX_JOYSTICK_RIGHT_THUMB = 11;
+const int XBOX_JOYSTICK_START = 6;
+const int XBOX_JOYSTICK_BACK = 7;
+const int XBOX_JOYSTICK_LEFT_THUMB = 8;
+const int XBOX_JOYSTICK_RIGHT_THUMB = 9;
 
 const int XBOX_JOYSTICK_STICKTHUMB_LEFT_X = 0;
 const int XBOX_JOYSTICK_STICKTHUMB_LEFT_Y = 1;
 const int XBOX_JOYSTICK_STICKTHUMB_RIGHT_X = 2;
 const int XBOX_JOYSTICK_STICKTHUMB_RIGHT_Y = 3;
+const int XBOX_JOYSTICK_LEFT_TRIGGER = 4;
+const int XBOX_JOYSTICK_RIGHT_TRIGGER = 5;
 
 static XboxControllerDevice g_Controllers[XUSER_MAX_COUNT];
 static int g_NumControllers = 0;
@@ -316,13 +316,13 @@ XBOX_JoystickOpen(SDL_Joystick* joystick, int device_index)
 	// For standard Xbox controller:
 	// Typically: 2 analog sticks = 4 axes, triggers can be axes if desired.
 	// We'll expose leftX, leftY, rightX, rightY axes = 4 axes
-	joystick->naxes = 4;
+	joystick->naxes = 6;
 
 	// For buttons: A,B,X,Y,Black,White,Start,Back,DPad(U,D,L,R), L/R thumb press
 	// The original Xbox controller had A,B,X,Y, Black, White, Start, Back, LThumbPress, RThumbPress and a D-Pad.
 	// We'll treat D-Pad as a hat, so exclude that from the button count.
-	// That�s 8 buttons (A,B,X,Y,Black,White,Start,Back) + 2 thumb presses = 10 buttons.
-	joystick->nbuttons = 12;
+	// That's 8 buttons (A,B,X,Y,Black,White,Start,Back) + 2 thumb presses = 10 buttons.
+	joystick->nbuttons = 10;
 	joystick->nhats = 1; // for D-Pad
 
 	joystick->hwdata = &g_Controllers[foundPort];
@@ -445,8 +445,8 @@ static void XBOX_JoystickUpdate(SDL_Joystick* joystick) {
 	SDL_PrivateJoystickButton(joystick, XBOX_JOYSTICK_WHITE, (Analog_Buttons[XINPUT_GAMEPAD_WHITE] > 0) ? SDL_PRESSED : SDL_RELEASED);
 
 	// Map triggers as buttons with threshold
-	SDL_PrivateJoystickButton(joystick, XBOX_JOYSTICK_LEFT_TRIGGER, (Analog_Buttons[XINPUT_GAMEPAD_LEFT_TRIGGER] > XINPUT_GAMEPAD_MAX_CROSSTALK) ? SDL_PRESSED : SDL_RELEASED);
-	SDL_PrivateJoystickButton(joystick, XBOX_JOYSTICK_RIGHT_TRIGGER, (Analog_Buttons[XINPUT_GAMEPAD_RIGHT_TRIGGER] > XINPUT_GAMEPAD_MAX_CROSSTALK) ? SDL_PRESSED : SDL_RELEASED);
+	SDL_PrivateJoystickAxis(joystick, XBOX_JOYSTICK_LEFT_TRIGGER, (Analog_Buttons[XINPUT_GAMEPAD_LEFT_TRIGGER] << 8) - 0x7FFF);
+	SDL_PrivateJoystickAxis(joystick, XBOX_JOYSTICK_RIGHT_TRIGGER, (Analog_Buttons[XINPUT_GAMEPAD_RIGHT_TRIGGER] << 8) - 0x7FFF);
 
 	// Map start/back/thumbstick buttons
 	SDL_PrivateJoystickButton(joystick, XBOX_JOYSTICK_START, (Digital_Buttons & XINPUT_GAMEPAD_START) ? SDL_PRESSED : SDL_RELEASED);
@@ -539,9 +539,6 @@ XBOX_SetSensorsEnabled(SDL_Joystick *joystick, static SDL_bool enabled) {
 
 static SDL_bool
 XBOX_GetGamepadMapping(int device_index, SDL_GamepadMapping *out) {
-	// lefttrigger:a2,
-	// righttrigger:a5,
-	
 	// Map thumbstick axes
 	out->leftx.kind = EMappingKind_Axis;
 	out->lefty.kind = EMappingKind_Axis;
@@ -571,8 +568,8 @@ XBOX_GetGamepadMapping(int device_index, SDL_GamepadMapping *out) {
 	out->rightshoulder.target = XBOX_JOYSTICK_BLACK;
 
 	// Map triggers as buttons with threshold
-	out->lefttrigger.kind = EMappingKind_Button;
-	out->righttrigger.kind = EMappingKind_Button;
+	out->lefttrigger.kind = EMappingKind_Axis;
+	out->righttrigger.kind = EMappingKind_Axis;
 	out->lefttrigger.target = XBOX_JOYSTICK_LEFT_TRIGGER;
 	out->righttrigger.target = XBOX_JOYSTICK_RIGHT_TRIGGER;
 
@@ -587,7 +584,6 @@ XBOX_GetGamepadMapping(int device_index, SDL_GamepadMapping *out) {
 	out->rightstick.target = XBOX_JOYSTICK_RIGHT_THUMB;
 
 	// Map D-Pad as hat
-	// TODO FIX multiple button presses
 	out->dpup.kind = EMappingKind_Hat;
 	out->dpdown.kind = EMappingKind_Hat;
 	out->dpleft.kind = EMappingKind_Hat;
