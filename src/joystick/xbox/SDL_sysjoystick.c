@@ -62,6 +62,24 @@ typedef struct {
 	Uint16 usb_product_id;
 } XboxControllerDevice;
 
+const int XBOX_JOYSTICK_A = 0;
+const int XBOX_JOYSTICK_B = 1;
+const int XBOX_JOYSTICK_X = 2;
+const int XBOX_JOYSTICK_Y = 3;
+const int XBOX_JOYSTICK_BLACK = 4;
+const int XBOX_JOYSTICK_WHITE = 5;
+const int XBOX_JOYSTICK_START = 6;
+const int XBOX_JOYSTICK_BACK = 7;
+const int XBOX_JOYSTICK_LEFT_THUMB = 8;
+const int XBOX_JOYSTICK_RIGHT_THUMB = 9;
+
+const int XBOX_JOYSTICK_STICKTHUMB_LEFT_X = 0;
+const int XBOX_JOYSTICK_STICKTHUMB_LEFT_Y = 1;
+const int XBOX_JOYSTICK_STICKTHUMB_RIGHT_X = 2;
+const int XBOX_JOYSTICK_STICKTHUMB_RIGHT_Y = 3;
+const int XBOX_JOYSTICK_LEFT_TRIGGER = 4;
+const int XBOX_JOYSTICK_RIGHT_TRIGGER = 5;
+
 static XboxControllerDevice g_Controllers[XUSER_MAX_COUNT];
 static int g_NumControllers = 0;
 
@@ -139,8 +157,6 @@ static int XBOX_JoystickInit(void) {
 }
 
 static void XBOX_JoystickDetect(void) {
-	SDL_Log("Detecting XBOX Joysticks\n");
-
 	DWORD dwDevices = XGetDevices(XDEVICE_TYPE_GAMEPAD);
 	//SDL_Log("Device mask: %08X\n", dwDevices);
 
@@ -300,13 +316,13 @@ XBOX_JoystickOpen(SDL_Joystick* joystick, int device_index)
 	// For standard Xbox controller:
 	// Typically: 2 analog sticks = 4 axes, triggers can be axes if desired.
 	// We'll expose leftX, leftY, rightX, rightY axes = 4 axes
-	joystick->naxes = 4;
+	joystick->naxes = 6;
 
 	// For buttons: A,B,X,Y,Black,White,Start,Back,DPad(U,D,L,R), L/R thumb press
 	// The original Xbox controller had A,B,X,Y, Black, White, Start, Back, LThumbPress, RThumbPress and a D-Pad.
 	// We'll treat D-Pad as a hat, so exclude that from the button count.
-	// That�s 8 buttons (A,B,X,Y,Black,White,Start,Back) + 2 thumb presses = 10 buttons.
-	joystick->nbuttons = 12;
+	// That's 8 buttons (A,B,X,Y,Black,White,Start,Back) + 2 thumb presses = 10 buttons.
+	joystick->nbuttons = 10;
 	joystick->nhats = 1; // for D-Pad
 
 	joystick->hwdata = &g_Controllers[foundPort];
@@ -410,33 +426,33 @@ static void XBOX_JoystickUpdate(SDL_Joystick* joystick) {
 	SHORT sThumbRY = (abs(state.Gamepad.sThumbRY) > DEAD_ZONE) ? state.Gamepad.sThumbRY : 0;
 
 	// Map thumbstick axes
-	SDL_PrivateJoystickAxis(joystick, 0, sThumbLX);
-	SDL_PrivateJoystickAxis(joystick, 1, sThumbLY);
-	SDL_PrivateJoystickAxis(joystick, 2, sThumbRX);
-	SDL_PrivateJoystickAxis(joystick, 3, sThumbRY);
+	SDL_PrivateJoystickAxis(joystick, XBOX_JOYSTICK_STICKTHUMB_LEFT_X, sThumbLX);
+	SDL_PrivateJoystickAxis(joystick, XBOX_JOYSTICK_STICKTHUMB_LEFT_Y, sThumbLY);
+	SDL_PrivateJoystickAxis(joystick, XBOX_JOYSTICK_STICKTHUMB_RIGHT_X, sThumbRX);
+	SDL_PrivateJoystickAxis(joystick, XBOX_JOYSTICK_STICKTHUMB_RIGHT_Y, sThumbRY);
 
 	WORD Digital_Buttons = state.Gamepad.wButtons;
 	BYTE* Analog_Buttons = state.Gamepad.bAnalogButtons;
 
 	// Map face buttons
-	SDL_PrivateJoystickButton(joystick, 0, (Analog_Buttons[XINPUT_GAMEPAD_A] > 0) ? SDL_PRESSED : SDL_RELEASED);
-	SDL_PrivateJoystickButton(joystick, 1, (Analog_Buttons[XINPUT_GAMEPAD_B] > 0) ? SDL_PRESSED : SDL_RELEASED);
-	SDL_PrivateJoystickButton(joystick, 2, (Analog_Buttons[XINPUT_GAMEPAD_X] > 0) ? SDL_PRESSED : SDL_RELEASED);
-	SDL_PrivateJoystickButton(joystick, 3, (Analog_Buttons[XINPUT_GAMEPAD_Y] > 0) ? SDL_PRESSED : SDL_RELEASED);
+	SDL_PrivateJoystickButton(joystick, XBOX_JOYSTICK_A, (Analog_Buttons[XINPUT_GAMEPAD_A] > 0) ? SDL_PRESSED : SDL_RELEASED);
+	SDL_PrivateJoystickButton(joystick, XBOX_JOYSTICK_B, (Analog_Buttons[XINPUT_GAMEPAD_B] > 0) ? SDL_PRESSED : SDL_RELEASED);
+	SDL_PrivateJoystickButton(joystick, XBOX_JOYSTICK_X, (Analog_Buttons[XINPUT_GAMEPAD_X] > 0) ? SDL_PRESSED : SDL_RELEASED);
+	SDL_PrivateJoystickButton(joystick, XBOX_JOYSTICK_Y, (Analog_Buttons[XINPUT_GAMEPAD_Y] > 0) ? SDL_PRESSED : SDL_RELEASED);
 
 	// Map shoulder buttons
-	SDL_PrivateJoystickButton(joystick, 4, (Analog_Buttons[XINPUT_GAMEPAD_BLACK] > 0) ? SDL_PRESSED : SDL_RELEASED);
-	SDL_PrivateJoystickButton(joystick, 5, (Analog_Buttons[XINPUT_GAMEPAD_WHITE] > 0) ? SDL_PRESSED : SDL_RELEASED);
+	SDL_PrivateJoystickButton(joystick, XBOX_JOYSTICK_BLACK, (Analog_Buttons[XINPUT_GAMEPAD_BLACK] > 0) ? SDL_PRESSED : SDL_RELEASED);
+	SDL_PrivateJoystickButton(joystick, XBOX_JOYSTICK_WHITE, (Analog_Buttons[XINPUT_GAMEPAD_WHITE] > 0) ? SDL_PRESSED : SDL_RELEASED);
 
 	// Map triggers as buttons with threshold
-	SDL_PrivateJoystickButton(joystick, 6, (Analog_Buttons[XINPUT_GAMEPAD_LEFT_TRIGGER] > XINPUT_GAMEPAD_MAX_CROSSTALK) ? SDL_PRESSED : SDL_RELEASED);
-	SDL_PrivateJoystickButton(joystick, 7, (Analog_Buttons[XINPUT_GAMEPAD_RIGHT_TRIGGER] > XINPUT_GAMEPAD_MAX_CROSSTALK) ? SDL_PRESSED : SDL_RELEASED);
+	SDL_PrivateJoystickAxis(joystick, XBOX_JOYSTICK_LEFT_TRIGGER, (Analog_Buttons[XINPUT_GAMEPAD_LEFT_TRIGGER] << 8) - 0x7FFF);
+	SDL_PrivateJoystickAxis(joystick, XBOX_JOYSTICK_RIGHT_TRIGGER, (Analog_Buttons[XINPUT_GAMEPAD_RIGHT_TRIGGER] << 8) - 0x7FFF);
 
 	// Map start/back/thumbstick buttons
-	SDL_PrivateJoystickButton(joystick, 8, (Digital_Buttons & XINPUT_GAMEPAD_START) ? SDL_PRESSED : SDL_RELEASED);
-	SDL_PrivateJoystickButton(joystick, 9, (Digital_Buttons & XINPUT_GAMEPAD_BACK) ? SDL_PRESSED : SDL_RELEASED);
-	SDL_PrivateJoystickButton(joystick, 10, (Digital_Buttons & XINPUT_GAMEPAD_LEFT_THUMB) ? SDL_PRESSED : SDL_RELEASED);
-	SDL_PrivateJoystickButton(joystick, 11, (Digital_Buttons & XINPUT_GAMEPAD_RIGHT_THUMB) ? SDL_PRESSED : SDL_RELEASED);
+	SDL_PrivateJoystickButton(joystick, XBOX_JOYSTICK_START, (Digital_Buttons & XINPUT_GAMEPAD_START) ? SDL_PRESSED : SDL_RELEASED);
+	SDL_PrivateJoystickButton(joystick, XBOX_JOYSTICK_BACK, (Digital_Buttons & XINPUT_GAMEPAD_BACK) ? SDL_PRESSED : SDL_RELEASED);
+	SDL_PrivateJoystickButton(joystick, XBOX_JOYSTICK_LEFT_THUMB, (Digital_Buttons & XINPUT_GAMEPAD_LEFT_THUMB) ? SDL_PRESSED : SDL_RELEASED);
+	SDL_PrivateJoystickButton(joystick, XBOX_JOYSTICK_RIGHT_THUMB, (Digital_Buttons & XINPUT_GAMEPAD_RIGHT_THUMB) ? SDL_PRESSED : SDL_RELEASED);
 
 	// Map D-Pad as hat
 	Uint8 hat = SDL_HAT_CENTERED;
@@ -464,7 +480,6 @@ XBOX_JoystickClose(SDL_Joystick* joystick)
 static void
 XBOX_JoystickQuit(void)
 {
-	// SDL_Log("XBOX_JoystickQuit\n");
 	// Close all open devices
 	for (int i = 0; i < XUSER_MAX_COUNT; i++) {
 		if (g_Controllers[i].connected && g_Controllers[i].device_handle) {
@@ -518,7 +533,7 @@ XBOX_SendEffect(SDL_Joystick *joystick, const void *data, int size) {
 }
 
 static int
-XBOX_SetSensorsEnabled(SDL_Joystick *joystick, SDL_bool enabled) {
+XBOX_SetSensorsEnabled(SDL_Joystick *joystick, static SDL_bool enabled) {
 	return SDL_Unsupported();
 }
 
@@ -529,50 +544,54 @@ XBOX_GetGamepadMapping(int device_index, SDL_GamepadMapping *out) {
 	out->lefty.kind = EMappingKind_Axis;
 	out->rightx.kind = EMappingKind_Axis;
 	out->righty.kind = EMappingKind_Axis;
-	// out->leftstick.target = XINPUT_GAMEPAD_LEFT_THUMB;
-	// out->rightstick.target = XINPUT_GAMEPAD_RIGHT_THUMB;
+	out->leftx.target = XBOX_JOYSTICK_STICKTHUMB_LEFT_X;
+	out->lefty.target = XBOX_JOYSTICK_STICKTHUMB_LEFT_Y;
+	out->rightx.target = XBOX_JOYSTICK_STICKTHUMB_RIGHT_X;
+	out->righty.target = XBOX_JOYSTICK_STICKTHUMB_RIGHT_Y;
+	out->lefty.axis_reversed = SDL_TRUE;
+	out->righty.axis_reversed = SDL_TRUE;
 
 	// Map face buttons
 	out->a.kind = EMappingKind_Button;
 	out->b.kind = EMappingKind_Button;
 	out->x.kind = EMappingKind_Button;
 	out->y.kind = EMappingKind_Button;
-	out->a.target = XINPUT_GAMEPAD_A;
-	out->b.target = XINPUT_GAMEPAD_B;
-	out->x.target = XINPUT_GAMEPAD_X;
-	out->y.target = XINPUT_GAMEPAD_Y;
+	out->a.target = XBOX_JOYSTICK_A;
+	out->b.target = XBOX_JOYSTICK_B;
+	out->x.target = XBOX_JOYSTICK_X;
+	out->y.target = XBOX_JOYSTICK_Y;
 
 	// Map shoulder buttons
 	out->leftshoulder.kind = EMappingKind_Button;
 	out->rightshoulder.kind = EMappingKind_Button;
-	out->leftshoulder.target = XINPUT_GAMEPAD_WHITE;
-	out->rightshoulder.target = XINPUT_GAMEPAD_BLACK;
+	out->leftshoulder.target = XBOX_JOYSTICK_WHITE;
+	out->rightshoulder.target = XBOX_JOYSTICK_BLACK;
 
 	// Map triggers as buttons with threshold
 	out->lefttrigger.kind = EMappingKind_Axis;
 	out->righttrigger.kind = EMappingKind_Axis;
-	out->lefttrigger.target = XINPUT_GAMEPAD_LEFT_TRIGGER;
-	out->righttrigger.target = XINPUT_GAMEPAD_RIGHT_TRIGGER;
+	out->lefttrigger.target = XBOX_JOYSTICK_LEFT_TRIGGER;
+	out->righttrigger.target = XBOX_JOYSTICK_RIGHT_TRIGGER;
 
 	// Map start/back/thumbstick buttons
 	out->start.kind = EMappingKind_Button;
 	out->back.kind = EMappingKind_Button;
 	out->leftstick.kind = EMappingKind_Button;
 	out->rightstick.kind = EMappingKind_Button;
-	out->start.target = XINPUT_GAMEPAD_START;
-	out->back.target = XINPUT_GAMEPAD_BACK;
-	out->leftstick.target = XINPUT_GAMEPAD_LEFT_THUMB;
-	out->rightstick.target = XINPUT_GAMEPAD_RIGHT_THUMB;
+	out->start.target = XBOX_JOYSTICK_START;
+	out->back.target = XBOX_JOYSTICK_BACK;
+	out->leftstick.target = XBOX_JOYSTICK_LEFT_THUMB;
+	out->rightstick.target = XBOX_JOYSTICK_RIGHT_THUMB;
 
 	// Map D-Pad as hat
 	out->dpup.kind = EMappingKind_Hat;
 	out->dpdown.kind = EMappingKind_Hat;
 	out->dpleft.kind = EMappingKind_Hat;
 	out->dpright.kind = EMappingKind_Hat;
-	out->dpup.target = XINPUT_GAMEPAD_DPAD_UP;
-	out->dpdown.target = XINPUT_GAMEPAD_DPAD_DOWN;
-	out->dpleft.target = XINPUT_GAMEPAD_DPAD_LEFT;
-	out->dpright.target = XINPUT_GAMEPAD_DPAD_RIGHT;
+	out->dpup.target = SDL_HAT_UP;
+	out->dpdown.target = SDL_HAT_DOWN;
+	out->dpleft.target = SDL_HAT_LEFT;
+	out->dpright.target = SDL_HAT_RIGHT;
 
 	return SDL_TRUE;
 }
