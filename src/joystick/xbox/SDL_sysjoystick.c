@@ -260,18 +260,29 @@ XBOX_JoystickGetDevicePlayerIndex(int device_index)
 static SDL_JoystickGUID
 XBOX_JoystickGetDeviceGUID(int device_index)
 {
-	// SDL_Log("XBOX_JoystickGetDeviceGUID called for device index %d\n", device_index);
 	SDL_JoystickGUID guid;
 	SDL_zero(guid);
 	int count = 0;
 	for (int i = 0; i < XUSER_MAX_COUNT; i++) {
 		if (g_Controllers[i].connected) {
+			// Search for controller
 			if (count == device_index) {
-				guid.data[0] = 7;
-				guid.data[1] = 7;
-				guid.data[2] = 7;
-				guid.data[3] = 7;
-				guid.data[4] = g_Controllers[i].port;
+				guid.data[0] = 'O';
+				guid.data[1] = 'G';
+				guid.data[2] = ' ';
+				guid.data[3] = 'X';
+				guid.data[4] = 'b';
+				guid.data[5] = 'o';
+				guid.data[6] = 'x';
+				guid.data[7] = ' ';
+				guid.data[8] = 'P';
+				guid.data[9] = 'a';
+				guid.data[10] = 'd';
+				guid.data[11] = ' ';
+				guid.data[12] = 'N';
+				guid.data[13] = 'o';
+				guid.data[14] = ' ';
+				guid.data[15] = (Uint8)g_Controllers[i].port;
 				break;
 			}
 			count++;

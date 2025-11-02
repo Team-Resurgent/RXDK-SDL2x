@@ -22,6 +22,8 @@
 
 #if SDL_VIDEO_DRIVER_XBOX
 
+#include "../SDL_sysvideo.h"
+
 #include "SDL_xboxvideo.h"
 #include "SDL_xboxwindow.h"
 
@@ -33,6 +35,53 @@
 void
 XBOX_GetDisplayModes(_THIS, SDL_VideoDisplay* display)
 {
+    DWORD vflags = XGetVideoFlags();
+    SDL_DisplayMode mode;
+    // These are common across all modes
+    mode.format = SDL_PIXELFORMAT_ARGB8888;
+    mode.driverdata = NULL;
+
+    if (XGetVideoStandard() == XC_VIDEO_STANDARD_PAL_I) {
+        /* PAL SD: 576-line 50 Hz */
+        mode.w = 720;
+        mode.h = 576;
+        mode.refresh_rate = 50;
+        SDL_AddDisplayMode(display, &mode);
+
+        /* PAL60 SD: 576-line 60 Hz */
+        if (vflags & XC_VIDEO_FLAGS_PAL_60Hz) {
+            mode.w = 720;
+            mode.h = 576;
+            mode.refresh_rate = 60;
+            SDL_AddDisplayMode(display, &mode);
+        }
+    } else {
+        /* All NTSC modes use 60Hz */
+        mode.refresh_rate = 60;
+
+        /* NTSC SD 480i fallback */
+        mode.w = 640;
+        mode.h = 480;
+        SDL_AddDisplayMode(display, &mode);
+
+        if (vflags & XC_VIDEO_FLAGS_HDTV_480p) {
+            mode.w = 720;
+            mode.h = 480;
+            SDL_AddDisplayMode(display, &mode);
+        }
+
+        if (vflags & XC_VIDEO_FLAGS_HDTV_720p) {
+            mode.w = 1280;
+            mode.h = 720;
+            SDL_AddDisplayMode(display, &mode);
+        }
+
+        if (vflags & XC_VIDEO_FLAGS_HDTV_1080i) {
+            mode.w = 1920;
+            mode.h = 1080;
+            SDL_AddDisplayMode(display, &mode);
+        }
+    }
 }
 
 int

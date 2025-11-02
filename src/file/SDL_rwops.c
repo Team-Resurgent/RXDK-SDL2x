@@ -87,13 +87,16 @@ static SDL_bool IsRegularFileOrPipe(FILE* f) { (void)f; return SDL_TRUE; }
 
 static int SDLCALL windows_file_open(SDL_RWops *context, const char *filename, const char *mode)
 {
+#if !defined(__XBOXONE__) && !defined(__XBOXSERIES__)
+    UINT old_error_mode;
+#endif
     HANDLE h;
-    DWORD r_right = 0, w_right = 0;
+    DWORD r_right, w_right;
     DWORD must_exist, truncate;
     int a_mode;
 
     if (!context) {
-        return -1; /* invalid call */
+        return -1; /* failed (invalid call) */
     }
 
     context->hidden.windowsio.h = INVALID_HANDLE_VALUE; /* mark this as unusable */
@@ -101,43 +104,47 @@ static int SDLCALL windows_file_open(SDL_RWops *context, const char *filename, c
     context->hidden.windowsio.buffer.size = 0;
     context->hidden.windowsio.buffer.left = 0;
 
-    /* Mode parsing */
+    /* "r" = reading, file must exist */
+    /* "w" = writing, truncate existing, file may not exist */
+    /* "r+"= reading or writing, file must exist            */
+    /* "a" = writing, append file may not exist             */
+    /* "a+"= append + read, file may not exist              */
+    /* "w+" = read, write, truncate. file may not exist    */
+
     must_exist = (SDL_strchr(mode, 'r') != NULL) ? OPEN_EXISTING : 0;
-    truncate   = (SDL_strchr(mode, 'w') != NULL) ? CREATE_ALWAYS : 0;
-    r_right    = (SDL_strchr(mode, '+') != NULL || must_exist) ? GENERIC_READ : 0;
-    a_mode     = (SDL_strchr(mode, 'a') != NULL) ? OPEN_ALWAYS : 0;
-    w_right    = (a_mode || SDL_strchr(mode, '+') || truncate) ? GENERIC_WRITE : 0;
+    truncate = (SDL_strchr(mode, 'w') != NULL) ? CREATE_ALWAYS : 0;
+    r_right = (SDL_strchr(mode, '+') != NULL || must_exist) ? GENERIC_READ : 0;
+    a_mode = (SDL_strchr(mode, 'a') != NULL) ? OPEN_ALWAYS : 0;
+    w_right = (a_mode || SDL_strchr(mode, '+') || truncate) ? GENERIC_WRITE : 0;
 
     if (!r_right && !w_right) {
         return -1; /* inconsistent mode */
     }
+    /* failed (invalid call) */
 
-    context->hidden.windowsio.buffer.data = (char *)SDL_malloc(READAHEAD_BUFFER_SIZE);
+    context->hidden.windowsio.buffer.data =
+        (char *)SDL_malloc(READAHEAD_BUFFER_SIZE);
     if (!context->hidden.windowsio.buffer.data) {
         return SDL_OutOfMemory();
     }
+#if !defined(__XBOXONE__) && !defined(__XBOXSERIES__)
+    /* Do not open a dialog box if failure */
+    old_error_mode =
+        SetErrorMode(SEM_NOOPENFILEERRORBOX | SEM_FAILCRITICALERRORS);
+#endif
 
-#if !defined(_XBOX) && !defined(__XBOXONE__) && !defined(__XBOXSERIES__)
-    /* Desktop Win32/GDK path: suppress OS error UI and use UTF-8 -> TCHAR helper */
     {
-        UINT old_error_mode = SetErrorMode(SEM_NOOPENFILEERRORBOX | SEM_FAILCRITICALERRORS);
-
         LPTSTR tstr = WIN_UTF8ToString(filename);
         h = CreateFile(tstr, (w_right | r_right),
                        (w_right) ? 0 : FILE_SHARE_READ, NULL,
                        (must_exist | truncate | a_mode),
                        FILE_ATTRIBUTE_NORMAL, NULL);
         SDL_free(tstr);
-
-        /* restore old behavior */
-        SetErrorMode(old_error_mode);
     }
-#else
-    /* OG Xbox path: no SetErrorMode, no UTF-8 helper; use ANSI CreateFileA */
-    h = CreateFileA(filename, (w_right | r_right),
-                    (w_right) ? 0 : FILE_SHARE_READ, NULL,
-                    (must_exist | truncate | a_mode),
-                    FILE_ATTRIBUTE_NORMAL, NULL);
+
+#if !defined(__XBOXONE__) && !defined(__XBOXSERIES__)
+    /* restore old behavior */
+    SetErrorMode(old_error_mode);
 #endif
 
     if (h == INVALID_HANDLE_VALUE) {

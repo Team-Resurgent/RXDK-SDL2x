@@ -105,22 +105,6 @@ XBOX_DeleteDevice(SDL_VideoDevice* device)
 
     SDL_VideoData* data = (SDL_VideoData*)device->driverdata;
 
-#ifndef _XBOX
-    /* Win32-only teardown */
-    SDL_UnregisterApp();
-
-    if (data) {
-        if (data->userDLL) {
-            SDL_UnloadObject(data->userDLL);
-            data->userDLL = NULL;
-        }
-        if (data->shcoreDLL) {
-            SDL_UnloadObject(data->shcoreDLL);
-            data->shcoreDLL = NULL;
-        }
-    }
-#endif
-
     /* Free per-device driver data, then the device itself */
     if (data) {
         SDL_free(data);
@@ -283,9 +267,8 @@ XBOX_VideoInit(_THIS)
     }
     else {
         /* Pick best available mode based on Xbox dashboard/video flags. */
-#ifdef __XBOX__
         DWORD vflags = XGetVideoFlags();
-        int   is_pal = (XGetVideoStandard() == XC_VIDEO_STANDARD_PAL_I);
+        BOOL  is_pal = (XGetVideoStandard() == XC_VIDEO_STANDARD_PAL_I);
 
         /* Highest -> lowest preference:
            1080i -> 720p -> 480p -> PAL 576 (50/60) -> NTSC 480i */
@@ -319,12 +302,6 @@ XBOX_VideoInit(_THIS)
             current_mode.h = 480;
             current_mode.refresh_rate = 60;
         }
-#else
-        /* Non-Xbox builds: safe default */
-        current_mode.w = 640;
-        current_mode.h = 480;
-        current_mode.refresh_rate = 60;
-#endif
     }
 
     /* 32 bpp default; keep consistent with renderer (ARGB8888) */
@@ -340,7 +317,7 @@ XBOX_VideoInit(_THIS)
     SDL_AddVideoDisplay(&display, SDL_FALSE);
     g_XboxDesktopMode = current_mode;
 
-    SDL_Log("Xbox desktop: %dx%d@%d (%s)",
+    SDL_Log("Xbox maximum available display mode: %dx%d@%d (%s)",
         current_mode.w, current_mode.h, current_mode.refresh_rate,
         (current_mode.h >= 1080) ? "1080i" :
         (current_mode.h >= 720) ? "720p" :
@@ -381,36 +358,9 @@ D3D_LoadDLL(IDirect3D8** pDirect3D8Interface)
         return SDL_FALSE;
     }
 
-#ifdef __XBOX__
     /* On OG Xbox, Direct3D8 is provided by the XDK. No DLL to load. */
     * pDirect3D8Interface = Direct3DCreate8(D3D_SDK_VERSION);
     return (*pDirect3D8Interface != NULL) ? SDL_TRUE : SDL_FALSE;
-
-#else
-    /* Non-Xbox fallback (if you also build this for Windows with D3D8). */
-    void* d3d8dll = SDL_LoadObject("d3d8.dll");
-    if (!d3d8dll) {
-        SDL_ClearError();
-        *pDirect3D8Interface = NULL;
-        return SDL_FALSE;
-    }
-
-    typedef IDirect3D8* (WINAPI* Direct3DCreate8_t)(UINT SDKVersion);
-    Direct3DCreate8_t Direct3DCreate8Func =
-        (Direct3DCreate8_t)SDL_LoadFunction(d3d8dll, "Direct3DCreate8");
-
-    if (!Direct3DCreate8Func) {
-        SDL_UnloadObject(d3d8dll);
-        *pDirect3D8Interface = NULL;
-        return SDL_FALSE;
-    }
-
-    *pDirect3D8Interface = Direct3DCreate8Func(D3D_SDK_VERSION);
-    /* We do not keep the DLL handle here; if you want to keep it, store it in your driver data. */
-    SDL_UnloadObject(d3d8dll);
-
-    return (*pDirect3D8Interface != NULL) ? SDL_TRUE : SDL_FALSE;
-#endif
 }
 
 

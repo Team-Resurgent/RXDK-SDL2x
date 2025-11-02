@@ -70,7 +70,7 @@ SDLTest_CommonState *SDLTest_CommonCreateState(char **argv, Uint32 flags)
             break;
         }
     }
-#endif	
+#endif
 
     state = (SDLTest_CommonState *)SDL_calloc(1, sizeof(*state));
     if (!state) {

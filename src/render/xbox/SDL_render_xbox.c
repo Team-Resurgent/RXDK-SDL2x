@@ -2457,7 +2457,7 @@ static void FinalizeXboxMode(D3DPRESENT_PARAMETERS* p)
 		p->Flags |= D3DPRESENTFLAG_INTERLACED;
 	}
 
-	SDL_Log("D3D Final mode: %ux%u flags=0x%08x @ %u Hz  (WS=%d 480p=%d 720p=%d 1080i=%d PAL=%d)\n",
+	SDL_Log("Xbox final display mode: %ux%u flags=0x%08x @ %u Hz  (WS=%d 480p=%d 720p=%d 1080i=%d PAL=%d)\n",
 		(unsigned)p->BackBufferWidth, (unsigned)p->BackBufferHeight,
 		(unsigned)p->Flags, (unsigned)p->FullScreen_RefreshRateInHz,
 		(int)ws, (int)allow480p, (int)allow720p, (int)allow1080i, (int)pal);
@@ -2481,6 +2481,8 @@ int D3D_CreateRenderer(SDL_Renderer* renderer, SDL_Window* window, Uint32 flags)
 		SDL_SetError("Unable to create Direct3D interface\n");
 		return -1;
 	}
+
+	renderer->always_batch = SDL_TRUE;
 
 	/* Hook renderer callbacks */
 	renderer->WindowEvent = D3D_WindowEvent;

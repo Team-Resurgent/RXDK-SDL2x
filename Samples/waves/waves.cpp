@@ -7,8 +7,6 @@
 
 #define LOW_RES_WIDTH 160
 #define LOW_RES_HEIGHT 120
-#define WINDOW_WIDTH 640
-#define WINDOW_HEIGHT 480
 #define SINE_TABLE_SIZE 360
 
 static SDLTest_CommonState* state;
@@ -16,6 +14,9 @@ int done;
 SDL_Texture* waveTexture = NULL;
 Uint32 frameBuffer[LOW_RES_WIDTH][LOW_RES_HEIGHT] = { 0 };
 float sineTable[SINE_TABLE_SIZE] = { 0 };
+
+static int WINDOW_WIDTH = 640;
+static int WINDOW_HEIGHT = 480;
 
 // Precompute sine values
 void InitSineTable() {

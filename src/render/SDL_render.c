@@ -1067,15 +1067,11 @@ SDL_Renderer *SDL_CreateRenderer(SDL_Window *window, int index, Uint32 flags)
     VerifyDrawQueueFunctions(renderer);
 
     /* let app/user override batching decisions. */
-#ifdef __XBOX__
-	batching = SDL_TRUE;
-#else
     if (renderer->always_batch) {
         batching = SDL_TRUE;
     } else if (SDL_GetHint(SDL_HINT_RENDER_BATCHING)) {
         batching = SDL_GetHintBoolean(SDL_HINT_RENDER_BATCHING, SDL_TRUE);
     }
-#endif
 
     renderer->batching = batching;
     renderer->magic = &renderer_magic;
@@ -1113,16 +1109,11 @@ SDL_Renderer *SDL_CreateRenderer(SDL_Window *window, int index, Uint32 flags)
 
     renderer->line_method = SDL_GetRenderLineMethod();
 
-
-#ifdef _XBOX
-    renderer->hidden = SDL_FALSE;
-#else
     if (SDL_GetWindowFlags(window) & (SDL_WINDOW_HIDDEN | SDL_WINDOW_MINIMIZED)) {
         renderer->hidden = SDL_TRUE;
     } else {
         renderer->hidden = SDL_FALSE;
     }
-#endif
 
     SDL_SetWindowData(window, SDL_WINDOWRENDERDATA, renderer);
 
