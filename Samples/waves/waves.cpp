@@ -119,6 +119,22 @@ int main(int argc, char* argv[]) {
 		return 2;
 	}
 
+	int displayIndex = 0; // Always 0 for the xbox
+	int displayModeCt = SDL_GetNumDisplayModes(displayIndex);
+	SDL_DisplayMode mode;
+	
+	SDL_Log("Available display modes\n");
+
+	for (int j = 0; j < displayModeCt; ++j) {
+		SDL_GetDisplayMode(displayIndex, j, &mode);
+		if (j == 0) {
+			SDL_Log(" ** Mode %d: %dx%d@%dHz\n", j, mode.w, mode.h, mode.refresh_rate);
+		}
+		else {
+			SDL_Log("    Mode %d: %dx%d@%dHz\n", j, mode.w, mode.h, mode.refresh_rate);
+		}
+	}
+
 	// Initialize sine table and waves
 	InitSineTable();
 	InitWaves(state->renderers[0]);
