@@ -27,11 +27,6 @@
 #include "SDL_xboxvideo.h"
 #include "SDL_xboxwindow.h"
 
-//
-// Nothing to do here for Xbox
-// Just the stubs
-//
-
 void
 XBOX_GetDisplayModes(_THIS, SDL_VideoDisplay* display)
 {

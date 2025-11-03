@@ -50,7 +50,7 @@ int main(int argc, char* argv[])
     SDL_Texture* bg = LoadTextureFromFile(ren, "D:\\Lose_my_breath.bmp");
 
     /* try to load the music */
-    const char* music_path = "D:\\No Scrubs.mp3";
+    const char* music_path = "D:\\lose-my-breath.wav";
     Mix_Music* music = Mix_LoadMUS(music_path);
     if (!music) {
         SDL_LogError(SDL_LOG_CATEGORY_APPLICATION,
