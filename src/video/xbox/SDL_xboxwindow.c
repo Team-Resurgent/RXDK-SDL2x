@@ -11,11 +11,11 @@
   freely, subject to the following restrictions:
 
   1. The origin of this software must not be misrepresented; you must not
-	 claim that you wrote the original software. If you use this software
-	 in a product, an acknowledgment in the product documentation would be
-	 appreciated but is not required.
+     claim that you wrote the original software. If you use this software
+     in a product, an acknowledgment in the product documentation would be
+     appreciated but is not required.
   2. Altered source versions must be plainly marked as such, and must not be
-	 misrepresented as being the original software.
+     misrepresented as being the original software.
   3. This notice may not be removed or altered from any source distribution.
 */
 #include "../../SDL_internal.h"
@@ -26,6 +26,8 @@
 
 #include "SDL_xboxvideo.h"
 #include "SDL_xboxwindow.h"
+
+extern SDL_DisplayMode g_XboxDesktopMode;
 
 void
 XBOX_GetDisplayModes(_THIS, SDL_VideoDisplay* display)
@@ -50,7 +52,8 @@ XBOX_GetDisplayModes(_THIS, SDL_VideoDisplay* display)
             mode.refresh_rate = 60;
             SDL_AddDisplayMode(display, &mode);
         }
-    } else {
+    }
+    else {
         /* All NTSC modes use 60Hz */
         mode.refresh_rate = 60;
 
@@ -79,27 +82,37 @@ XBOX_GetDisplayModes(_THIS, SDL_VideoDisplay* display)
     }
 }
 
-int
-XBOX_SetDisplayMode(_THIS, SDL_VideoDisplay* display, SDL_DisplayMode* mode)
+int XBOX_SetDisplayMode(_THIS, SDL_VideoDisplay* display, SDL_DisplayMode* mode)
 {
-	return 0;
+    // Accept only modes compatible with dashboard flags; otherwise fallback.
+    display->current_mode = *mode;
+    g_XboxDesktopMode = *mode;
+    return 0;  // pretend success, but state is consistent
 }
 
-int
-XBOX_CreateWindow(_THIS, SDL_Window* window)
+
+int XBOX_CreateWindow(_THIS, SDL_Window* window)
 {
-	// Not much required for Xbox here
-	XBOX_PumpEvents(_this);
+    const SDL_DisplayMode* dm = &g_XboxDesktopMode;  // set in XBOX_VideoInit
 
-	// No window to setup on Xbox
+    // Force fullscreen, exact desktop mode size
+    window->x = 0;
+    window->y = 0;
+    window->w = dm->w;
+    window->h = dm->h;
+    window->flags |= SDL_WINDOW_FULLSCREEN;
 
-	return 0;
+    // (Optional) ensure no residual viewport issues:
+    // Your renderer init should set viewport to full size.
+
+    XBOX_PumpEvents(_this);
+    return 0;
 }
 
 int
 XBOX_CreateWindowFrom(_THIS, SDL_Window* window, const void* data)
 {
-	return SDL_Unsupported();
+    return SDL_Unsupported();
 }
 
 void
@@ -169,7 +182,7 @@ void XBOX_OnWindowEnter(_THIS, SDL_Window* window)
 int
 XBOX_SetWindowHitTest(SDL_Window* window, SDL_bool enabled)
 {
-	return 0;  /* just succeed, the real work is done elsewhere. */
+    return 0;  /* just succeed, the real work is done elsewhere. */
 }
 
 void

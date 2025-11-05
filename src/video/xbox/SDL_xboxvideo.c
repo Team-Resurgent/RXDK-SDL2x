@@ -42,7 +42,7 @@ SDL_bool g_WindowFrameUsableWhileCursorHidden = SDL_TRUE;
 
 /* Cache the desktop/current mode we register at init so other code
    (renderer, SetDisplayMode, etc.) can reference it if needed. */
-static SDL_DisplayMode g_XboxDesktopMode;
+SDL_DisplayMode g_XboxDesktopMode;
 
 /* Small helper: parse common boolean strings, fall back to default. */
 static SDL_bool

@@ -5,8 +5,8 @@
 #include <time.h>
 #include "SDL_test_common.h"
 
-#define LOW_RES_WIDTH 160
-#define LOW_RES_HEIGHT 120
+#define LOW_RES_WIDTH 320
+#define LOW_RES_HEIGHT 240
 #define SINE_TABLE_SIZE 360
 
 static SDLTest_CommonState* state;
@@ -21,7 +21,7 @@ static int WINDOW_HEIGHT = 480;
 // Precompute sine values
 void InitSineTable() {
 	for (int i = 0; i < SINE_TABLE_SIZE; i++) {
-		sineTable[i] = sin(i * M_PI / 180.0f);
+		sineTable[i] = (float) sin(i * M_PI / 180.0f);
 	}
 }
 
