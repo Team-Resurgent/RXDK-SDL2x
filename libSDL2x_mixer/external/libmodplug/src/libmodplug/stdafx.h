@@ -39,12 +39,47 @@
 #endif
 
 #define WIN32_LEAN_AND_MEAN
+
+#ifdef __XBOX__
+#include <xtl.h>
+
+/* --- No <stdint.h>/<inttypes.h> on OG XDK --- */
+#undef HAVE_INTTYPES_H
+#ifndef _SDL_XDK_STDINT_TYPES_
+#define _SDL_XDK_STDINT_TYPES_
+typedef   signed __int8   int8_t;
+typedef unsigned __int8   uint8_t;
+typedef   signed __int16  int16_t;
+typedef unsigned __int16  uint16_t;
+typedef   signed __int32  int32_t;
+typedef unsigned __int32  uint32_t;
+typedef   signed __int64  int64_t;
+typedef unsigned __int64  uint64_t;
+#ifndef _UINTPTR_T_DEFINED
+typedef unsigned int      uintptr_t;
+#define _UINTPTR_T_DEFINED
+#endif
+#endif
+
+#define GlobalFreePtr(p) free((void *)(p))
+
+inline int8_t* GlobalAllocPtr(unsigned int, size_t size)
+{
+    int8_t* p = (int8_t*)malloc(size);
+
+    if (p != NULL) memset(p, 0, size);
+    return p;
+}
+
+#else
 #include <windows.h>
 #include <windowsx.h>
 #include <mmsystem.h>
+#include <stdint.h>
+#endif
+
 #include <stdio.h>
 #include <malloc.h>
-#include <stdint.h>
 
 #define srandom(_seed)  srand(_seed)
 #define random()        rand()

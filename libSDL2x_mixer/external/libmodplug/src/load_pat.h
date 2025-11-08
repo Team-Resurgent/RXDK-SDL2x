@@ -1,6 +1,10 @@
 #ifndef LOAD_PAT_H
 #define LOAD_PAT_H
 
+#ifdef __XBOX__
+#include <xtl.h>
+#endif
+
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -22,4 +26,4 @@ BOOL PAT_Load_Instruments(void *c);
 }
 #endif
 
-#endif
+#endif // LOAD_PAT_H

@@ -1,6 +1,10 @@
 #ifndef _ITDEFS_H_
 #define _ITDEFS_H_
 
+#ifdef __XBOX__
+#include <xtl.h>
+#endif
+
 #pragma pack(1)
 
 typedef struct tagITFILEHEADER
@@ -133,4 +137,4 @@ extern const BYTE autovibit2xm[8];
 extern const BYTE autovibxm2it[8];
 #endif
 
-#endif
+#endif // _ITDEFS_H_
