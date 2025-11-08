@@ -96,8 +96,15 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "libSDL2x_mixer", "libSDL2x_
 	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "libSDL2x_net", "libSDL2x_net\libSDL2x_net.vcxproj", "{383C1696-EF03-4193-AAA7-33C9E40ED154}"
+	ProjectSection(ProjectDependencies) = postProject
+		{7C481C7D-ECA7-4F9E-879C-105784F3543D} = {7C481C7D-ECA7-4F9E-879C-105784F3543D}
+	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "chatd", "Samples\chatd\chatd.vcxproj", "{5EAAAC4B-1F8B-4A65-805E-E5F36ED8858E}"
+	ProjectSection(ProjectDependencies) = postProject
+		{383C1696-EF03-4193-AAA7-33C9E40ED154} = {383C1696-EF03-4193-AAA7-33C9E40ED154}
+		{7C481C7D-ECA7-4F9E-879C-105784F3543D} = {7C481C7D-ECA7-4F9E-879C-105784F3543D}
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
