@@ -1,6 +1,7 @@
-# SDL 2.32.10 Port for the Original Xbox
+# SDL2 Port for the Original Xbox
 
-This project is a port of **SDL 2.32.10** to the Original Xbox.
+This project is a port of **SDL2** to the Original Xbox. 
+It's based on 2.0.10.
 
 ---
 
@@ -13,9 +14,8 @@ This project has been updated to work with **RXDK**, which provides a modern dev
 
 ## ✅ Working SDL2 Addons
 
-- **SDL2 Mixer 2.8.1**: Fully functional and integrated into the port. (MP3, OGG, WAV support)
-- **SDL2 Image 2.9.0**: Fully functional and integrated into the port.
-- **SDL2 TTF 2.24.0**:  Fully functional and integrated into the port. (.ttf support)
+- **SDL2 Mixer(2.0.4)**: Fully functional and integrated into the port.
+- **SDL2_image(2.9.0)**: Fully functional and integrated into the port.
 
 ---
 
