@@ -1,0 +1,33 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{15e9d20e-b558-4037-9e6b-48b08d1c146f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{9938e55c-4255-488e-a0e5-59a99ce73c3d}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="SDL_net.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="SDLnetsys.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="SDLnet.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="SDLnetselect.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="SDLnetTCP.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="SDLnetUDP.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+</Project>
