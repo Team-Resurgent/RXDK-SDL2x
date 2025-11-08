@@ -5,10 +5,8 @@
 #include <time.h>
 #include "SDL_test_common.h"
 
-#define LOW_RES_WIDTH 160
-#define LOW_RES_HEIGHT 120
-#define WINDOW_WIDTH 640
-#define WINDOW_HEIGHT 480
+#define LOW_RES_WIDTH 320
+#define LOW_RES_HEIGHT 240
 #define SINE_TABLE_SIZE 360
 
 static SDLTest_CommonState* state;
@@ -17,10 +15,13 @@ SDL_Texture* waveTexture = NULL;
 Uint32 frameBuffer[LOW_RES_WIDTH][LOW_RES_HEIGHT] = { 0 };
 float sineTable[SINE_TABLE_SIZE] = { 0 };
 
+static int WINDOW_WIDTH = 640;
+static int WINDOW_HEIGHT = 480;
+
 // Precompute sine values
 void InitSineTable() {
 	for (int i = 0; i < SINE_TABLE_SIZE; i++) {
-		sineTable[i] = sin(i * M_PI / 180.0f);
+		sineTable[i] = (float) sin(i * M_PI / 180.0f);
 	}
 }
 
@@ -97,7 +98,7 @@ void loop() {
 
 		// Render wave texture scaled to full screen
 		SDL_Rect dstRect = { 0, 0, WINDOW_WIDTH, WINDOW_HEIGHT };
-		SDL_RenderCopy(renderer, waveTexture, NULL, &dstRect);
+		SDL_RenderCopy(renderer, waveTexture, NULL, NULL);
 
 		// Present the renderer
 		SDL_RenderPresent(renderer);
@@ -116,6 +117,22 @@ int main(int argc, char* argv[]) {
 	if (!SDLTest_CommonInit(state)) {
 		SDLTest_CommonQuit(state);
 		return 2;
+	}
+
+	int displayIndex = 0; // Always 0 for the xbox
+	int displayModeCt = SDL_GetNumDisplayModes(displayIndex);
+	SDL_DisplayMode mode;
+	
+	SDL_Log("Available display modes\n");
+
+	for (int j = 0; j < displayModeCt; ++j) {
+		SDL_GetDisplayMode(displayIndex, j, &mode);
+		if (j == 0) {
+			SDL_Log(" ** Mode %d: %dx%d@%dHz\n", j, mode.w, mode.h, mode.refresh_rate);
+		}
+		else {
+			SDL_Log("    Mode %d: %dx%d@%dHz\n", j, mode.w, mode.h, mode.refresh_rate);
+		}
 	}
 
 	// Initialize sine table and waves

@@ -1,179 +1,177 @@
 /*
-  Copyright (C) 1997-2019 Sam Lantinga <slouken@libsdl.org>
-
-  This software is provided 'as-is', without any express or implied
-  warranty.  In no event will the authors be held liable for any damages
-  arising from the use of this software.
-
-  Permission is granted to anyone to use this software for any purpose,
-  including commercial applications, and to alter it and redistribute it
-  freely.
+  Simple WAV player with fullscreen visual (progress bar) for Xbox/SDL
 */
-
-/* Program to load a wave file and loop playing it using SDL audio */
-
-/* loopwaves.c is much more robust in handling WAVE files --
-	This is only for simple WAVEs
-*/
-#include "sdl.h"
-#include "SDL_config.h"
-
+#include <xtl.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <time.h>
 
-#ifdef __EMSCRIPTEN__
-#include <emscripten/emscripten.h>
-#endif
+#include "SDL.h"  // use one SDL header
 
-#include "SDL.h"
-
-static struct
-{
-	SDL_AudioSpec spec;
-	Uint8* sound;               /* Pointer to wave data */
-	Uint32 soundlen;            /* Length of wave data */
-	int soundpos;               /* Current play position */
+static struct {
+    SDL_AudioSpec spec;
+    Uint8* sound;      // wave data
+    Uint32  soundlen;   // total bytes
+    Uint32  soundpos;   // current play position (bytes)
 } wave;
 
-static SDL_AudioDeviceID device;
+static SDL_AudioDeviceID device = 0;
 
-/* Call this instead of exit(), so we can clean up SDL: atexit() is evil. */
-static void
-quit(int rc)
-{
-	SDL_Quit();
-	exit(rc);
-}
-
-static void
-close_audio()
-{
-	if (device != 0) {
-		SDL_CloseAudioDevice(device);
-		device = 0;
-	}
-}
-
-static void
-open_audio()
-{
-	/* Initialize fillerup() variables */
-	device = SDL_OpenAudioDevice(NULL, SDL_FALSE, &wave.spec, NULL, 0);
-	if (!device) {
-		SDL_LogError(SDL_LOG_CATEGORY_APPLICATION, "Couldn't open audio: %s\n", SDL_GetError());
-		SDL_FreeWAV(wave.sound);
-		quit(2);
-	}
-
-	/* Let the audio run */
-	SDL_PauseAudioDevice(device, SDL_FALSE);
-}
-
-static void reopen_audio()
-{
-	close_audio();
-	open_audio();
-}
-
-void SDLCALL
-fillerup(void* unused, Uint8* stream, int len)
-{
-	Uint8* waveptr;
-	int waveleft;
-
-	/* Set up the pointers */
-	waveptr = wave.sound + wave.soundpos;
-	waveleft = wave.soundlen - wave.soundpos;
-
-	/* Go! */
-	while (waveleft <= len) {
-		SDL_memcpy(stream, waveptr, waveleft);
-		stream += waveleft;
-		len -= waveleft;
-		waveptr = wave.sound;
-		waveleft = wave.soundlen;
-		wave.soundpos = 0;
-	}
-	SDL_memcpy(stream, waveptr, len);
-	wave.soundpos += len;
-}
-
+// ---- Video globals ----
+static SDL_Window* gWin = NULL;
+static SDL_Renderer* gRen = NULL;
 static int done = 0;
 
-#ifdef __EMSCRIPTEN__
-void
-loop()
+// ---- Audio callback ----
+static void SDLCALL fillerup(void* userdata, Uint8* stream, int len)
 {
-	if (done || (SDL_GetAudioDeviceStatus(device) != SDL_AUDIO_PLAYING))
-		emscripten_cancel_main_loop();
-}
-#endif
+    (void)userdata;
+    Uint8* waveptr = wave.sound + wave.soundpos;
+    int waveleft = (int)(wave.soundlen - wave.soundpos);
 
-int
-main(int argc, char* argv[])
-{
-	int i;
-	char filename[4096];
-
-	/* Enable standard application logging */
-	SDL_LogSetPriority(SDL_LOG_CATEGORY_APPLICATION, SDL_LOG_PRIORITY_INFO);
-
-	/* Load the SDL library */
-	if (SDL_Init(SDL_INIT_AUDIO | SDL_INIT_EVENTS) < 0) {
-		SDL_LogError(SDL_LOG_CATEGORY_APPLICATION, "Couldn't initialize SDL: %s\n", SDL_GetError());
-		return (1);
-	}
-
-	if (argc > 1) {
-		SDL_strlcpy(filename, argv[1], sizeof(filename));
-	}
-	else {
-		SDL_strlcpy(filename, "D:\\sample.wav", sizeof(filename));
-	}
-	/* Load the wave file into memory */
-	if (SDL_LoadWAV(filename, &wave.spec, &wave.sound, &wave.soundlen) == NULL) {
-		SDL_LogError(SDL_LOG_CATEGORY_APPLICATION, "Couldn't load %s: %s\n", filename, SDL_GetError());
-		quit(1);
-	}
-
-	wave.spec.callback = fillerup;
-
-	/* Show the list of available drivers */
-	SDL_Log("Available audio drivers:");
-	for (i = 0; i < SDL_GetNumAudioDrivers(); ++i) {
-		SDL_Log("%i: %s", i, SDL_GetAudioDriver(i));
-	}
-
-	SDL_Log("Using audio driver: %s\n", SDL_GetCurrentAudioDriver());
-
-	open_audio();
-
-	SDL_FlushEvents(SDL_AUDIODEVICEADDED, SDL_AUDIODEVICEREMOVED);
-
-#ifdef __EMSCRIPTEN__
-	emscripten_set_main_loop(loop, 0, 1);
-#else
-	while (!done) {
-		SDL_Event event;
-
-		while (SDL_PollEvent(&event) > 0) {
-			if (event.type == SDL_QUIT) {
-				done = 1;
-			}
-			if ((event.type == SDL_AUDIODEVICEADDED && !event.adevice.iscapture) ||
-				(event.type == SDL_AUDIODEVICEREMOVED && !event.adevice.iscapture && event.adevice.which == device)) {
-				reopen_audio();
-			}
-		}
-		SDL_Delay(100);
-	}
-#endif
-
-	/* Clean up on signal */
-	close_audio();
-	SDL_FreeWAV(wave.sound);
-	SDL_Quit();
-	return (0);
+    while (waveleft <= len) {
+        SDL_memcpy(stream, waveptr, waveleft);
+        stream += waveleft;
+        len -= waveleft;
+        waveptr = wave.sound;
+        waveleft = (int)wave.soundlen;
+        wave.soundpos = 0; // loop
+    }
+    SDL_memcpy(stream, waveptr, len);
+    wave.soundpos += (Uint32)len;
 }
 
-/* vi: set ts=4 sw=4 expandtab: */
+// ---- Audio helpers ----
+static void close_audio(void)
+{
+    if (device) { SDL_CloseAudioDevice(device); device = 0; }
+}
+
+static void open_audio(void)
+{
+    device = SDL_OpenAudioDevice(NULL, 0, &wave.spec, NULL, 0);
+    if (!device) {
+        SDL_LogError(SDL_LOG_CATEGORY_APPLICATION, "Couldn't open audio: %s", SDL_GetError());
+        SDL_FreeWAV(wave.sound);
+        SDL_Quit();
+        exit(2);
+    }
+    SDL_PauseAudioDevice(device, 0); // start playback
+}
+
+static void reopen_audio(void)
+{
+    close_audio();
+    open_audio();
+}
+
+// ---- Video helpers ----
+static void create_fullscreen_renderer(void)
+{
+    // Create a true fullscreen window; avoids desktop semantics
+    if (SDL_CreateWindowAndRenderer(0, 0, SDL_WINDOW_FULLSCREEN, &gWin, &gRen) != 0) {
+        // Fallback to fullscreen-desktop if needed
+        gWin = SDL_CreateWindow("WAV Player",
+            SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED,
+            640, 480, SDL_WINDOW_FULLSCREEN_DESKTOP);
+        if (gWin) gRen = SDL_CreateRenderer(gWin, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
+    }
+    if (!gWin || !gRen) {
+        SDL_LogError(SDL_LOG_CATEGORY_APPLICATION, "Video init failed: %s", SDL_GetError());
+        // Not fatal for audio-only, but then you won't see visuals
+    }
+    else {
+        SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "linear");
+    }
+}
+
+static void draw_progress_bar(void)
+{
+    if (!gRen) return;
+
+    int w = 0, h = 0;
+    SDL_GetRendererOutputSize(gRen, &w, &h);
+
+    // background
+    SDL_SetRenderDrawColor(gRen, 0, 0, 0, 255);
+    SDL_RenderClear(gRen);
+
+    // progress (bytes based; good enough for a visual)
+    float pct = (wave.soundlen > 0) ? (wave.soundpos / (float)wave.soundlen) : 0.0f;
+    if (pct < 0.0f) pct = 0.0f; if (pct > 1.0f) pct = 1.0f;
+
+    const int barH = h / 24;     // ~4% of screen height
+    const int barW = (int)(w * 0.8f);
+    const int barX = (int)(w * 0.1f);
+    const int barY = (int)(h * 0.85f);
+
+    // bar outline (optional)
+    SDL_Rect outline = { barX, barY, barW, barH };
+    SDL_SetRenderDrawColor(gRen, 40, 40, 40, 255);
+    SDL_RenderDrawRect(gRen, &outline);
+
+    // filled part
+    SDL_Rect fill = { barX, barY, (int)(barW * pct), barH };
+    SDL_SetRenderDrawColor(gRen, 255, 255, 255, 255);
+    SDL_RenderFillRect(gRen, &fill);
+
+    SDL_RenderPresent(gRen);
+}
+
+// ---- Main loop ----
+int main(int argc, char* argv[])
+{
+    char filename[4096];
+
+    SDL_LogSetPriority(SDL_LOG_CATEGORY_APPLICATION, SDL_LOG_PRIORITY_INFO);
+
+    // We want audio + events + video so we can draw something
+    if (SDL_Init(SDL_INIT_AUDIO | SDL_INIT_EVENTS | SDL_INIT_VIDEO) < 0) {
+        SDL_LogError(SDL_LOG_CATEGORY_APPLICATION, "Couldn't initialize SDL: %s", SDL_GetError());
+        return 1;
+    }
+
+    if (argc > 1) SDL_strlcpy(filename, argv[1], sizeof(filename));
+    else          SDL_strlcpy(filename, "D:\\sample.wav", sizeof(filename));
+
+    if (SDL_LoadWAV(filename, &wave.spec, &wave.sound, &wave.soundlen) == NULL) {
+        SDL_LogError(SDL_LOG_CATEGORY_APPLICATION, "Couldn't load %s: %s", filename, SDL_GetError());
+        SDL_Quit();
+        return 1;
+    }
+
+    wave.spec.callback = fillerup;
+    wave.spec.userdata = NULL;
+    wave.soundpos = 0;
+
+    // Bring up fullscreen video so you don't see the dashboard
+    create_fullscreen_renderer();
+
+    open_audio();
+
+    // Basic event/render loop
+    while (!done) {
+        SDL_Event ev;
+        while (SDL_PollEvent(&ev)) {
+            if (ev.type == SDL_QUIT) done = 1;
+            if ((ev.type == SDL_AUDIODEVICEADDED && !ev.adevice.iscapture) ||
+                (ev.type == SDL_AUDIODEVICEREMOVED && !ev.adevice.iscapture && ev.adevice.which == device)) {
+                reopen_audio();
+            }
+            // Escape/back: let user quit (optional; depends on your input setup)
+            if (ev.type == SDL_KEYDOWN && ev.key.keysym.sym == SDLK_ESCAPE) done = 1;
+        }
+
+        // Draw a simple visual so the screen isn’t the dashboard
+        draw_progress_bar();
+
+        SDL_Delay(16); // ~60 fps visuals, audio runs independently
+    }
+
+    close_audio();
+    if (gRen) SDL_DestroyRenderer(gRen);
+    if (gWin) SDL_DestroyWindow(gWin);
+    SDL_FreeWAV(wave.sound);
+    SDL_Quit();
+    return 0;
+}

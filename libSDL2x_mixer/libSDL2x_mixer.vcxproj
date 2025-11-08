@@ -11,50 +11,37 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="source\effects_internal.c" />
-    <ClCompile Include="source\effect_position.c" />
-    <ClCompile Include="source\effect_stereoreverse.c" />
-    <ClCompile Include="source\load_aiff.c" />
-    <ClCompile Include="source\load_voc.c" />
-    <ClCompile Include="source\mixer.c" />
-    <ClCompile Include="source\music.c" />
-    <ClCompile Include="source\music_cmd.c" />
-    <ClCompile Include="source\music_flac.c" />
-    <ClCompile Include="source\music_fluidsynth.c" />
-    <ClCompile Include="source\music_mad.c" />
-    <ClCompile Include="source\music_mikmod.c" />
-    <ClCompile Include="source\music_modplug.c" />
-    <ClCompile Include="source\music_mpg123.c" />
-    <ClCompile Include="source\music_nativemidi.c" />
-    <ClCompile Include="source\music_ogg.c" />
-    <ClCompile Include="source\music_opus.c" />
-    <ClCompile Include="source\music_timidity.c" />
-    <ClCompile Include="source\music_wav.c" />
-    <ClCompile Include="source\playmus.c" />
-    <ClCompile Include="source\playwave.c" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="include\effects_internal.h" />
-    <ClInclude Include="include\load_aiff.h" />
-    <ClInclude Include="include\load_voc.h" />
-    <ClInclude Include="include\mixer.h" />
-    <ClInclude Include="include\music.h" />
-    <ClInclude Include="include\music_cmd.h" />
-    <ClInclude Include="include\music_flac.h" />
-    <ClInclude Include="include\music_fluidsynth.h" />
-    <ClInclude Include="include\music_mad.h" />
-    <ClInclude Include="include\music_mikmod.h" />
-    <ClInclude Include="include\music_modplug.h" />
-    <ClInclude Include="include\music_mpg123.h" />
-    <ClInclude Include="include\music_nativemidi.h" />
-    <ClInclude Include="include\music_ogg.h" />
-    <ClInclude Include="include\music_opus.h" />
-    <ClInclude Include="include\music_timidity.h" />
-    <ClInclude Include="include\music_wav.h" />
     <ClInclude Include="include\SDL_mixer.h" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="source\codecs\load_aiff.c" />
+    <ClCompile Include="source\codecs\load_voc.c" />
+    <ClCompile Include="source\codecs\mp3utils.c" />
+    <ClCompile Include="source\codecs\music_cmd.c" />
+    <ClCompile Include="source\codecs\music_drflac.c" />
+    <ClCompile Include="source\codecs\music_flac.c" />
+    <ClCompile Include="source\codecs\music_fluidsynth.c" />
+    <ClCompile Include="source\codecs\music_gme.c" />
+    <ClCompile Include="source\codecs\music_minimp3.c" />
+    <ClCompile Include="source\codecs\music_modplug.c" />
+    <ClCompile Include="source\codecs\music_mpg123.c" />
+    <ClCompile Include="source\codecs\music_nativemidi.c" />
+    <ClCompile Include="source\codecs\music_ogg.c" />
+    <ClCompile Include="source\codecs\music_ogg_stb.c" />
+    <ClCompile Include="source\codecs\music_opus.c" />
+    <ClCompile Include="source\codecs\music_timidity.c" />
+    <ClCompile Include="source\codecs\music_wav.c" />
+    <ClCompile Include="source\codecs\music_wavpack.c" />
+    <ClCompile Include="source\codecs\music_xmp.c" />
+    <ClCompile Include="source\effects_internal.c" />
+    <ClCompile Include="source\effect_position.c" />
+    <ClCompile Include="source\effect_stereoreverse.c" />
+    <ClCompile Include="source\mixer.c" />
+    <ClCompile Include="source\music.c" />
+    <ClCompile Include="source\utils.c" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
@@ -68,13 +55,13 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
     <ConfigurationType>StaticLibrary</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
-    <PlatformToolset>v142</PlatformToolset>
+    <PlatformToolset>v143</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
     <ConfigurationType>StaticLibrary</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
-    <PlatformToolset>v142</PlatformToolset>
+    <PlatformToolset>v143</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
@@ -91,26 +78,26 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <IncludePath>$(RXDK_LIBS)include</IncludePath>
+    <IncludePath>$(RXDK_LIBS)include;$(SolutionDir)\libSDL2x\include</IncludePath>
     <ExternalIncludePath>$(RXDK_LIBS)include</ExternalIncludePath>
     <LibraryWPath />
     <SourcePath />
     <ExcludePath>$(CommonExcludePath);$(VC_ExecutablePath_x86);$(RXDK_LIBS)lib</ExcludePath>
     <ReferencePath>$(RXDK_LIBS)lib</ReferencePath>
     <LibraryPath>$(RXDK_LIBS)lib</LibraryPath>
-    <OutDir>$(ProjectDir)$(Configuration)\</OutDir>
+    <OutDir>$(SolutionDir)libs\$(Configuration)\</OutDir>
     <TargetExt>.lib</TargetExt>
     <LinkIncremental>false</LinkIncremental>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
-    <IncludePath>$(RXDK_LIBS)include</IncludePath>
+    <IncludePath>$(RXDK_LIBS)include;$(SolutionDir)\libSDL2x\include</IncludePath>
     <ExternalIncludePath>$(RXDK_LIBS)include</ExternalIncludePath>
     <LibraryWPath />
     <SourcePath />
     <ExcludePath>$(CommonExcludePath);$(VC_ExecutablePath_x86);$(RXDK_LIBS)lib</ExcludePath>
     <ReferencePath>$(RXDK_LIBS)lib</ReferencePath>
     <LibraryPath>$(RXDK_LIBS)lib</LibraryPath>
-    <OutDir>$(ProjectDir)$(Configuration)\</OutDir>
+    <OutDir>$(SolutionDir)libs\$(Configuration)\</OutDir>
     <TargetExt>.lib</TargetExt>
     <LinkIncremental>false</LinkIncremental>
   </PropertyGroup>
@@ -118,10 +105,10 @@
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <SDLCheck>false</SDLCheck>
-      <PreprocessorDefinitions>XBOX;_XBOX;__XBOX__;_LIB;_DEBUG;MUSIC_WAV;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>XBOX;_XBOX;__XBOX__;_LIB;_DEBUG;MUSIC_WAV;MUSIC_MP3_MINIMP3;MUSIC_OGG;OGG_USE_STB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>false</ConformanceMode>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
-      <AdditionalIncludeDirectories>.\include;..\include;.\</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>include;source;source\codecs;..\include</AdditionalIncludeDirectories>
       <BufferSecurityCheck>false</BufferSecurityCheck>
       <ExceptionHandling>Sync</ExceptionHandling>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
@@ -153,10 +140,10 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>false</SDLCheck>
-      <PreprocessorDefinitions>XBOX;_XBOX;__XBOX__;_LIB;NDEBUG;MUSIC_WAV;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>XBOX;_XBOX;__XBOX__;_LIB;NDEBUG;MUSIC_WAV;MUSIC_MP3_DRMP3;MUSIC_OGG;OGG_USE_STB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>false</ConformanceMode>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
-      <AdditionalIncludeDirectories>.\include;..\include;.\</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>include;source;source\codecs;..\include</AdditionalIncludeDirectories>
       <BufferSecurityCheck>false</BufferSecurityCheck>
       <ExceptionHandling>Sync</ExceptionHandling>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>

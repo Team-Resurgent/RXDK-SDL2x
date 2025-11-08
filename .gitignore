@@ -58,5 +58,8 @@ Debug/
 *.ncb
 *.suo
 
-# ReadMe File
-README.md
+# Visual Studio Code
+.vscode/
+
+Temp.txt
+libs/
