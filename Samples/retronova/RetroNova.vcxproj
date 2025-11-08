@@ -51,7 +51,7 @@
     <SourcePath />
     <ExcludePath>$(CommonExcludePath);$(VC_ExecutablePath_x86);$(RXDK_LIBS)lib</ExcludePath>
     <ReferencePath>$(RXDK_LIBS)lib</ReferencePath>
-    <LibraryPath>$(RXDK_LIBS)lib;$(SolutionDir)$(Configuration)</LibraryPath>
+    <LibraryPath>$(RXDK_LIBS)lib;$(SolutionDir)libs\$(Configuration)</LibraryPath>
     <OutDir>$(ProjectDir)$(Configuration)\</OutDir>
     <LinkIncremental>false</LinkIncremental>
   </PropertyGroup>
@@ -62,7 +62,7 @@
     <SourcePath />
     <ExcludePath>$(CommonExcludePath);$(VC_ExecutablePath_x86);$(RXDK_LIBS)lib</ExcludePath>
     <ReferencePath>$(RXDK_LIBS)lib</ReferencePath>
-    <LibraryPath>$(RXDK_LIBS)lib;$(SolutionDir)$(Configuration)</LibraryPath>
+    <LibraryPath>$(RXDK_LIBS)lib;$(SolutionDir)libs\$(Configuration)</LibraryPath>
     <OutDir>$(ProjectDir)$(Configuration)\</OutDir>
     <LinkIncremental>false</LinkIncremental>
   </PropertyGroup>
