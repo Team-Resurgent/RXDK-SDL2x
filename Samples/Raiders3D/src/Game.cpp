@@ -293,6 +293,8 @@ void Game::initGame() {
     if (sf) SDL_FreeSurface(sf);
 
     app.renderer = SDL_CreateRenderer(app.window, -1, SDL_RENDERER_ACCELERATED);
+	SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "linear");   // nicer scaling or use Nearest for pixel art
+    SDL_RenderSetLogicalSize(app.renderer, WIDTH, HEIGHT);  // Resolution
     if (!app.renderer) {
         cout << "Could not create renderer : " << SDL_GetError() << endl;
         SDL_Quit();

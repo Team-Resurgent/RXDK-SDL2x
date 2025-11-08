@@ -98,7 +98,7 @@ void loop() {
 
 		// Render wave texture scaled to full screen
 		SDL_Rect dstRect = { 0, 0, WINDOW_WIDTH, WINDOW_HEIGHT };
-		SDL_RenderCopy(renderer, waveTexture, NULL, &dstRect);
+		SDL_RenderCopy(renderer, waveTexture, NULL, NULL);
 
 		// Present the renderer
 		SDL_RenderPresent(renderer);

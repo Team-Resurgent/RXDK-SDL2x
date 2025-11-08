@@ -1,4 +1,5 @@
-﻿// Minimal SDL2 + SDL_ttf overlay demo for Original Xbox (RXDK) For support of UTF / Symbols set "/utf-8" in C/C++ > Command Line > Additional Options .
+﻿// Minimal SDL2 + SDL_ttf overlay demo for Original Xbox (RXDK)
+// For support of UTF / Symbols set "/utf-8" in C/C++ > Command Line > Additional Options.
 
 #include <xtl.h>
 #include <stdlib.h>
@@ -10,15 +11,9 @@
 #include "SDL_ttf.h"
 #include "SDL_test_common.h"
 
-#define WINDOW_WIDTH      1280
-#define WINDOW_HEIGHT     720
-#define NUM_STARS         200
-
-/* Font paths */
-#define FONT_PATH_LATIN   "D:\\media\\DejaVuSans.ttf"         /* Latin + symbols */
-#define FONT_PATH_JP      "D:\\media\\NotoSansJP-Regular.ttf" /* Japanese */
-#define FONT_PATH_TC      "D:\\media\\NotoSansTC-Regular.ttf" /* Traditional Chinese */
-#define FONT_PATH_KR      "D:\\media\\NotoSansKR-Regular.ttf" /* Korean */
+#define DESIGN_W        1920   /* only used for initial font layout if needed */
+#define DESIGN_H        1080
+#define NUM_STARS       200
 #define PRIMARY_RENDERER_INDEX 0
 
 /* layout for the text grid (tighter) */
@@ -26,8 +21,12 @@
 #define COL_R_X   300
 #define TOP_Y     10
 #define LINE_GAP  2      /* smaller vertical spacing */
-#define WRAP_W    260    /* left column wrap width */
-#define R_WRAP_W  (WINDOW_WIDTH - COL_R_X - 8)  /* right column wrap width */
+
+/* Font paths */
+#define FONT_PATH_LATIN   "D:\\media\\DejaVuSans.ttf"         /* Latin + symbols */
+#define FONT_PATH_JP      "D:\\media\\NotoSansJP-Regular.ttf" /* Japanese */
+#define FONT_PATH_TC      "D:\\media\\NotoSansTC-Regular.ttf" /* Traditional Chinese */
+#define FONT_PATH_KR      "D:\\media\\NotoSansKR-Regular.ttf" /* Korean */
 
 static SDLTest_CommonState* state;
 static int done = 0;
@@ -36,11 +35,11 @@ static int done = 0;
 typedef struct { float x, y, z; Uint8 r, g, b; } Star;
 static Star stars[NUM_STARS];
 
+/* Current output size of primary renderer (updated at init; used for initial placement) */
+static int g_outw = DESIGN_W, g_outh = DESIGN_H;
+
 /* ---------- Text helpers ---------- */
-typedef struct {
-    SDL_Texture* tex;
-    int w, h;
-} TextTexture;
+typedef struct { SDL_Texture* tex; int w, h; } TextTexture;
 
 static void DestroyText(TextTexture* tt) {
     if (tt && tt->tex) { SDL_DestroyTexture(tt->tex); tt->tex = NULL; tt->w = tt->h = 0; }
@@ -58,9 +57,9 @@ static TextTexture RenderTextTexture(SDL_Renderer* r, TTF_Font* font,
     }
     else {
         switch (mode_solid_shaded_blended) {
-        case 0: s = TTF_RenderUTF8_Solid(font, utf8, fg);       break;
-        case 1: s = TTF_RenderUTF8_Shaded(font, utf8, fg, bg);   break;
-        default:s = TTF_RenderUTF8_Blended(font, utf8, fg);       break;
+        case 0: s = TTF_RenderUTF8_Solid(font, utf8, fg);     break;
+        case 1: s = TTF_RenderUTF8_Shaded(font, utf8, fg, bg);  break;
+        default:s = TTF_RenderUTF8_Blended(font, utf8, fg);      break;
         }
     }
     if (!s) return out;
@@ -114,12 +113,31 @@ static TextTexture g_tFPS;           /* dynamic @ 4 Hz */
 static Uint32 g_lastFPSTexMS = 0;
 static float  g_fpsEMA = 0.0f;
 
-/* ---------- Math / visuals init ---------- */
+/* ---------- Overscan-safe viewport for SD ---------- */
+static void SetOverscanSafeViewport(SDL_Renderer* r) {
+    int ow = 0, oh = 0;
+    SDL_GetRendererOutputSize(r, &ow, &oh);
+    /* For 480-line outputs, inset ~5% to avoid CRT overscan cropping */
+    if (oh <= 480) {
+        int insetX = ow / 20;
+        int insetY = oh / 20;
+        SDL_Rect safe = { insetX, insetY, ow - insetX * 2, oh - insetY * 2 };
+        SDL_RenderSetViewport(r, &safe);
+    }
+    else {
+        SDL_RenderSetViewport(r, NULL); /* full frame for 720p/1080i */
+    }
+}
 
+/* ---------- Math / visuals init ---------- */
 static void InitStars(void) {
+    /* Use current output size for initial placement */
+    const int W = (g_outw > 0 ? g_outw : DESIGN_W);
+    const int H = (g_outh > 0 ? g_outh : DESIGN_H);
+
     for (int i = 0; i < NUM_STARS; ++i) {
-        stars[i].x = (float)(rand() % WINDOW_WIDTH - WINDOW_WIDTH / 2);
-        stars[i].y = (float)(rand() % WINDOW_HEIGHT - WINDOW_HEIGHT / 2);
+        stars[i].x = (float)(rand() % W - W / 2);
+        stars[i].y = (float)(rand() % H - H / 2);
         stars[i].z = (float)(rand() % 200 + 1);
         stars[i].r = (Uint8)(rand() % 256);
         stars[i].g = (Uint8)(rand() % 256);
@@ -131,17 +149,21 @@ static void UpdateStars(void) {
     for (int i = 0; i < NUM_STARS; ++i) {
         stars[i].z -= 2.0f;
         if (stars[i].z <= 0.0f) {
-            stars[i].x = (float)(rand() % WINDOW_WIDTH - WINDOW_WIDTH / 2);
-            stars[i].y = (float)(rand() % WINDOW_HEIGHT - WINDOW_HEIGHT / 2);
             stars[i].z = 200.0f;
         }
     }
 }
 
+/* Project star positions into the CURRENT viewport (so it adapts to mode) */
 static void DrawStars(SDL_Renderer* r) {
+    SDL_Rect vp;
+    SDL_RenderGetViewport(r, &vp);
+    const float cx = vp.x + vp.w * 0.5f;
+    const float cy = vp.y + vp.h * 0.5f;
+
     for (int i = 0; i < NUM_STARS; ++i) {
-        int sx = (int)((stars[i].x / stars[i].z) * 100.0f + WINDOW_WIDTH / 2);
-        int sy = (int)((stars[i].y / stars[i].z) * 100.0f + WINDOW_HEIGHT / 2);
+        int sx = (int)((stars[i].x / stars[i].z) * 100.0f + cx);
+        int sy = (int)((stars[i].y / stars[i].z) * 100.0f + cy);
         int size = (int)((1.0f - stars[i].z / 200.0f) * 3.0f);
         if (size < 1) size = 1;
 
@@ -210,6 +232,9 @@ static void loop(void) {
         SDL_Renderer* r = state->renderers[i];
         if (!r) continue;
 
+        /* Ensure viewport matches current mode (overscan-safe on SD) */
+        SetOverscanSafeViewport(r);
+
         SDL_SetRenderDrawColor(r, 0, 0, 0, 255);
         SDL_RenderClear(r);
 
@@ -247,24 +272,32 @@ int main(int argc, char* argv[]) {
     SDL_Color black = { 0,0,0,255 };
     SDL_Color yellow = { 255,220,0,255 };
     SDL_Color gray = { 220,220,220,255 };
-    SDL_Color green = { 40,220,120,255 };
-    SDL_Color magenta = { 255,0,200,255 };
     SDL_Color halfwhite = { 255,255,255,128 }; /* alpha test */
 
     srand((unsigned int)time(NULL));
 
     SDL_SetHint(SDL_HINT_RENDER_BATCHING, "1");
     SDL_SetHint(SDL_HINT_RENDER_VSYNC, "0");
+    SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "linear"); /* keep, though we don't use logical size */
 
     state = SDLTest_CommonCreateState(argv, SDL_INIT_VIDEO);
     if (!state) return 1;
 
-    /* Tie the window to your macros */
-    state->window_w = WINDOW_WIDTH;
-    state->window_h = WINDOW_HEIGHT;
-    //state->window_flags |= SDL_WINDOW_FULLSCREEN;  /* optional on Xbox */
+    /* Ask for a large window; Xbox driver will pick a valid mode */
+    state->window_w = DESIGN_W;
+    state->window_h = DESIGN_H;
+    // state->window_flags |= SDL_WINDOW_FULLSCREEN;  /* optional on Xbox */
 
     if (!SDLTest_CommonInit(state)) return 2;
+
+    /* Query actual output size from the primary renderer */
+    if (state->num_windows > 0 && state->renderers[PRIMARY_RENDERER_INDEX]) {
+        SDL_GetRendererOutputSize(state->renderers[PRIMARY_RENDERER_INDEX], &g_outw, &g_outh);
+        if (g_outw <= 0 || g_outh <= 0) { g_outw = DESIGN_W; g_outh = DESIGN_H; }
+    }
+
+    /* DO NOT set logical size; we render in real pixels to avoid clip errors */
+    /* for (int i = 0; i < state->num_windows; ++i) { SDL_RenderSetLogicalSize(state->renderers[i], DESIGN_W, DESIGN_H); } */
 
     if (TTF_Init() != 0) {
         SDL_Log("TTF_Init failed: %s", TTF_GetError());
@@ -324,25 +357,33 @@ int main(int argc, char* argv[]) {
         if (state->num_windows > 0 && state->renderers[PRIMARY_RENDERER_INDEX]) {
             SDL_Renderer* r0 = state->renderers[PRIMARY_RENDERER_INDEX];
 
+            /* Compute dynamic wrap widths from actual output width */
+            int right_wrap_w = g_outw - COL_R_X - 8;
+            if (right_wrap_w < 64) right_wrap_w = 64; /* clamp */
+
             /* LEFT COLUMN -------------------------------------------------- */
+            int yL = TOP_Y + 18;   /* leave space under FPS */
             AddItem(r0, g_font16, "SDL_ttf: SOLID", yellow, black, 0, 0, COL_L_X, &yL);
-            AddItem(r0, g_font12, "Shaded text sample", black, gray, 1, 0, COL_L_X, &yL);
-            AddItem(r0, g_font16, "Blended text sample", white, black, 2, 0, COL_L_X, &yL);
+            AddItem(r0, g_font12, "Shaded text sample", black, SDL_Color { 220, 220, 220, 255 }, 1, 0, COL_L_X, & yL);
+            AddItem(r0, g_font16, "Blended text sample", SDL_Color { 255, 255, 255, 255 }, black, 2, 0, COL_L_X, & yL);
 
             AddItem(r0, g_font12,
                 "Wrapped text test — this paragraph should wrap inside "
                 "260px. This lets us check line breaks.",
-                white, black, 2, WRAP_W, COL_L_X, &yL);
+                SDL_Color {
+                255, 255, 255, 255
+            }, black, 2, 260, COL_L_X, & yL);
 
-            AddItem(r0, g_font12, "Kerning ON:  AV WA To Ty Ta Te Yo VA", white, black, 2, 0, COL_L_X, &yL);
-            AddItem(r0, g_font12_kern_off, "Kerning OFF: AV WA To Ty Ta Te Yo VA", white, black, 2, 0, COL_L_X, &yL);
+            AddItem(r0, g_font12, "Kerning ON:  AV WA To Ty Ta Te Yo VA", SDL_Color { 255, 255, 255, 255 }, black, 2, 0, COL_L_X, & yL);
+            AddItem(r0, g_font12_kern_off, "Kerning OFF: AV WA To Ty Ta Te Yo VA", SDL_Color { 255, 255, 255, 255 }, black, 2, 0, COL_L_X, & yL);
 
-            AddItem(r0, g_font12_hint_none, "Hinting NONE", white, black, 2, 0, COL_L_X, &yL);
-            AddItem(r0, g_font12_hint_mono, "Hinting MONO", white, black, 2, 0, COL_L_X, &yL);
-            AddItem(r0, g_font12_hint_light, "Hinting LIGHT", white, black, 2, 0, COL_L_X, &yL);
-            AddItem(r0, g_font12_hint_normal, "Hinting NORMAL", white, black, 2, 0, COL_L_X, &yL);
+            AddItem(r0, g_font12_hint_none, "Hinting NONE", SDL_Color { 255, 255, 255, 255 }, black, 2, 0, COL_L_X, & yL);
+            AddItem(r0, g_font12_hint_mono, "Hinting MONO", SDL_Color { 255, 255, 255, 255 }, black, 2, 0, COL_L_X, & yL);
+            AddItem(r0, g_font12_hint_light, "Hinting LIGHT", SDL_Color { 255, 255, 255, 255 }, black, 2, 0, COL_L_X, & yL);
+            AddItem(r0, g_font12_hint_normal, "Hinting NORMAL", SDL_Color { 255, 255, 255, 255 }, black, 2, 0, COL_L_X, & yL);
 
             /* RIGHT COLUMN ------------------------------------------------- */
+            int yR = TOP_Y;
             {
                 SDL_Color outlineMagenta = { 255,0,200,255 };
                 SDL_Color outlineGreen = { 40,220,120,255 };
@@ -356,29 +397,33 @@ int main(int argc, char* argv[]) {
                     outlineGreen, fillWhite, bgBlack, COL_R_X, &yR);
             }
 
-            AddItem(r0, g_font16_bold, "Bold", white, black, 2, 0, COL_R_X, &yR);
-            AddItem(r0, g_font16_italic, "Italic", white, black, 2, 0, COL_R_X, &yR);
-            AddItem(r0, g_font16_ul, "Underline", white, black, 2, 0, COL_R_X, &yR);
-            AddItem(r0, g_font16_strike, "Strikethrough", white, black, 2, 0, COL_R_X, &yR);
+            AddItem(r0, g_font16_bold, "Bold", SDL_Color { 255, 255, 255, 255 }, black, 2, 0, COL_R_X, & yR);
+            AddItem(r0, g_font16_italic, "Italic", SDL_Color { 255, 255, 255, 255 }, black, 2, 0, COL_R_X, & yR);
+            AddItem(r0, g_font16_ul, "Underline", SDL_Color { 255, 255, 255, 255 }, black, 2, 0, COL_R_X, & yR);
+            AddItem(r0, g_font16_strike, "Strikethrough", SDL_Color { 255, 255, 255, 255 }, black, 2, 0, COL_R_X, & yR);
 
-            AddItem(r0, g_font16, "Alpha 50% (blended)", halfwhite, black, 2, 0, COL_R_X, &yR);
+            AddItem(r0, g_font16, "Alpha 50% (blended)", SDL_Color { 255, 255, 255, 128 }, black, 2, 0, COL_R_X, & yR);
 
-            /* RIGHT-COLUMN LONG LINES: use R_WRAP_W so they don't get cut off */
+            /* RIGHT-COLUMN LONG LINES: use dynamic width so they don't get cut off */
             AddItem(r0, g_font16,
                 "UTF-8: café • naïve • fiancée — en–dash — em—dash",
-                white, black, 2, R_WRAP_W, COL_R_X, &yR);
+                SDL_Color {
+                255, 255, 255, 255
+            }, black, 2, right_wrap_w, COL_R_X, & yR);
 
             /* CJK: render each script with its own face (fallback to Latin if open failed) */
             AddItem(r0, (g_font16_tc ? g_font16_tc : g_font16),
-                "CJK (TC): 你好，世界", white, black, 2, R_WRAP_W, COL_R_X, &yR);
+                "CJK (TC): 你好，世界", SDL_Color { 255, 255, 255, 255 }, black, 2, right_wrap_w, COL_R_X, & yR);
             AddItem(r0, (g_font16_jp ? g_font16_jp : g_font16),
-                "CJK (JP): こんにちは、世界", white, black, 2, R_WRAP_W, COL_R_X, &yR);
+                "CJK (JP): こんにちは、世界", SDL_Color { 255, 255, 255, 255 }, black, 2, right_wrap_w, COL_R_X, & yR);
             AddItem(r0, (g_font16_kr ? g_font16_kr : g_font16),
-                "CJK (KR): 안녕하세요, 세계", white, black, 2, R_WRAP_W, COL_R_X, &yR);
+                "CJK (KR): 안녕하세요, 세계", SDL_Color { 255, 255, 255, 255 }, black, 2, right_wrap_w, COL_R_X, & yR);
 
             AddItem(r0, g_font16,
                 "Symbols: ✓ ✗ ★ ☆ © ® ™ → ← ↑ ↓",
-                white, black, 2, R_WRAP_W, COL_R_X, &yR);
+                SDL_Color {
+                255, 255, 255, 255
+            }, black, 2, right_wrap_w, COL_R_X, & yR);
         }
 
         /* not needed after building textures */

@@ -13,9 +13,9 @@ This project has been updated to work with **RXDK**, which provides a modern dev
 
 ## ✅ Working SDL2 Addons
 
-- **SDL2 Mixer**: Fully functional and integrated into the port.
-- **SDL2 Image**: Fully functional and integrated into the port.
-- **SDL2 TTF**:   Fully functional and integrated into the port.
+- **SDL2 Mixer 2.8.1**: Fully functional and integrated into the port. (MP3, OGG, WAV support)
+- **SDL2 Image 2.9.0**: Fully functional and integrated into the port.
+- **SDL2 TTF 2.24.0**:  Fully functional and integrated into the port. (.ttf support)
 
 ---
 
@@ -37,6 +37,7 @@ Special thanks to the following contributors for their invaluable work and suppo
 - **CrunchBite** and **Horneydvl**: For their amazing samples and contributions.
 - **AsayuGit**: For porting and fixing the **SDL2 Mixer** addon.
 - **Lantus/MVG** and **Hyper_Eye**: For their foundational work on the SDL 1.2 port.
+- **zeealucard** and **wolf3s**: For their contributions in updating sdl to 2.32.10.
 
 ---
 
