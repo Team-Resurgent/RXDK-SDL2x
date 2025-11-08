@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.10.35013.160
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "libSDL2x", "libSDL2x.vcxproj", "{7C481C7D-ECA7-4F9E-879C-105784F3543D}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "libSDL2x", "libSDL2x\libSDL2x.vcxproj", "{7C481C7D-ECA7-4F9E-879C-105784F3543D}"
 	ProjectSection(ProjectDependencies) = postProject
 		{08806D45-83D0-45C3-AAEA-3B076B3D8CDA} = {08806D45-83D0-45C3-AAEA-3B076B3D8CDA}
 		{A9BE8326-536F-42C4-8022-32F42D472DE4} = {A9BE8326-536F-42C4-8022-32F42D472DE4}

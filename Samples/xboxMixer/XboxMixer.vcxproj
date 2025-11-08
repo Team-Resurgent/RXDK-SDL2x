@@ -45,7 +45,7 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <IncludePath>$(RXDK_LIBS)include</IncludePath>
+    <IncludePath>$(RXDK_LIBS)include;$(SolutionDir)\libSDL2x\include</IncludePath>
     <ExternalIncludePath>$(RXDK_LIBS)include</ExternalIncludePath>
     <LibraryWPath />
     <SourcePath />
@@ -56,7 +56,7 @@
     <LinkIncremental>false</LinkIncremental>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
-    <IncludePath>$(RXDK_LIBS)include</IncludePath>
+    <IncludePath>$(RXDK_LIBS)include;$(SolutionDir)\libSDL2x\include</IncludePath>
     <ExternalIncludePath>$(RXDK_LIBS)include</ExternalIncludePath>
     <LibraryWPath />
     <SourcePath />
