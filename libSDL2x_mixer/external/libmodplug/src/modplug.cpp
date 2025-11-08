@@ -275,3 +275,14 @@ void ModPlug_SetSettings(const ModPlug_Settings* settings)
 	memcpy(&ModPlug::gSettings, settings, sizeof(ModPlug_Settings));
 	ModPlug::UpdateSettings(false); // do not update basic config.
 }
+
+void cdecl operator delete(void* a, unsigned int cant)
+{
+	operator delete(a);
+}
+
+extern "C" void _terminate()
+{
+	// Handle unexpected termination here
+	while (true); // Infinite loop to halt execution
+}

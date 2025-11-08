@@ -11,45 +11,56 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="include\SDL_mixer.h" />
+    <ClCompile Include="src\fastmix.cpp" />
+    <ClCompile Include="src\load_669.cpp" />
+    <ClCompile Include="src\load_abc.cpp" />
+    <ClCompile Include="src\load_amf.cpp" />
+    <ClCompile Include="src\load_ams.cpp" />
+    <ClCompile Include="src\load_dbm.cpp" />
+    <ClCompile Include="src\load_dmf.cpp" />
+    <ClCompile Include="src\load_dsm.cpp" />
+    <ClCompile Include="src\load_far.cpp" />
+    <ClCompile Include="src\load_it.cpp" />
+    <ClCompile Include="src\load_j2b.cpp" />
+    <ClCompile Include="src\load_mdl.cpp" />
+    <ClCompile Include="src\load_med.cpp" />
+    <ClCompile Include="src\load_mid.cpp" />
+    <ClCompile Include="src\load_mod.cpp" />
+    <ClCompile Include="src\load_mt2.cpp" />
+    <ClCompile Include="src\load_mtm.cpp" />
+    <ClCompile Include="src\load_okt.cpp" />
+    <ClCompile Include="src\load_pat.cpp" />
+    <ClCompile Include="src\load_psm.cpp" />
+    <ClCompile Include="src\load_ptm.cpp" />
+    <ClCompile Include="src\load_s3m.cpp" />
+    <ClCompile Include="src\load_stm.cpp" />
+    <ClCompile Include="src\load_ult.cpp" />
+    <ClCompile Include="src\load_umx.cpp" />
+    <ClCompile Include="src\load_wav.cpp" />
+    <ClCompile Include="src\load_xm.cpp" />
+    <ClCompile Include="src\mmcmp.cpp" />
+    <ClCompile Include="src\modplug.cpp" />
+    <ClCompile Include="src\sndfile.cpp" />
+    <ClCompile Include="src\sndmix.cpp" />
+    <ClCompile Include="src\snd_dsp.cpp" />
+    <ClCompile Include="src\snd_flt.cpp" />
+    <ClCompile Include="src\snd_fx.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <Text Include="ReadMe.txt" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClCompile Include="source\codecs\load_aiff.c" />
-    <ClCompile Include="source\codecs\load_voc.c" />
-    <ClCompile Include="source\codecs\mp3utils.c" />
-    <ClCompile Include="source\codecs\music_cmd.c" />
-    <ClCompile Include="source\codecs\music_drflac.c" />
-    <ClCompile Include="source\codecs\music_flac.c" />
-    <ClCompile Include="source\codecs\music_fluidsynth.c" />
-    <ClCompile Include="source\codecs\music_gme.c" />
-    <ClCompile Include="source\codecs\music_minimp3.c" />
-    <ClCompile Include="source\codecs\music_modplug.c" />
-    <ClCompile Include="source\codecs\music_mpg123.c" />
-    <ClCompile Include="source\codecs\music_nativemidi.c" />
-    <ClCompile Include="source\codecs\music_ogg.c" />
-    <ClCompile Include="source\codecs\music_ogg_stb.c" />
-    <ClCompile Include="source\codecs\music_opus.c" />
-    <ClCompile Include="source\codecs\music_timidity.c" />
-    <ClCompile Include="source\codecs\music_wav.c" />
-    <ClCompile Include="source\codecs\music_wavpack.c" />
-    <ClCompile Include="source\codecs\music_xmp.c" />
-    <ClCompile Include="source\effects_internal.c" />
-    <ClCompile Include="source\effect_position.c" />
-    <ClCompile Include="source\effect_stereoreverse.c" />
-    <ClCompile Include="source\mixer.c" />
-    <ClCompile Include="source\music.c" />
-    <ClCompile Include="source\utils.c" />
+    <ClInclude Include="src\libmodplug\it_defs.h" />
+    <ClInclude Include="src\libmodplug\sndfile.h" />
+    <ClInclude Include="src\libmodplug\stdafx.h" />
+    <ClInclude Include="src\load_pat.h" />
+    <ClInclude Include="src\modplug.h" />
+    <ClInclude Include="src\tables.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
     <Keyword>Win32Proj</Keyword>
-    <ProjectGuid>{08806D45-83D0-45C3-AAEA-3B076B3D8CDA}</ProjectGuid>
-    <RootNamespace>libSDL2x_mixer</RootNamespace>
+    <ProjectGuid>{335FFA69-9BF5-40A0-893A-F9853BA0AB73}</ProjectGuid>
+    <RootNamespace>Triangle</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
-    <ProjectName>libSDL2x_mixer</ProjectName>
+    <ProjectName>libmodplug</ProjectName>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
@@ -78,26 +89,26 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <IncludePath>$(RXDK_LIBS)include;$(ProjectDir)include;$(ProjectDir)..\libSDL2x\include;$(ProjectDir)external\libmodplug\src</IncludePath>
+    <IncludePath>$(RXDK_LIBS)include;$(ProjectDir)src\libmodplug</IncludePath>
     <ExternalIncludePath>$(RXDK_LIBS)include</ExternalIncludePath>
     <LibraryWPath />
     <SourcePath />
     <ExcludePath>$(CommonExcludePath);$(VC_ExecutablePath_x86);$(RXDK_LIBS)lib</ExcludePath>
     <ReferencePath>$(RXDK_LIBS)lib</ReferencePath>
     <LibraryPath>$(RXDK_LIBS)lib</LibraryPath>
-    <OutDir>$(ProjectDir)..\libs\$(Configuration)\</OutDir>
+    <OutDir>$(ProjectDir)..\..\..\libs\$(Configuration)\</OutDir>
     <TargetExt>.lib</TargetExt>
     <LinkIncremental>false</LinkIncremental>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
-    <IncludePath>$(RXDK_LIBS)include;$(ProjectDir)include;$(ProjectDir)..\libSDL2x\include;$(ProjectDir)external\libmodplug\src</IncludePath>
+    <IncludePath>$(RXDK_LIBS)include;$(ProjectDir)src\libmodplug</IncludePath>
     <ExternalIncludePath>$(RXDK_LIBS)include</ExternalIncludePath>
     <LibraryWPath />
     <SourcePath />
     <ExcludePath>$(CommonExcludePath);$(VC_ExecutablePath_x86);$(RXDK_LIBS)lib</ExcludePath>
     <ReferencePath>$(RXDK_LIBS)lib</ReferencePath>
     <LibraryPath>$(RXDK_LIBS)lib</LibraryPath>
-    <OutDir>$(ProjectDir)..\libs\$(Configuration)\</OutDir>
+    <OutDir>$(ProjectDir)..\..\..\libs\$(Configuration)\</OutDir>
     <TargetExt>.lib</TargetExt>
     <LinkIncremental>false</LinkIncremental>
   </PropertyGroup>
@@ -105,23 +116,26 @@
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <SDLCheck>false</SDLCheck>
-      <PreprocessorDefinitions>XBOX;_XBOX;__XBOX__;_LIB;_DEBUG;MUSIC_WAV;MUSIC_MP3_MINIMP3;MUSIC_OGG;OGG_USE_STB;MUSIC_MOD_MODPLUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>XBOX;_XBOX;__XBOX__;MODPLUG_BUILD;MODPLUG_STATIC;_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>false</ConformanceMode>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
-      <AdditionalIncludeDirectories>include;source;source\codecs;..\include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>
+      </AdditionalIncludeDirectories>
       <BufferSecurityCheck>false</BufferSecurityCheck>
-      <ExceptionHandling>Sync</ExceptionHandling>
+      <ExceptionHandling>false</ExceptionHandling>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <AdditionalOptions>/arch:SSE %(AdditionalOptions)</AdditionalOptions>
       <SupportJustMyCode>false</SupportJustMyCode>
       <ControlFlowGuard>false</ControlFlowGuard>
       <LanguageStandard>stdcpp17</LanguageStandard>
+      <UndefinePreprocessorDefinitions>
+      </UndefinePreprocessorDefinitions>
       <EnableEnhancedInstructionSet>StreamingSIMDExtensions</EnableEnhancedInstructionSet>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>xboxkrnl.lib;libcmtd.lib;libcpmtd.lib;xapilibd.lib;d3d8d.lib;d3dx8d.lib;xbdm.lib</AdditionalDependencies>
+      <AdditionalDependencies>xboxkrnl.lib;libcmtd.lib;xapilibd.lib;d3d8d.lib;d3dx8d.lib;xbdm.lib</AdditionalDependencies>
       <IgnoreAllDefaultLibraries>true</IgnoreAllDefaultLibraries>
       <BaseAddress>
       </BaseAddress>
@@ -140,18 +154,20 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>false</SDLCheck>
-      <PreprocessorDefinitions>XBOX;_XBOX;__XBOX__;_LIB;NDEBUG;MUSIC_WAV;MUSIC_MP3_DRMP3;MUSIC_OGG;OGG_USE_STB;MUSIC_MOD_MODPLUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>XBOX;_XBOX;__XBOX__;MODPLUG_BUILD;MODPLUG_STATIC;NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>false</ConformanceMode>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
-      <AdditionalIncludeDirectories>include;source;source\codecs;..\include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>
+      </AdditionalIncludeDirectories>
       <BufferSecurityCheck>false</BufferSecurityCheck>
-      <ExceptionHandling>Sync</ExceptionHandling>
+      <ExceptionHandling>false</ExceptionHandling>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <AdditionalOptions>/arch:SSE %(AdditionalOptions)</AdditionalOptions>
       <ControlFlowGuard>false</ControlFlowGuard>
       <LanguageStandard>stdcpp17</LanguageStandard>
+      <UndefinePreprocessorDefinitions>
+      </UndefinePreprocessorDefinitions>
       <EnableEnhancedInstructionSet>StreamingSIMDExtensions</EnableEnhancedInstructionSet>
-      <WholeProgramOptimization>false</WholeProgramOptimization>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
