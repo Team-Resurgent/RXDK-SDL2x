@@ -276,34 +276,34 @@ const char *SDLNet_ResolveIP(const IPaddress *ip)
 #endif
 }
 
-int SDLNet_GetLocalAddresses(IPaddress *addresses, int maxcount)
+int SDLNet_GetLocalAddresses(IPaddress* addresses, int maxcount)
 {
     int count = 0;
 #ifdef SIOCGIFCONF
-/* Defined on Mac OS X */
+    /* Defined on Mac OS X */
 #ifndef _SIZEOF_ADDR_IFREQ
 #define _SIZEOF_ADDR_IFREQ sizeof
 #endif
     SOCKET sock;
     struct ifconf conf;
     char data[4096];
-    struct ifreq *ifr;
-    struct sockaddr_in *sock_addr;
+    struct ifreq* ifr;
+    struct sockaddr_in* sock_addr;
 
     sock = socket(AF_INET, SOCK_DGRAM, 0);
-    if ( sock == INVALID_SOCKET ) {
+    if (sock == INVALID_SOCKET) {
         return 0;
     }
 
     conf.ifc_len = sizeof(data);
-    conf.ifc_buf = (caddr_t) data;
-    if ( ioctl(sock, SIOCGIFCONF, &conf) < 0 ) {
+    conf.ifc_buf = (caddr_t)data;
+    if (ioctl(sock, SIOCGIFCONF, &conf) < 0) {
         closesocket(sock);
         return 0;
     }
 
     ifr = (struct ifreq*)data;
-    while ((char*)ifr < data+conf.ifc_len) {
+    while ((char*)ifr < data + conf.ifc_len) {
         if (ifr->ifr_addr.sa_family == AF_INET) {
             if (count < maxcount) {
                 sock_addr = (struct sockaddr_in*)&ifr->ifr_addr;
@@ -315,20 +315,57 @@ int SDLNet_GetLocalAddresses(IPaddress *addresses, int maxcount)
         ifr = (struct ifreq*)((char*)ifr + _SIZEOF_ADDR_IFREQ(*ifr));
     }
     closesocket(sock);
+
+#elif defined(__XBOX__)
+
+    /* Xbox: wait briefly for XNet to provide a title IP, then return it. */
+    if (maxcount > 0) {
+        XNADDR xnaddr;
+        DWORD stat;
+        DWORD start = GetTickCount();
+        const DWORD timeout = 5000;    /* wait up to 5 seconds */
+        const DWORD interval = 100;     /* poll every 100 ms    */
+
+        SDL_memset(&xnaddr, 0, sizeof(xnaddr));
+
+        for (;;) {
+            SDL_memset(&xnaddr, 0, sizeof(xnaddr));
+            stat = XNetGetTitleXnAddr(&xnaddr);
+
+            /* If we have any non-zero IP, use it. */
+            if (xnaddr.ina.S_un.S_addr != 0) {
+                Uint32 ip_host = xnaddr.ina.S_un.S_addr;
+
+                /* SDL_net expects IPaddress.host in NETWORK (big-endian) order,
+                   so convert from host order here. */
+                addresses[0].host = SDL_SwapBE32(ip_host);
+                addresses[0].port = 0;   /* port not important for local addr */
+                count = 1;
+                break;
+            }
+
+            if (GetTickCount() - start >= timeout) {
+                break;  /* timed out, return 0 addresses */
+            }
+
+            Sleep(interval);
+        }
+    }
+
 #elif defined(__WIN32__)
     PIP_ADAPTER_INFO pAdapterInfo;
     PIP_ADAPTER_INFO pAdapter;
     PIP_ADDR_STRING pAddress;
     DWORD dwRetVal = 0;
-    ULONG ulOutBufLen = sizeof (IP_ADAPTER_INFO);
+    ULONG ulOutBufLen = sizeof(IP_ADAPTER_INFO);
 
-    pAdapterInfo = (IP_ADAPTER_INFO *) SDL_malloc(sizeof (IP_ADAPTER_INFO));
+    pAdapterInfo = (IP_ADAPTER_INFO*)SDL_malloc(sizeof(IP_ADAPTER_INFO));
     if (pAdapterInfo == NULL) {
         return 0;
     }
 
     if ((dwRetVal = GetAdaptersInfo(pAdapterInfo, &ulOutBufLen)) == ERROR_BUFFER_OVERFLOW) {
-        pAdapterInfo = (IP_ADAPTER_INFO *) SDL_realloc(pAdapterInfo, ulOutBufLen);
+        pAdapterInfo = (IP_ADAPTER_INFO*)SDL_realloc(pAdapterInfo, ulOutBufLen);
         if (pAdapterInfo == NULL) {
             return 0;
         }

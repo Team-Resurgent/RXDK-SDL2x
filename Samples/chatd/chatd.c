@@ -243,6 +243,8 @@ int main(int argc, char *argv[])
     }
     SDLNet_TCP_AddSocket(socketset, servsock);
 
+    SDL_Log("Chatd server started\n");
+
     /* Loop, waiting for network events */
     for ( ; ; ) {
         /* Wait for events */
