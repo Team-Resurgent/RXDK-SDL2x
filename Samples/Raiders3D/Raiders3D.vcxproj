@@ -87,7 +87,7 @@
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>xboxkrnl.lib;xapilibd.lib;xbdm.lib;d3d8d.lib;d3dx8d.lib;dsoundd.lib;xkbd.lib;libsdl2x.lib;libSDL2x_image.lib;freetype-xbox.lib;libSDL2x_ttf.lib;libSDL2x_Mixer.lib;libcmtd.lib;libcpmtd.lib</AdditionalDependencies>
+      <AdditionalDependencies>xboxkrnl.lib;xapilibd.lib;xbdm.lib;d3d8d.lib;d3dx8d.lib;dsoundd.lib;xkbd.lib;libsdl2x.lib;libSDL2x_image.lib;freetype-xbox.lib;libSDL2x_ttf.lib;libmodplug.lib;libSDL2x_Mixer.lib;libcmtd.lib;libcpmtd.lib</AdditionalDependencies>
       <IgnoreAllDefaultLibraries>false</IgnoreAllDefaultLibraries>
       <BaseAddress>
       </BaseAddress>
@@ -132,7 +132,7 @@ MKDIR "$(OutDir)XISO"
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>xboxkrnl.lib;xapilib.lib;xkbd.lib;d3d8.lib;d3dx8.lib;dsound.lib;libsdl2x.lib;libSDL2x_image.lib;freetype-xbox.lib;libSDL2x_ttf.lib;libSDL2x_Mixer.lib;libcmt.lib</AdditionalDependencies>
+      <AdditionalDependencies>xboxkrnl.lib;xapilib.lib;xkbd.lib;d3d8.lib;d3dx8.lib;dsound.lib;libsdl2x.lib;libSDL2x_image.lib;freetype-xbox.lib;libSDL2x_ttf.lib;libmodplug.lib;libSDL2x_Mixer.lib;libcmt.lib</AdditionalDependencies>
       <IgnoreAllDefaultLibraries>false</IgnoreAllDefaultLibraries>
       <BaseAddress>
       </BaseAddress>
