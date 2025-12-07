@@ -124,8 +124,8 @@ static void XBOX_CloseController(const DWORD port) {
 	}
 
 	// Notify SDL that the joystick has been removed
-	SDL_PrivateJoystickRemoved(port);
 	g_NumControllers--;
+	SDL_PrivateJoystickRemoved(port);
 
 	// Close the handle and mark as disconnected
 	if (g_Controllers[port].device_handle) {
@@ -165,13 +165,17 @@ static void XBOX_JoystickDetect(void) {
 				DWORD res = XInputGetState(g_Controllers[port].device_handle, &state);
 				// Handle disconnection
 				if (res != ERROR_SUCCESS) {
+					SDL_LockJoysticks();
 					XBOX_CloseController(port);
+					SDL_UnlockJoysticks();
 				}
 			}
 		}
 		else
 		{
+			SDL_LockJoysticks();
 			XBOX_OpenController(port);
+			SDL_UnlockJoysticks();
 		}
 	}
 }
@@ -280,7 +284,7 @@ XBOX_JoystickOpen(SDL_Joystick* joystick, int device_index)
 		return SDL_SetError("Invalid device index");
 	}
 
-	joystick->instance_id = XBOX_JoystickGetDeviceInstanceID(device_index);
+	joystick->instance_id = device_index;
 
 	// For standard Xbox controller:
 	// Typically: 2 analog sticks = 4 axes, triggers can be axes if desired.
