@@ -137,6 +137,8 @@ static void XBOX_CloseController(const DWORD port) {
 	SDL_Log("Controller disconnected at port %d\n", port);
 }
 
+void XBOX_JoystickDetect(void);
+
 static int XBOX_JoystickInit(void) {
 	SDL_Log("Initializing XBOX Joystick driver\n");
 	g_NumControllers = 0;
@@ -148,6 +150,8 @@ static int XBOX_JoystickInit(void) {
 		g_bDevicesInitialized = TRUE;
 		SDL_Log("XInitDevices completed\n");
 	}
+
+	XBOX_JoystickDetect();
 
 	return 0;
 }
