@@ -58,8 +58,6 @@ typedef struct {
 	/* Rumble Tracking */
 	Uint32 rumble_end_time;    /* Time when rumble should stop */
 	BOOL rumble_active;        /* Is rumble currently active? */
-	Uint16 usb_vendor_id;
-	Uint16 usb_product_id;
 } XboxControllerDevice;
 
 const int XBOX_JOYSTICK_A = 0;
@@ -83,8 +81,63 @@ const int XBOX_JOYSTICK_RIGHT_TRIGGER = 5;
 static XboxControllerDevice g_Controllers[XUSER_MAX_COUNT];
 static int g_NumControllers = 0;
 
+static BOOL XBOX_OpenController(const DWORD port) {
+	if (port >= XUSER_MAX_COUNT) {
+		return FALSE;
+	}
+
+	XINPUT_POLLING_PARAMETERS pollParams = g_PollingParameters;
+	HANDLE handle = XInputOpen(XDEVICE_TYPE_GAMEPAD, port, XDEVICE_NO_SLOT, &pollParams);
+
+	if (!handle) {
+		g_Controllers[port].connected = FALSE;
+		return FALSE;
+	}
+
+	// Retrieve capabilities
+	if (XInputGetCapabilities(handle, &g_Controllers[port].caps) != ERROR_SUCCESS) {
+		SDL_Log("Failed to get capabilities for port %d\n", port);
+		g_Controllers[port].device_handle = NULL;
+		g_Controllers[port].connected = FALSE;
+		XInputClose(handle);
+		return FALSE;
+	}
+	else
+	{
+		g_Controllers[port].device_handle = handle;
+		g_Controllers[port].connected = TRUE;
+		g_Controllers[port].port = port;
+		g_Controllers[port].rumble_active = FALSE;
+		g_Controllers[port].rumble_end_time = 0;
+	}
+
+	SDL_Log("Controller at port %d opened\n", port);
+
+	return TRUE;
+}
+
+static void XBOX_CloseController(const DWORD port) {
+	if (port >= XUSER_MAX_COUNT) {
+		return FALSE;
+	}
+
+	SDL_Log("Controller disconnected at port %d\n", port);
+
+	// Notify SDL that the joystick has been removed
+	SDL_PrivateJoystickRemoved(port);
+	g_NumControllers--;
+
+	// Close the handle and mark as disconnected
+	if (g_Controllers[port].device_handle) {
+		XInputClose(g_Controllers[port].device_handle);
+	}
+	g_Controllers[port].device_handle = NULL;
+	g_Controllers[port].connected = FALSE;
+}
+
 static int XBOX_JoystickInit(void) {
 	SDL_Log("Initializing XBOX Joystick driver\n");
+	g_NumControllers = 0;
 
 	// Initialize devices once
 	if (!g_bDevicesInitialized) {
@@ -94,139 +147,33 @@ static int XBOX_JoystickInit(void) {
 		SDL_Log("XInitDevices completed\n");
 	}
 
-	// Check connected devices
-	DWORD dwDevices = XGetDevices(XDEVICE_TYPE_GAMEPAD);
-	SDL_Log("Device mask: %08X\n", dwDevices);
-
-	for (DWORD port = 0; port < XUSER_MAX_COUNT; port++) {
-		if (!(dwDevices & (1 << port))) {
-			SDL_Log("No controller detected at port %d\n", port);
-			g_Controllers[port].connected = FALSE;
-			continue;
-		}
-
-		SDL_Log("Attempting to open controller at port %d\n", port);
-		XINPUT_POLLING_PARAMETERS pollParams = g_PollingParameters;
-		HANDLE h = XInputOpen(XDEVICE_TYPE_GAMEPAD, port, XDEVICE_NO_SLOT, &pollParams);
-
-		if (!h) {
-			SDL_Log("XInputOpen failed for port %d\n", port);
-			g_Controllers[port].connected = FALSE;
-			continue;
-		}
-
-		XINPUT_DEVICE_DESCRIPTION pDescription;
-		DWORD usb_desc = XInputGetDeviceDescription(h, &pDescription);
-		if (!usb_desc) {
-			g_Controllers[port].usb_product_id = 0xBEEF;
-			g_Controllers[port].usb_vendor_id = 0xDEAD;
-		}
-		else {
-			g_Controllers[port].usb_product_id = pDescription.wProductID;
-			g_Controllers[port].usb_vendor_id = pDescription.wVendorID;
-		}
-		SDL_Log("Controller connected in port %d, VID 0x%.4x PID 0x%.4x\n", port, g_Controllers[port].usb_vendor_id, g_Controllers[port].usb_product_id);
-
-		g_Controllers[port].device_handle = h;
-		g_Controllers[port].connected = TRUE;
-		g_Controllers[port].port = port;
-
-		// Retrieve capabilities
-		if (XInputGetCapabilities(h, &g_Controllers[port].caps) != ERROR_SUCCESS) {
-			SDL_Log("Failed to get capabilities for port %d\n", port);
-			XInputClose(h);
-			g_Controllers[port].device_handle = NULL;
-			g_Controllers[port].connected = FALSE;
-			continue;
-		}
-
-		g_Controllers[port].rumble_active = FALSE;
-		g_Controllers[port].rumble_end_time = 0;
-	}
-
-	g_NumControllers = 0;
-	for (DWORD port = 0; port < XUSER_MAX_COUNT; port++) {
-		if (g_Controllers[port].connected) {
-			SDL_Log("Controller at port %d is connected\n", port);
-			g_NumControllers++;
-		}
-	}
-	SDL_Log("Number of connected controllers: %d\n", g_NumControllers);
-
 	return 0;
 }
 
 static void XBOX_JoystickDetect(void) {
+	// Detect new devices
 	DWORD dwDevices = XGetDevices(XDEVICE_TYPE_GAMEPAD);
-	//SDL_Log("Device mask: %08X\n", dwDevices);
 
 	for (DWORD port = 0; port < XUSER_MAX_COUNT; port++) {
-		if (!(dwDevices & (1 << port))) {
-			if (g_Controllers[port].connected) {
-				SDL_Log("Controller disconnected at port %d\n", port);
-				XInputClose(g_Controllers[port].device_handle);
-				g_Controllers[port].device_handle = NULL;
-				g_Controllers[port].connected = FALSE;
-				g_NumControllers--;
-				SDL_PrivateJoystickRemoved(port);
-			}
-			continue;
-		}
-
+		// Attempt to open non connected joysticks
 		if (!g_Controllers[port].connected) {
-			SDL_Log("Attempting to open controller at port %d\n", port);
-			XINPUT_POLLING_PARAMETERS pollParams = g_PollingParameters;
-			HANDLE h = XInputOpen(XDEVICE_TYPE_GAMEPAD, port, XDEVICE_NO_SLOT, &pollParams);
-
-			if (!h) {
-				SDL_Log("XInputOpen failed for port %d\n", port);
-				continue;
+			if (XBOX_OpenController(port)) {
+				g_NumControllers++;
+				SDL_PrivateJoystickAdded(port);
 			}
-
-			XINPUT_DEVICE_DESCRIPTION pDescription;
-			DWORD usb_desc = XInputGetDeviceDescription(h, &pDescription); // Seems this doesnt work
-			if (!usb_desc) {
-				g_Controllers[port].usb_product_id = 0xBEEF;
-				g_Controllers[port].usb_vendor_id = 0xDEAD;
-			}
-			else {
-				g_Controllers[port].usb_product_id = pDescription.wProductID;
-				g_Controllers[port].usb_vendor_id = pDescription.wVendorID;
-			}
-			SDL_Log("Controller connected in port %d, VID 0x%.4x PID 0x%.4x\n", port, g_Controllers[port].usb_vendor_id, g_Controllers[port].usb_product_id);
-
-			g_Controllers[port].device_handle = h;
-			g_Controllers[port].connected = TRUE;
-			g_Controllers[port].port = port;
-
-			if (XInputGetCapabilities(h, &g_Controllers[port].caps) != ERROR_SUCCESS) {
-				SDL_Log("Failed to get capabilities for port %d\n", port);
-				XInputClose(h);
-				g_Controllers[port].device_handle = NULL;
-				g_Controllers[port].connected = FALSE;
-				continue;
-			}
-
-			g_Controllers[port].rumble_active = FALSE;
-			g_Controllers[port].rumble_end_time = 0;
-			g_NumControllers++;
-			SDL_PrivateJoystickAdded(port);
 		}
 	}
-
-	//SDL_Log("Number of connected controllers: %d\n", g_NumControllers);
 }
 
 static int
 XBOX_JoystickGetCount(void)
 {
-	// SDL_Log("XBOX_JoystickGetCount\n");
 	return g_NumControllers;
 }
 
 static const char*
 XBOX_JoystickGetDeviceName(int device_index) {
-	SDL_Log("XBOX_JoystickGetDeviceName called for device index %d\n", device_index);
+	// SDL_Log("XBOX_JoystickGetDeviceName called for device index %d\n", device_index);
 	int count = 0;
 	for (int i = 0; i < XUSER_MAX_COUNT; i++) {
 		if (g_Controllers[i].connected) {
@@ -295,7 +242,7 @@ XBOX_JoystickGetDeviceGUID(int device_index)
 static SDL_JoystickID
 XBOX_JoystickGetDeviceInstanceID(int device_index)
 {
-	SDL_Log("XBOX_JoystickGetDeviceInstanceID called for device index %d\n", device_index);
+	// SDL_Log("XBOX_JoystickGetDeviceInstanceID called for device index %d\n", device_index);
 	// Instance ID can be the device_index itself or something stable.
 	return (SDL_JoystickID) device_index;
 }
@@ -363,10 +310,10 @@ XBOX_JoystickRumble(SDL_Joystick* joystick, Uint16 low_frequency_rumble, Uint16 
 
 	// Send rumble command
 	DWORD res = XInputSetState(dev->device_handle, &dev->feedback);
-	SDL_Log("XInputSetState called. Result: %lu\n", res);
+	// SDL_Log("XInputSetState called. Result: %lu\n", res);
 
 	if (res == ERROR_SUCCESS) {
-		SDL_Log("Rumble started successfully.\n");
+		// SDL_Log("Rumble started successfully.\n");
 		dev->rumble_active = TRUE;
 	}
 	else if (res == ERROR_IO_PENDING) {
@@ -392,6 +339,7 @@ XBOX_JoystickRumble(SDL_Joystick* joystick, Uint16 low_frequency_rumble, Uint16 
 }
 
 static void XBOX_JoystickUpdate(SDL_Joystick* joystick) {
+	// SDL_Log("XBOX_JoystickUpdate");
 	XboxControllerDevice* dev = (XboxControllerDevice*)joystick->hwdata;
 
 	// Validate handle and connection status
@@ -402,31 +350,23 @@ static void XBOX_JoystickUpdate(SDL_Joystick* joystick) {
 	// Poll for disconnection or rumble stop
 	XInputPoll(dev->device_handle);
 
-	Uint32 current_time = SDL_GetTicks();
-	if (dev->rumble_active && current_time >= dev->rumble_end_time) {
-		SDL_Log("XBOX_JoystickUpdate: Stopping rumble motors.\n");
-		SDL_zero(dev->feedback);
-		XInputSetState(dev->device_handle, &dev->feedback);
-		dev->rumble_active = FALSE;
-	}
-
 	// Get state from controller
 	XINPUT_STATE state;
 	DWORD res = XInputGetState(dev->device_handle, &state);
 
 	// Handle disconnection
 	if (res != ERROR_SUCCESS) {
-		SDL_Log("XInputGetState failed for port %d. Disconnecting controller.\n", dev->port);
-
-		// Notify SDL that the joystick has been removed
-		SDL_PrivateJoystickRemoved(joystick->instance_id);
-
-		// Close the handle and mark as disconnected
-		XInputClose(dev->device_handle);
-		dev->device_handle = NULL;
-		dev->connected = FALSE;
-
+		XBOX_CloseController(dev->port);
 		return;
+	}
+
+	// Update rumble
+	Uint32 current_time = SDL_GetTicks();
+	if (dev->rumble_active && current_time >= dev->rumble_end_time) {
+		SDL_Log("XBOX_JoystickUpdate: Stopping rumble motors.\n");
+		SDL_zero(dev->feedback);
+		XInputSetState(dev->device_handle, &dev->feedback);
+		dev->rumble_active = FALSE;
 	}
 
 	// Apply dead zones to thumbsticks
