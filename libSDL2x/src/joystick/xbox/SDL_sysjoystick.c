@@ -158,8 +158,20 @@ static void XBOX_JoystickDetect(void) {
 
 	for (DWORD port = 0; port < XUSER_MAX_COUNT; port++) {
 		// Attempt to open non connected joysticks
-		if (!g_Controllers[port].connected) {
-			 XBOX_OpenController(port);
+		if (g_Controllers[port].connected) {
+			if (g_Controllers[port].device_handle) {
+				// Poll for disconnection
+				XINPUT_STATE state;
+				DWORD res = XInputGetState(g_Controllers[port].device_handle, &state);
+				// Handle disconnection
+				if (res != ERROR_SUCCESS) {
+					XBOX_CloseController(port);
+				}
+			}
+		}
+		else
+		{
+			XBOX_OpenController(port);
 		}
 	}
 }
@@ -346,18 +358,17 @@ static void XBOX_JoystickUpdate(SDL_Joystick* joystick) {
 		return;
 	}
 
-	// Poll for disconnection or rumble stop
-	XInputPoll(dev->device_handle);
-
 	// Get state from controller
 	XINPUT_STATE state;
 	DWORD res = XInputGetState(dev->device_handle, &state);
 
-	// Handle disconnection
+	// Abort on disconnection, XBOX_JoystickDetect handles controller removal logic
 	if (res != ERROR_SUCCESS) {
-		XBOX_CloseController(dev->port);
 		return;
 	}
+
+	// Poll for disconnection or rumble stop
+	XInputPoll(dev->device_handle);
 
 	// Update rumble
 	Uint32 current_time = SDL_GetTicks();
