@@ -81,17 +81,18 @@ const int XBOX_JOYSTICK_RIGHT_TRIGGER = 5;
 static XboxControllerDevice g_Controllers[XUSER_MAX_COUNT];
 static int g_NumControllers = 0;
 
-static BOOL XBOX_OpenController(const DWORD port) {
+static void XBOX_OpenController(const DWORD port) {
 	if (port >= XUSER_MAX_COUNT) {
-		return FALSE;
+		return;
 	}
 
 	XINPUT_POLLING_PARAMETERS pollParams = g_PollingParameters;
 	HANDLE handle = XInputOpen(XDEVICE_TYPE_GAMEPAD, port, XDEVICE_NO_SLOT, &pollParams);
 
 	if (!handle) {
+		g_Controllers[port].device_handle = NULL;
 		g_Controllers[port].connected = FALSE;
-		return FALSE;
+		return;
 	}
 
 	// Retrieve capabilities
@@ -100,7 +101,7 @@ static BOOL XBOX_OpenController(const DWORD port) {
 		g_Controllers[port].device_handle = NULL;
 		g_Controllers[port].connected = FALSE;
 		XInputClose(handle);
-		return FALSE;
+		return;
 	}
 	else
 	{
@@ -110,18 +111,17 @@ static BOOL XBOX_OpenController(const DWORD port) {
 		g_Controllers[port].rumble_active = FALSE;
 		g_Controllers[port].rumble_end_time = 0;
 	}
+	
+	SDL_PrivateJoystickAdded(port);
+	g_NumControllers++;
 
-	SDL_Log("Controller at port %d opened\n", port);
-
-	return TRUE;
+	SDL_Log("Controller connected at port %d\n", port);
 }
 
 static void XBOX_CloseController(const DWORD port) {
 	if (port >= XUSER_MAX_COUNT) {
 		return;
 	}
-
-	SDL_Log("Controller disconnected at port %d\n", port);
 
 	// Notify SDL that the joystick has been removed
 	SDL_PrivateJoystickRemoved(port);
@@ -133,6 +133,8 @@ static void XBOX_CloseController(const DWORD port) {
 	}
 	g_Controllers[port].device_handle = NULL;
 	g_Controllers[port].connected = FALSE;
+
+	SDL_Log("Controller disconnected at port %d\n", port);
 }
 
 static int XBOX_JoystickInit(void) {
@@ -157,10 +159,7 @@ static void XBOX_JoystickDetect(void) {
 	for (DWORD port = 0; port < XUSER_MAX_COUNT; port++) {
 		// Attempt to open non connected joysticks
 		if (!g_Controllers[port].connected) {
-			if (XBOX_OpenController(port)) {
-				g_NumControllers++;
-				SDL_PrivateJoystickAdded(port);
-			}
+			 XBOX_OpenController(port);
 		}
 	}
 }
