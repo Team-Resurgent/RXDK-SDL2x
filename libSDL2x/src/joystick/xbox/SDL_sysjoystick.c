@@ -118,7 +118,7 @@ static BOOL XBOX_OpenController(const DWORD port) {
 
 static void XBOX_CloseController(const DWORD port) {
 	if (port >= XUSER_MAX_COUNT) {
-		return FALSE;
+		return;
 	}
 
 	SDL_Log("Controller disconnected at port %d\n", port);
