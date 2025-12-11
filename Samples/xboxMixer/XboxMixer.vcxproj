@@ -85,7 +85,7 @@
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>xboxkrnl.lib;libcmtd.lib;libcpmtd.lib;xapilibd.lib;d3d8d.lib;d3dx8d.lib;dsoundd.lib;xkbd.lib;libsdl2x.lib;libSDL2x_mixer.lib</AdditionalDependencies>
+      <AdditionalDependencies>xboxkrnl.lib;libcmtd.lib;libcpmtd.lib;xapilibd.lib;d3d8d.lib;d3dx8d.lib;dsoundd.lib;xkbd.lib;libsdl2x.lib;libSDL2x_mixer.lib;libmodplug.lib</AdditionalDependencies>
       <IgnoreAllDefaultLibraries>true</IgnoreAllDefaultLibraries>
       <BaseAddress>
       </BaseAddress>
@@ -128,7 +128,7 @@ MKDIR "$(OutDir)XISO"
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>xboxkrnl.lib;libcmt.lib;xapilib.lib;d3d8.lib;d3dx8.lib;dsound.lib;xkbd.lib;libsdl2x.lib;libSDL2x_mixer.lib</AdditionalDependencies>
+      <AdditionalDependencies>xboxkrnl.lib;libcmt.lib;xapilib.lib;d3d8.lib;d3dx8.lib;dsound.lib;xkbd.lib;libsdl2x.lib;libSDL2x_mixer.lib;libmodplug.lib</AdditionalDependencies>
       <IgnoreAllDefaultLibraries>true</IgnoreAllDefaultLibraries>
       <BaseAddress>
       </BaseAddress>
@@ -157,6 +157,9 @@ MKDIR "$(OutDir)XISO"
   </ItemGroup>
   <ItemGroup>
     <Media Include="Media\lose-my-breath.wav" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Media\intro_number_130.mod" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -17,7 +17,8 @@ extern "C" {
 # elif defined(MODPLUG_BUILD) || defined(MODPLUG_STATIC)	/* building or using static libmodplug for windows */
 #   define MODPLUG_EXPORT
 # else
-#   define MODPLUG_EXPORT __declspec(dllimport)			/* using libmodplug dll for windows */
+// #   define MODPLUG_EXPORT __declspec(dllimport)			/* using libmodplug dll for windows */
+#   define MODPLUG_EXPORT
 # endif
 #elif defined(MODPLUG_BUILD) && defined(SYM_VISIBILITY)
 #   define MODPLUG_EXPORT __attribute__((visibility("default")))

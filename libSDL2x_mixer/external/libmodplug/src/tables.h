@@ -4,6 +4,9 @@
  * Authors: Olivier Lapicque <olivierl@jps.net>
  */
 
+#ifndef _MODPLUG_TABLES_H_
+#define _MODPLUG_TABLES_H_
+
 #include "libmodplug/stdafx.h"
 #include "libmodplug/sndfile.h"
 
@@ -374,3 +377,4 @@ static const int SpectrumSinusTable[256*2] =
 	-12, -11, -10, -10, -9, -8, -7, -7, -6, -5, -4, -3, -3, -2, -1, 0, 
 };
 
+#endif // _MODPLUG_TABLES_H_

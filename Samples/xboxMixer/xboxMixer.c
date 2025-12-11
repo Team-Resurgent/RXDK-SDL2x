@@ -40,7 +40,7 @@ int main(int argc, char* argv[]) {
 
 	/* Load Assets */
 	Background = LoadTextureFromFile(Renderer, "D:\\Lose_my_breath.bmp");
-	Music = Mix_LoadMUS("D:\\lose-my-breath.wav");
+	Music = Mix_LoadMUS("D:\\intro_number_130.mod");
 
 	/* Play Music */
 	Mix_PlayMusic(Music, -1);

@@ -10,27 +10,71 @@
       <Platform>Win32</Platform>
     </ProjectConfiguration>
   </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="src\fastmix.cpp" />
+    <ClCompile Include="src\load_669.cpp" />
+    <ClCompile Include="src\load_abc.cpp" />
+    <ClCompile Include="src\load_amf.cpp" />
+    <ClCompile Include="src\load_ams.cpp" />
+    <ClCompile Include="src\load_dbm.cpp" />
+    <ClCompile Include="src\load_dmf.cpp" />
+    <ClCompile Include="src\load_dsm.cpp" />
+    <ClCompile Include="src\load_far.cpp" />
+    <ClCompile Include="src\load_it.cpp" />
+    <ClCompile Include="src\load_j2b.cpp" />
+    <ClCompile Include="src\load_mdl.cpp" />
+    <ClCompile Include="src\load_med.cpp" />
+    <ClCompile Include="src\load_mid.cpp" />
+    <ClCompile Include="src\load_mod.cpp" />
+    <ClCompile Include="src\load_mt2.cpp" />
+    <ClCompile Include="src\load_mtm.cpp" />
+    <ClCompile Include="src\load_okt.cpp" />
+    <ClCompile Include="src\load_pat.cpp" />
+    <ClCompile Include="src\load_psm.cpp" />
+    <ClCompile Include="src\load_ptm.cpp" />
+    <ClCompile Include="src\load_s3m.cpp" />
+    <ClCompile Include="src\load_stm.cpp" />
+    <ClCompile Include="src\load_ult.cpp" />
+    <ClCompile Include="src\load_umx.cpp" />
+    <ClCompile Include="src\load_wav.cpp" />
+    <ClCompile Include="src\load_xm.cpp" />
+    <ClCompile Include="src\mmcmp.cpp" />
+    <ClCompile Include="src\modplug.cpp" />
+    <ClCompile Include="src\sndfile.cpp" />
+    <ClCompile Include="src\sndmix.cpp" />
+    <ClCompile Include="src\snd_dsp.cpp" />
+    <ClCompile Include="src\snd_flt.cpp" />
+    <ClCompile Include="src\snd_fx.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="src\libmodplug\it_defs.h" />
+    <ClInclude Include="src\libmodplug\sndfile.h" />
+    <ClInclude Include="src\libmodplug\stdafx.h" />
+    <ClInclude Include="src\load_pat.h" />
+    <ClInclude Include="src\modplug.h" />
+    <ClInclude Include="src\tables.h" />
+  </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
     <Keyword>Win32Proj</Keyword>
-    <ProjectGuid>{e8ad1139-f6af-4770-b829-f81386100b7d}</ProjectGuid>
-    <RootNamespace>Raiders3D</RootNamespace>
+    <ProjectGuid>{335FFA69-9BF5-40A0-893A-F9853BA0AB73}</ProjectGuid>
+    <RootNamespace>Triangle</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
-    <ProjectName>Raiders3D</ProjectName>
+    <ProjectName>libmodplug</ProjectName>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
-    <ConfigurationType>Application</ConfigurationType>
+    <ConfigurationType>StaticLibrary</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
     <PlatformToolset>v143</PlatformToolset>
-    <CharacterSet>NotSet</CharacterSet>
+    <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
-    <ConfigurationType>Application</ConfigurationType>
+    <ConfigurationType>StaticLibrary</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
     <PlatformToolset>v143</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
-    <CharacterSet>NotSet</CharacterSet>
+    <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
   <ImportGroup Label="ExtensionSettings">
@@ -45,50 +89,54 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <IncludePath>$(RXDK_LIBS)include;$(SolutionDir)\libSDL2x\include</IncludePath>
+    <IncludePath>$(RXDK_LIBS)include;$(ProjectDir)src\libmodplug</IncludePath>
     <ExternalIncludePath>$(RXDK_LIBS)include</ExternalIncludePath>
     <LibraryWPath />
     <SourcePath />
     <ExcludePath>$(CommonExcludePath);$(VC_ExecutablePath_x86);$(RXDK_LIBS)lib</ExcludePath>
     <ReferencePath>$(RXDK_LIBS)lib</ReferencePath>
-    <LibraryPath>$(RXDK_LIBS)lib;$(SolutionDir)libs\$(Configuration)</LibraryPath>
-    <OutDir>$(ProjectDir)$(Configuration)\</OutDir>
+    <LibraryPath>$(RXDK_LIBS)lib</LibraryPath>
+    <OutDir>$(ProjectDir)..\..\..\libs\$(Configuration)\</OutDir>
+    <TargetExt>.lib</TargetExt>
     <LinkIncremental>false</LinkIncremental>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
-    <IncludePath>$(RXDK_LIBS)include;$(SolutionDir)\libSDL2x\include</IncludePath>
+    <IncludePath>$(RXDK_LIBS)include;$(ProjectDir)src\libmodplug</IncludePath>
     <ExternalIncludePath>$(RXDK_LIBS)include</ExternalIncludePath>
     <LibraryWPath />
     <SourcePath />
     <ExcludePath>$(CommonExcludePath);$(VC_ExecutablePath_x86);$(RXDK_LIBS)lib</ExcludePath>
     <ReferencePath>$(RXDK_LIBS)lib</ReferencePath>
-    <LibraryPath>$(RXDK_LIBS)lib;$(SolutionDir)libs\$(Configuration)</LibraryPath>
-    <OutDir>$(ProjectDir)$(Configuration)\</OutDir>
+    <LibraryPath>$(RXDK_LIBS)lib</LibraryPath>
+    <OutDir>$(ProjectDir)..\..\..\libs\$(Configuration)\</OutDir>
+    <TargetExt>.lib</TargetExt>
     <LinkIncremental>false</LinkIncremental>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <SDLCheck>false</SDLCheck>
-      <PreprocessorDefinitions>XBOX;_XBOX;__XBOX__;_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>XBOX;_XBOX;__XBOX__;MODPLUG_BUILD;MODPLUG_STATIC;_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>false</ConformanceMode>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
-      <AdditionalIncludeDirectories>$(SolutionDir)libSDL2x_image\include;$(SolutionDir)include;$(SolutionDir)libSDL2x_ttf\include;$(SolutionDir)libSDL2x_ttf\external\freetype\include;$(SolutionDir)libSDL2x_mixer\include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>
+      </AdditionalIncludeDirectories>
       <BufferSecurityCheck>false</BufferSecurityCheck>
-      <ExceptionHandling>Sync</ExceptionHandling>
+      <ExceptionHandling>false</ExceptionHandling>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
-      <AdditionalOptions>/arch:SSE /Zc:sizedDealloc- %(AdditionalOptions)</AdditionalOptions>
+      <AdditionalOptions>/arch:SSE %(AdditionalOptions)</AdditionalOptions>
       <SupportJustMyCode>false</SupportJustMyCode>
       <ControlFlowGuard>false</ControlFlowGuard>
       <LanguageStandard>stdcpp17</LanguageStandard>
+      <UndefinePreprocessorDefinitions>
+      </UndefinePreprocessorDefinitions>
       <EnableEnhancedInstructionSet>StreamingSIMDExtensions</EnableEnhancedInstructionSet>
-      <LanguageStandard_C>Default</LanguageStandard_C>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>xboxkrnl.lib;xapilibd.lib;xbdm.lib;d3d8d.lib;d3dx8d.lib;dsoundd.lib;xkbd.lib;libsdl2x.lib;libSDL2x_image.lib;freetype-xbox.lib;libSDL2x_ttf.lib;libmodplug.lib;libSDL2x_Mixer.lib;libcmtd.lib;libcpmtd.lib</AdditionalDependencies>
-      <IgnoreAllDefaultLibraries>false</IgnoreAllDefaultLibraries>
+      <AdditionalDependencies>xboxkrnl.lib;libcmtd.lib;xapilibd.lib;d3d8d.lib;d3dx8d.lib;xbdm.lib</AdditionalDependencies>
+      <IgnoreAllDefaultLibraries>true</IgnoreAllDefaultLibraries>
       <BaseAddress>
       </BaseAddress>
       <IgnoreSpecificDefaultLibraries>
@@ -96,17 +144,9 @@
       <GenerateMapFile>true</GenerateMapFile>
       <FixedBaseAddress>false</FixedBaseAddress>
       <ImageHasSafeExceptionHandlers>false</ImageHasSafeExceptionHandlers>
+      <SectionAlignment>32</SectionAlignment>
+      <MergeSections>.rdata=.text</MergeSections>
     </Link>
-    <PostBuildEvent>
-      <Message>Creating Xbox Image...</Message>
-      <Command>"$(RXDK_LIBS)bin\patchSubsystem.exe" -i="$(OutDir)$(TargetFileName)" -s=0x000E
-"$(RXDK_LIBS)bin\imagebld.exe" /in:"$(OutDir)$(TargetFileName)" /out:"$(OutDir)$(TargetName).xbe" /nologo /stack:65536 /debug /nolibwarn
-MKDIR "$(OutDir)Build\$(ProjectName)"
-COPY /Y "$(OutDir)$(TargetName).xbe" "$(OutDir)Build\$(ProjectName)\default.xbe"
-XCOPY /I /E /S /Y /F "$(ProjectDir)Media\*" "$(OutDir)Build\$(ProjectName)"
-MKDIR "$(OutDir)XISO"
-"$(RXDK_LIBS)bin\xdvdfs.exe" pack "$(OutDir)Build\$(ProjectName)" "$(OutDir)XISO\$(ProjectName).iso"</Command>
-    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
@@ -114,26 +154,28 @@ MKDIR "$(OutDir)XISO"
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>false</SDLCheck>
-      <PreprocessorDefinitions>XBOX;_XBOX;__XBOX__;NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>XBOX;_XBOX;__XBOX__;MODPLUG_BUILD;MODPLUG_STATIC;NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>false</ConformanceMode>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
-      <AdditionalIncludeDirectories>$(SolutionDir)libSDL2x_image\include;$(SolutionDir)include;$(SolutionDir)libSDL2x_ttf\include;$(SolutionDir)libSDL2x_ttf\external\freetype\include;$(SolutionDir)libSDL2x_mixer\include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>
+      </AdditionalIncludeDirectories>
       <BufferSecurityCheck>false</BufferSecurityCheck>
       <ExceptionHandling>false</ExceptionHandling>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
-      <AdditionalOptions>/arch:SSE /Zc:sizedDealloc- %(AdditionalOptions)</AdditionalOptions>
+      <AdditionalOptions>/arch:SSE %(AdditionalOptions)</AdditionalOptions>
       <ControlFlowGuard>false</ControlFlowGuard>
       <LanguageStandard>stdcpp17</LanguageStandard>
+      <UndefinePreprocessorDefinitions>
+      </UndefinePreprocessorDefinitions>
       <EnableEnhancedInstructionSet>StreamingSIMDExtensions</EnableEnhancedInstructionSet>
-      <BasicRuntimeChecks>Default</BasicRuntimeChecks>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>xboxkrnl.lib;xapilib.lib;xkbd.lib;d3d8.lib;d3dx8.lib;dsound.lib;libsdl2x.lib;libSDL2x_image.lib;freetype-xbox.lib;libSDL2x_ttf.lib;libmodplug.lib;libSDL2x_Mixer.lib;libcmt.lib</AdditionalDependencies>
-      <IgnoreAllDefaultLibraries>false</IgnoreAllDefaultLibraries>
+      <AdditionalDependencies>xboxkrnl.lib;libcmt.lib;xapilib.lib;d3d8.lib;d3dx8.lib;xbdm.lib</AdditionalDependencies>
+      <IgnoreAllDefaultLibraries>true</IgnoreAllDefaultLibraries>
       <BaseAddress>
       </BaseAddress>
       <IgnoreSpecificDefaultLibraries>
@@ -141,56 +183,10 @@ MKDIR "$(OutDir)XISO"
       <GenerateMapFile>true</GenerateMapFile>
       <FixedBaseAddress>false</FixedBaseAddress>
       <ImageHasSafeExceptionHandlers>false</ImageHasSafeExceptionHandlers>
+      <SectionAlignment>32</SectionAlignment>
+      <MergeSections>.rdata=.text</MergeSections>
     </Link>
-    <PostBuildEvent>
-      <Message>Creating Xbox Image...</Message>
-      <Command>"$(RXDK_LIBS)bin\patchSubsystem.exe" -i="$(OutDir)$(TargetFileName)" -s=0x000E
-"$(RXDK_LIBS)bin\imagebld.exe" /in:"$(OutDir)$(TargetFileName)" /out:"$(OutDir)$(TargetName).xbe" /nologo /stack:65536 /debug /nolibwarn
-MKDIR "$(OutDir)Build\$(ProjectName)"
-COPY /Y "$(OutDir)$(TargetName).xbe" "$(OutDir)Build\$(ProjectName)\default.xbe"
-XCOPY /I /E /S /Y /F "$(ProjectDir)Media\*" "$(OutDir)Build\$(ProjectName)"
-MKDIR "$(OutDir)XISO"
-"$(RXDK_LIBS)bin\xdvdfs.exe" pack "$(OutDir)Build\$(ProjectName)" "$(OutDir)XISO\$(ProjectName).iso"</Command>
-    </PostBuildEvent>
   </ItemDefinitionGroup>
-  <ItemGroup>
-    <Text Include="Media\Copy Assets Here.txt" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClCompile Include="src\CrashProbe.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">false</ExcludedFromBuild>
-    </ClCompile>
-    <ClCompile Include="src\Effect.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</ExcludedFromBuild>
-    </ClCompile>
-    <ClCompile Include="src\Enemy.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</ExcludedFromBuild>
-    </ClCompile>
-    <ClCompile Include="src\Entity.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</ExcludedFromBuild>
-    </ClCompile>
-    <ClCompile Include="src\Game.cpp">
-      <WholeProgramOptimization Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">false</WholeProgramOptimization>
-    </ClCompile>
-    <ClCompile Include="src\Main.cpp" />
-    <ClCompile Include="src\Player.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</ExcludedFromBuild>
-    </ClCompile>
-    <ClCompile Include="src\RXDKDEBUG.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">false</ExcludedFromBuild>
-    </ClCompile>
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="src\common.h" />
-    <ClInclude Include="src\CrashProbe.h" />
-    <ClInclude Include="src\defs.hpp" />
-    <ClInclude Include="src\Effect.hpp" />
-    <ClInclude Include="src\Enemy.hpp" />
-    <ClInclude Include="src\Entity.hpp" />
-    <ClInclude Include="src\Game.hpp" />
-    <ClInclude Include="src\Player.hpp" />
-    <ClInclude Include="src\RXDKDebug.h" />
-  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>

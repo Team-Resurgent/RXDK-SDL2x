@@ -28,4 +28,9 @@
       <Filter>Media</Filter>
     </Media>
   </ItemGroup>
+  <ItemGroup>
+    <None Include="Media\intro_number_130.mod">
+      <Filter>Media</Filter>
+    </None>
+  </ItemGroup>
 </Project>
